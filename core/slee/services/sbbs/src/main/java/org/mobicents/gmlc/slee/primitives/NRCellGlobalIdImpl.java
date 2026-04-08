@@ -3,6 +3,7 @@ package org.mobicents.gmlc.slee.primitives;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -15,6 +16,8 @@ import java.io.IOException;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class NRCellGlobalIdImpl extends OctetStringBase implements NRCellGlobalId {
+
+    private static final Logger logger = Logger.getLogger(NRCellGlobalIdImpl.class.getName());
 
     private static final String MCC = "mcc";
     private static final String MNC = "mnc";
@@ -156,12 +159,12 @@ public class NRCellGlobalIdImpl extends OctetStringBase implements NRCellGlobalI
                 mcc = this.getMCC();
                 mnc = this.getMNC();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
             nci = this.getNCI();
             correctData = true;
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         StringBuilder sb = new StringBuilder();

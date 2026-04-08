@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.primitives;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -15,6 +16,8 @@ import java.io.StringReader;
  * @author <a href="mailto:enmanuelcalero61@gmail.com"> Enmanuel Calero </a>
  */
 public class CivicAddressXmlReader {
+
+    private static final Logger logger = Logger.getLogger(CivicAddressXmlReader.class.getName());
 
     private CivicAddressElements civicAddress = new CivicAddressElements();
 
@@ -41,7 +44,7 @@ public class CivicAddressXmlReader {
             this.civicAddress = (CivicAddressElements) jaxbUnmarshallerCivicAddress.unmarshal(source);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 }

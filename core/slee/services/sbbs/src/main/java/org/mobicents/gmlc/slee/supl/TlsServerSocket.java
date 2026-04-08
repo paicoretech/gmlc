@@ -44,7 +44,7 @@ public class TlsServerSocket extends TlsServerSocketThread {
     /**
      * Constructs a TlsServerSocket.
      *
-     * @param serverSocket
+     * @param serverSocket SSL Server Socket
      */
     public TlsServerSocket(SSLServerSocket serverSocket) {
         super(serverSocket);
@@ -52,16 +52,16 @@ public class TlsServerSocket extends TlsServerSocketThread {
 
     public static void main(String[] args) {
         try {
-            System.out.println("Lets start with it");
+            logger.info("Lets start with it");
             SmppSession smppSession = SmppSessionManager.getInstance();
-            System.out.println("Status smpp session: " + smppSession.getStateName());
-            System.out.println("Status smpp session is open? " + smppSession.isOpen());
+            logger.info("Status smpp session: " + smppSession.getStateName());
+            logger.info("Status smpp session is open? " + smppSession.isOpen());
             TimeUnit.MINUTES.sleep(1);
             SmppSessionManager.destroySession();
-            System.out.println("After destroy status smpp session: " + smppSession.getStateName());
-            System.out.println("After destroy status smpp session is open? " + smppSession.isOpen());
+            logger.info("After destroy status smpp session: " + smppSession.getStateName());
+            logger.info("After destroy status smpp session is open? " + smppSession.isOpen());
         } catch (Exception ex) {
-            System.err.println("Error, " + ex.fillInStackTrace());
+            logger.severe("Error, " + ex.fillInStackTrace());
         }
         // start();
     }
@@ -74,7 +74,6 @@ public class TlsServerSocket extends TlsServerSocketThread {
             System.setProperty("javax.net.ssl.keyStorePassword", cert_password);
         } catch (Exception ex) {
             logger.severe("SSL Certificate could not be loaded: " + ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
@@ -86,7 +85,6 @@ public class TlsServerSocket extends TlsServerSocketThread {
             new TlsServerSocket(ss);
         } catch (IOException e) {
             logger.severe("Unable to start ClassServer: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

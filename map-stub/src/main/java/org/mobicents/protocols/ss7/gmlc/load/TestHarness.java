@@ -102,7 +102,7 @@ public abstract class TestHarness implements MAPDialogListener, MAPServiceMobili
                 propertiesLog4j.load(inStreamLog4j);
                 PropertyConfigurator.configure(propertiesLog4j);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
                 BasicConfigurator.configure();
             }
 
@@ -117,10 +117,10 @@ public abstract class TestHarness implements MAPDialogListener, MAPServiceMobili
             try {
                 logger.addAppender(new FileAppender(new SimpleLayout(), logFileName));
             } catch (FileNotFoundException fnfe) {
-
+                logger.error(fnfe.getMessage());
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
             throw new RuntimeException(ex);
         }
 
@@ -166,7 +166,7 @@ public abstract class TestHarness implements MAPDialogListener, MAPServiceMobili
 
     public abstract void onUpdateLocationResponse(UpdateLocationResponse arg0);
 
-    public abstract void onProvideSubscriberLocationRequest(ProvideSubscriberLocationRequest provideSubscriberLocationRequestIndication);;
+    public abstract void onProvideSubscriberLocationRequest(ProvideSubscriberLocationRequest provideSubscriberLocationRequestIndication);
 
     public abstract void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse provideSubscriberLocationResponseIndication);
 

@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.utils;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.mobicents.gmlc.slee.diameter.AVPHandler;
 import org.mobicents.gmlc.slee.primitives.EUTRANCGIImpl;
@@ -30,6 +31,7 @@ import static org.mobicents.gmlc.slee.utils.ByteUtils.dumpBytesToHexString;
  */
 public class TBCDUtil {
 
+    private static final Logger logger = Logger.getLogger(TBCDUtil.class.getName());
     private static final String cTBCDSymbolString = "0123456789*#abc";
     private static final char[] cTBCDSymbols = cTBCDSymbolString.toCharArray();
     private static Integer mcc = null, mnc = null, lac = null, ci = null, sac = null, uci = null, rac = null, tac = null, enbid = null, nrtac = null;
@@ -57,61 +59,61 @@ public class TBCDUtil {
         int imsiMnc = myImsi.getMnc();
         String imsiMsin = myImsi.getMsin();
 
-        System.out.println("IMSI="+imsi+" parsed as TBCD as octets: " + dumpBytes(imsiTbcd));
-        System.out.println("IMSI="+imsi+" TBCD octets decoded to TBCD String: " + toTBCDString(imsiTbcd));
-        System.out.println("IMSI="+imsi+" TBCD octets decoded to Hex: " + bytesToHex(imsiTbcd));//05123502675502f6
-        System.out.println("IMSI="+imsi+" MCC: " + imsiMcc);
-        System.out.println("IMSI="+imsi+" MNC: " + imsiMnc);
-        System.out.println("IMSI="+imsi+" MSIN: " + imsiMsin);
+        logger.info("IMSI="+imsi+" parsed as TBCD as octets: " + dumpBytes(imsiTbcd));
+        logger.info("IMSI="+imsi+" TBCD octets decoded to TBCD String: " + toTBCDString(imsiTbcd));
+        logger.info("IMSI="+imsi+" TBCD octets decoded to Hex: " + bytesToHex(imsiTbcd));//05123502675502f6
+        logger.info("IMSI="+imsi+" MCC: " + imsiMcc);
+        logger.info("IMSI="+imsi+" MNC: " + imsiMnc);
+        logger.info("IMSI="+imsi+" MSIN: " + imsiMsin);
 
-        System.out.println("MSISDN="+msisdn+" parsed as TBCD as octets: " + dumpBytes(msisdnTbcd));
-        System.out.println("MSISDN="+msisdn+" TBCD octets decoded to TBCD String: " + toTBCDString(msisdnTbcd));
-        System.out.println("MSISDN="+msisdn+" TBCD dump bytes to Hex: " + dumpBytesToHexString(msisdnTbcd)); // TBCD = ?0691333030f0
+        logger.info("MSISDN="+msisdn+" parsed as TBCD as octets: " + dumpBytes(msisdnTbcd));
+        logger.info("MSISDN="+msisdn+" TBCD octets decoded to TBCD String: " + toTBCDString(msisdnTbcd));
+        logger.info("MSISDN="+msisdn+" TBCD dump bytes to Hex: " + dumpBytesToHexString(msisdnTbcd)); // TBCD = ?0691333030f0
         ISDNAddressString isdnAddressString = AVPHandler.tbcd2IsdnAddressString(msisdnTbcd);
-        System.out.println("MSISDN="+msisdn+" : tbcd2IsdnAddressString.getAddress : " + isdnAddressString.getAddress());
+        logger.info("MSISDN="+msisdn+" : tbcd2IsdnAddressString.getAddress : " + isdnAddressString.getAddress());
 
-        System.out.println("GMLC-Number="+gmlcNumber+" parsed as TBCD as octets: " + dumpBytes(gmlcNumberTbcd));
-        System.out.println("GMLC-Number="+gmlcNumber+" TBCD octets decoded to TBCD String: " + toTBCDString(gmlcNumberTbcd));
-        System.out.println("GMLC-Number="+gmlcNumber+" TBCD dump bytes to Hex: " + dumpBytesToHexString(gmlcNumberTbcd));
+        logger.info("GMLC-Number="+gmlcNumber+" parsed as TBCD as octets: " + dumpBytes(gmlcNumberTbcd));
+        logger.info("GMLC-Number="+gmlcNumber+" TBCD octets decoded to TBCD String: " + toTBCDString(gmlcNumberTbcd));
+        logger.info("GMLC-Number="+gmlcNumber+" TBCD dump bytes to Hex: " + dumpBytesToHexString(gmlcNumberTbcd));
         isdnAddressString = AVPHandler.tbcd2IsdnAddressString(msisdnTbcd);
-        System.out.println("GMLC-Number="+gmlcNumber+" : tbcd2IsdnAddressString.getAddress : " + isdnAddressString.getAddress());
+        logger.info("GMLC-Number="+gmlcNumber+" : tbcd2IsdnAddressString.getAddress : " + isdnAddressString.getAddress());
 
         msisdn = "59899077937";
         msisdnTbcd = parseTBCD(msisdn);
         String ms = bytesToHex(msisdnTbcd);
-        System.out.println("MSISDN="+msisdn+" TBCD octets to hex String: " + ms);
+        logger.info("MSISDN="+msisdn+" TBCD octets to hex String: " + ms);
         msisdnTbcd = parseTBCD(msisdn);
-        System.out.println("MSISDN="+msisdn+" TBCD octets to TBCD string: " + toTBCDString(msisdnTbcd));
+        logger.info("MSISDN="+msisdn+" TBCD octets to TBCD string: " + toTBCDString(msisdnTbcd));
 
         String[] ccArray = new String[1];
         Integer[] areaIdParams;
         String cc = "748";
         ccArray[0] = cc;
-        System.out.println("Country Code="+cc+" TBCD octets decoded: " + bytesToHex(parseTBCD(cc)));
-        System.out.println("*******************************************************************");
+        logger.info("Country Code="+cc+" TBCD octets decoded: " + bytesToHex(parseTBCD(cc)));
+        logger.info("*******************************************************************");
         String countryCodeTbcd = setAreaIdTbcd(ccArray, "countryCode");
-        System.out.println("Country Code = "+cc+", TBCD encoded: " + countryCodeTbcd); // 47f8
+        logger.info("Country Code = "+cc+", TBCD encoded: " + countryCodeTbcd); // 47f8
         areaIdParams = setAreaIdParams(ccArray, "countryCode");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(parseTBCD(cc));
-            System.out.println(areaIdentification);
+            logger.info(areaIdentification);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         String plmnStr = "748-1";
         String[] areaIdArray = plmnStr.split("-");
         setAreaIdParameters(areaIdArray, "plmnId");
         String plmnIdTbcd = setAreaIdTbcd(areaIdArray, "plmnId");
-        System.out.println("PLMN ID = "+plmnStr+"; TBCD encoded: " + plmnIdTbcd);
+        logger.info("PLMN ID = "+plmnStr+"; TBCD encoded: " + plmnIdTbcd);
         //PlmnIdImpl plmnId = new PlmnIdImpl(mcc, mnc); // 47f810
         areaIdParams = setAreaIdParams(areaIdArray, "plmnId");
         PlmnIdImpl plmnId = new PlmnIdImpl(areaIdParams[0], areaIdParams[1]);
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(plmnId.getData());
-            System.out.println(areaIdentification);
+            logger.info(areaIdentification);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl();
@@ -121,16 +123,16 @@ public class TBCDUtil {
         try {
             lai.setData(mcc, mnc, lac); // 37f620332c mcc=736 mnc=2 lac=13100 ?// 05f2910c09 mcc=502 mnc=19 lac=3081
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String laiTbcd = setAreaIdTbcd(areaIdArray, "locationAreaId");
-        System.out.println("LAI = "+laiStr+"; TBCD encoded: " + laiTbcd);
+        logger.info("LAI = "+laiStr+"; TBCD encoded: " + laiTbcd);
         areaIdParams = setAreaIdParams(areaIdArray, "locationAreaId");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.locationAreaId, areaIdParams[0], areaIdParams[1], areaIdParams[2], 0);
-            System.out.println(areaIdentification);
+            logger.info(areaIdentification);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         CellGlobalIdOrServiceAreaIdFixedLengthImpl cgi = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
@@ -140,17 +142,17 @@ public class TBCDUtil {
         try {
             cgi.setData(mcc, mnc, lac, ci); // 05f261831a0314 mcc=502 mnc=16 lac=33562 ci= 788
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String cgiTbcd = setAreaIdTbcd(areaIdArray, "cellGlobalId");
-        System.out.println("CGI = "+cgiStr+"; TBCD encoded: " + cgiTbcd);
+        logger.info("CGI = "+cgiStr+"; TBCD encoded: " + cgiTbcd);
         areaIdParams = setAreaIdParams(areaIdArray, "cellGlobalId");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.cellGlobalId, areaIdParams[0], areaIdParams[1], areaIdParams[2], areaIdParams[3]);
-            System.out.println(areaIdentification);
-            System.out.println("CGI(TBCD) = " + bytesToHex(areaIdentification.getData()));
+            logger.info(areaIdentification);
+            logger.info("CGI(TBCD) = " + bytesToHex(areaIdentification.getData()));
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         CellGlobalIdOrServiceAreaIdFixedLengthImpl sai = new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
@@ -160,17 +162,17 @@ public class TBCDUtil {
         try {
             sai.setData(mcc, mnc, lac, sac); // 05f2910c098115 mcc=502 mnc=19 lac=3081 ci= 33045
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String saiTbcd = setAreaIdTbcd(areaIdArray, "cellGlobalId");
-        System.out.println("SAI = "+saiStr+"; TBCD encoded: " + saiTbcd);
+        logger.info("SAI = "+saiStr+"; TBCD encoded: " + saiTbcd);
         areaIdParams = setAreaIdParams(areaIdArray, "cellGlobalId");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.cellGlobalId, areaIdParams[0], areaIdParams[1], areaIdParams[2], areaIdParams[3]);
-            System.out.println(areaIdentification);
-            System.out.println("SAI(TBCD) = " + bytesToHex(areaIdentification.getData()));
+            logger.info(areaIdentification);
+            logger.info("SAI(TBCD) = " + bytesToHex(areaIdentification.getData()));
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         UTRANCellIdImpl utranCid = new UTRANCellIdImpl();
@@ -180,16 +182,16 @@ public class TBCDUtil {
         try {
             utranCid.setData(mcc, mnc, uci); // 05f2710800ffff mcc=502 mnc=17 uci=134283263
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String uciTbcd = setAreaIdTbcd(areaIdArray, "utranCellId");
-        System.out.println("UCI = "+utranCidStr+"; TBCD encoded: " + uciTbcd);
+        logger.info("UCI = "+utranCidStr+"; TBCD encoded: " + uciTbcd);
         areaIdParams = setAreaIdParams(areaIdArray, "utranCellId");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.utranCellId, areaIdParams[0], areaIdParams[1], -1, areaIdParams[3]);
-            System.out.println(areaIdentification);
+            logger.info(areaIdentification);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         RoutingAreaIdImpl rai = new RoutingAreaIdImpl();
@@ -199,16 +201,16 @@ public class TBCDUtil {
         try {
             rai.setData(mcc, mnc, lac, rac); // 47f8207d05ff mcc=748 mnc=2 lac=32005 rac=24561
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String raiTbcd = setAreaIdTbcd(areaIdArray, "routingAreaId");
-        System.out.println("RAI = "+raiStr+"; TBCD encoded: " + raiTbcd);
+        logger.info("RAI = "+raiStr+"; TBCD encoded: " + raiTbcd);
         areaIdParams = setAreaIdParams(areaIdArray, "routingAreaId");
         try {
             AreaIdentificationImpl areaIdentification = new AreaIdentificationImpl(AreaType.routingAreaId, areaIdParams[0], areaIdParams[1], areaIdParams[2], areaIdParams[3]);
-            System.out.println(areaIdentification);
+            logger.info(areaIdentification);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         TrackingAreaIdImpl tai = new TrackingAreaIdImpl();
@@ -218,10 +220,10 @@ public class TBCDUtil {
         try {
             tai.setData(mcc, mnc, tac); // 05f2810405 mcc=502 mnc=18 tac=1029
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String taiTbcd = setAreaIdTbcd(areaIdArray, "trackingAreaId");
-        System.out.println("TAI = "+taiStr+"; TBCD encoded: " + taiTbcd);
+        logger.info("TAI = "+taiStr+"; TBCD encoded: " + taiTbcd);
 
         //nrTrackingAreaId
         TrackingAreaId5GSImpl tai5g = new TrackingAreaId5GSImpl();
@@ -231,10 +233,10 @@ public class TBCDUtil {
         try {
             tai5g.setData(mcc, mnc, nrtac);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String tai5gTbcd = setAreaIdTbcd(areaIdArray, "nrTrackingAreaId");
-        System.out.println("NR-TAI = "+tai5gStr+"; TBCD encoded: " + tai5gTbcd);
+        logger.info("NR-TAI = "+tai5gStr+"; TBCD encoded: " + tai5gTbcd);
 
         EUTRANCGIImpl ecgi = new EUTRANCGIImpl();
         String ecgiStr = "502-18-811059-103";
@@ -247,10 +249,10 @@ public class TBCDUtil {
             // mcc=502 mnc=18 enbid=811059 ci= 103 (eci=207631207)
 
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String ecgiTbcd = setAreaIdTbcd(areaIdArray, "eUtranCellId");
-        System.out.println("ECGI = "+ecgiStr+"; TBCD encoded: " + ecgiTbcd);
+        logger.info("ECGI = "+ecgiStr+"; TBCD encoded: " + ecgiTbcd);
 
         EUTRANCGIImpl ecgi2 = new EUTRANCGIImpl();
         ecgiStr = "502-19-207631107";
@@ -262,10 +264,10 @@ public class TBCDUtil {
             // ?0x05, 0xf2, 0x11, 0x0c, 0x60, 0x33, 0x03
             // mcc=502 mnc=19 eci=207631107 (enbid=811059 ci= 3)
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String ecgiTbcd2 = setAreaIdTbcd(areaIdArray, "eUtranCellId");
-        System.out.println("ECGI = "+ecgiStr+"; TBCD encoded: " + ecgiTbcd2);
+        logger.info("ECGI = "+ecgiStr+"; TBCD encoded: " + ecgiTbcd2);
 
         NRCellGlobalIdImpl nrCGI = new NRCellGlobalIdImpl();
         // 748-1-7638827009L
@@ -278,75 +280,75 @@ public class TBCDUtil {
         try {
             nrCGI.setData(mcc, mnc, nci);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         String nrCgiTbcd = setAreaIdTbcd(areaIdArray, "NRCellId");
-        System.out.println("NRCGI = "+nrCgiStr+"; TBCD encoded: " + nrCgiTbcd);
+        logger.info("NRCGI = "+nrCgiStr+"; TBCD encoded: " + nrCgiTbcd);
 
 
-        System.out.println("*******************************************************************");
+        logger.info("*******************************************************************");
 
-        System.out.println("PLMNID toString: " + plmnId);
-        System.out.println("PLMNID packet bytes: " + dumpBytes(plmnId.getData()));
-        System.out.println("PLMNID dumpBytesToHexString: " + dumpBytesToHexString(plmnId.getData()));
-        System.out.println("PLMNID bytesToHex: " + bytesToHex(plmnId.getData()));
-        System.out.println("PLMNID bytes size: " + plmnId.getData().length);
+        logger.info("PLMNID toString: " + plmnId);
+        logger.info("PLMNID packet bytes: " + dumpBytes(plmnId.getData()));
+        logger.info("PLMNID dumpBytesToHexString: " + dumpBytesToHexString(plmnId.getData()));
+        logger.info("PLMNID bytesToHex: " + bytesToHex(plmnId.getData()));
+        logger.info("PLMNID bytes size: " + plmnId.getData().length);
 
-        System.out.println("LAI toString: " + lai);
-        System.out.println("LAI packet bytes: " + dumpBytes(lai.getData()));
-        System.out.println("LAI dumpBytesToHexString: " + dumpBytesToHexString(lai.getData()));
-        System.out.println("LAI bytesToHex: " + bytesToHex(lai.getData()));
-        System.out.println("LAI bytes size: " + lai.getData().length);
+        logger.info("LAI toString: " + lai);
+        logger.info("LAI packet bytes: " + dumpBytes(lai.getData()));
+        logger.info("LAI dumpBytesToHexString: " + dumpBytesToHexString(lai.getData()));
+        logger.info("LAI bytesToHex: " + bytesToHex(lai.getData()));
+        logger.info("LAI bytes size: " + lai.getData().length);
 
-        System.out.println("CGI toString: " + cgi);
-        System.out.println("CGI packet bytes: " + dumpBytes(cgi.getData()));
-        System.out.println("CGI dumpBytesToHexString: " + dumpBytesToHexString(cgi.getData()));
-        System.out.println("CGI bytesToHex: " + bytesToHex(cgi.getData()));
-        System.out.println("CGI bytes size: " + cgi.getData().length);
+        logger.info("CGI toString: " + cgi);
+        logger.info("CGI packet bytes: " + dumpBytes(cgi.getData()));
+        logger.info("CGI dumpBytesToHexString: " + dumpBytesToHexString(cgi.getData()));
+        logger.info("CGI bytesToHex: " + bytesToHex(cgi.getData()));
+        logger.info("CGI bytes size: " + cgi.getData().length);
 
-        System.out.println("SAI toString: " + sai);
-        System.out.println("SAI packet bytes: " + dumpBytes(sai.getData()));
-        System.out.println("SAI dumpBytesToHexString: " + dumpBytesToHexString(sai.getData()));
-        System.out.println("SAI bytesToHex: " + bytesToHex(sai.getData()));
-        System.out.println("SAI bytes size: " + sai.getData().length);
+        logger.info("SAI toString: " + sai);
+        logger.info("SAI packet bytes: " + dumpBytes(sai.getData()));
+        logger.info("SAI dumpBytesToHexString: " + dumpBytesToHexString(sai.getData()));
+        logger.info("SAI bytesToHex: " + bytesToHex(sai.getData()));
+        logger.info("SAI bytes size: " + sai.getData().length);
 
-        System.out.println("RAI toString: " + rai);
-        System.out.println("RAI packet bytes: " + dumpBytes(rai.getData()));
-        System.out.println("RAI dumpBytesToHexString: " + dumpBytesToHexString(rai.getData()));
-        System.out.println("RAI bytesToHex: " + bytesToHex(rai.getData()));
-        System.out.println("RAI bytes size: " + rai.getData().length);
+        logger.info("RAI toString: " + rai);
+        logger.info("RAI packet bytes: " + dumpBytes(rai.getData()));
+        logger.info("RAI dumpBytesToHexString: " + dumpBytesToHexString(rai.getData()));
+        logger.info("RAI bytesToHex: " + bytesToHex(rai.getData()));
+        logger.info("RAI bytes size: " + rai.getData().length);
 
-        System.out.println("TAI toString: " + tai);
-        System.out.println("TAI packet bytes: " + dumpBytes(tai.getData()));
-        System.out.println("TAI dumpBytesToHexString: " + dumpBytesToHexString(tai.getData()));
-        System.out.println("TAI bytesToHex: " + bytesToHex(tai.getData()));
-        System.out.println("TAI bytes size: " + tai.getData().length);
+        logger.info("TAI toString: " + tai);
+        logger.info("TAI packet bytes: " + dumpBytes(tai.getData()));
+        logger.info("TAI dumpBytesToHexString: " + dumpBytesToHexString(tai.getData()));
+        logger.info("TAI bytesToHex: " + bytesToHex(tai.getData()));
+        logger.info("TAI bytes size: " + tai.getData().length);
 
-        System.out.println("ECGI (mcc+mnc+eNBId+ci) toString: " + ecgi);
-        System.out.println("ECGI (mcc+mnc+eNBId+ci) packet bytes: " + dumpBytes(ecgi.getData()));
-        System.out.println("ECGI (mcc+mnc+eNBId+ci) dumpBytesToHexString: " + dumpBytesToHexString(ecgi.getData()));
-        System.out.println("ECGI (mcc+mnc+eNBId+ci) bytesToHex: " + bytesToHex(ecgi.getData()));
-        System.out.println("ECGI (mcc+mnc+eNBId+ci) bytes size: " + ecgi.getData().length);
+        logger.info("ECGI (mcc+mnc+eNBId+ci) toString: " + ecgi);
+        logger.info("ECGI (mcc+mnc+eNBId+ci) packet bytes: " + dumpBytes(ecgi.getData()));
+        logger.info("ECGI (mcc+mnc+eNBId+ci) dumpBytesToHexString: " + dumpBytesToHexString(ecgi.getData()));
+        logger.info("ECGI (mcc+mnc+eNBId+ci) bytesToHex: " + bytesToHex(ecgi.getData()));
+        logger.info("ECGI (mcc+mnc+eNBId+ci) bytes size: " + ecgi.getData().length);
 
-        System.out.println("ECGI (mcc+mnc+eci) toString: " + ecgi2);
-        System.out.println("ECGI (mcc+mnc+eci) packet bytes: " + dumpBytes(ecgi2.getData()));
-        System.out.println("ECGI (mcc+mnc+eci) dumpBytesToHexString: " + dumpBytesToHexString(ecgi2.getData()));
-        System.out.println("ECGI (mcc+mnc+eci) bytesToHex: " + bytesToHex(ecgi2.getData()));
-        System.out.println("ECGI (mcc+mnc+eci) bytes size: " + ecgi2.getData().length);
+        logger.info("ECGI (mcc+mnc+eci) toString: " + ecgi2);
+        logger.info("ECGI (mcc+mnc+eci) packet bytes: " + dumpBytes(ecgi2.getData()));
+        logger.info("ECGI (mcc+mnc+eci) dumpBytesToHexString: " + dumpBytesToHexString(ecgi2.getData()));
+        logger.info("ECGI (mcc+mnc+eci) bytesToHex: " + bytesToHex(ecgi2.getData()));
+        logger.info("ECGI (mcc+mnc+eci) bytes size: " + ecgi2.getData().length);
 
-        System.out.println("NR-TAI (mcc+mnc+tac) toString: " + tai5g);
-        System.out.println("NR-TAI MCC=: "+tai5g.getMCC()+", MNC=" +tai5g.getMNC()+", TAC="+tai5g.get5GSTAC());
-        System.out.println("NR-TAI (mcc+mnc+tac) packet bytes: " + dumpBytes(tai5g.getData()));
-        System.out.println("NR-TAI (mcc+mnc+tac) dumpBytesToHexString: " + dumpBytesToHexString(tai5g.getData()));
-        System.out.println("NR-TAI (mcc+mnc+tac) bytesToHex: " + bytesToHex(tai5g.getData()));
-        System.out.println("NR-TAI (mcc+mnc+tac) bytes size: " + tai5g.getData().length);
+        logger.info("NR-TAI (mcc+mnc+tac) toString: " + tai5g);
+        logger.info("NR-TAI MCC=: "+tai5g.getMCC()+", MNC=" +tai5g.getMNC()+", TAC="+tai5g.get5GSTAC());
+        logger.info("NR-TAI (mcc+mnc+tac) packet bytes: " + dumpBytes(tai5g.getData()));
+        logger.info("NR-TAI (mcc+mnc+tac) dumpBytesToHexString: " + dumpBytesToHexString(tai5g.getData()));
+        logger.info("NR-TAI (mcc+mnc+tac) bytesToHex: " + bytesToHex(tai5g.getData()));
+        logger.info("NR-TAI (mcc+mnc+tac) bytes size: " + tai5g.getData().length);
 
-        System.out.println("NR CGI (mcc+mnc+nci) toString: " + nrCGI);
-        System.out.println("NR CGI MCC=: "+nrCGI.getMCC()+", MNC=" +nrCGI.getMNC()+", NCI="+nrCGI.getNCI());
-        System.out.println("NR CGI (mcc+mnc+nci) packet bytes: " + dumpBytes(nrCGI.getData()));
-        System.out.println("NR CGI (mcc+mnc+nci) dumpBytesToHexString: " + dumpBytesToHexString(nrCGI.getData()));
-        System.out.println("NR CGI (mcc+mnc+nci) bytesToHex: " + bytesToHex(nrCGI.getData()));
-        System.out.println("NR CGI (mcc+mnc+nci) bytes size: " + nrCGI.getData().length);
+        logger.info("NR CGI (mcc+mnc+nci) toString: " + nrCGI);
+        logger.info("NR CGI MCC=: "+nrCGI.getMCC()+", MNC=" +nrCGI.getMNC()+", NCI="+nrCGI.getNCI());
+        logger.info("NR CGI (mcc+mnc+nci) packet bytes: " + dumpBytes(nrCGI.getData()));
+        logger.info("NR CGI (mcc+mnc+nci) dumpBytesToHexString: " + dumpBytesToHexString(nrCGI.getData()));
+        logger.info("NR CGI (mcc+mnc+nci) bytesToHex: " + bytesToHex(nrCGI.getData()));
+        logger.info("NR CGI (mcc+mnc+nci) bytes size: " + nrCGI.getData().length);
 
         nrCgiStr = generateNrCgiValue();
         try {
@@ -363,27 +365,27 @@ public class TBCDUtil {
                 nciStr = nrCgiStr.substring(5);
                 nci = Long.parseLong(nrCgiStr.substring(5), 16);
             }
-            System.out.println("NR CGI (2nd value) from String MCC="+mcc+", MNC="+mnc+", NCI string="+nciStr+", value="+nci);
+            logger.info("NR CGI (2nd value) from String MCC="+mcc+", MNC="+mnc+", NCI string="+nciStr+", value="+nci);
             NRCellGlobalIdImpl nrCgi = new NRCellGlobalIdImpl();
             nrCgi.setData(mcc, mnc, nci);
             byte[] nrCgiBytes = nrCgi.getData();
             NRCellGlobalId nrCellGlobalId = decodeNRCGIBytes(nrCgiBytes);
-            System.out.println("NR CGI (2nd value) from NRCellGlobalIdImpl: "+nrCellGlobalId);
+            logger.info("NR CGI (2nd value) from NRCellGlobalIdImpl: "+nrCellGlobalId);
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
 
         DateTime start = DateTime.now();
-        System.out.println("START: " + start);
+        logger.info("START: " + start);
         try {
             Thread.sleep(500);
             DateTime stop = DateTime.now();
-            System.out.println("STOP: " + stop);
+            logger.info("STOP: " + stop);
             long duration = stop.getMillis() - start.getMillis();
-            System.out.println("Duration: " + duration);
+            logger.info("Duration: " + duration);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -393,7 +395,7 @@ public class TBCDUtil {
     public static String toTBCDString(byte[] tbcd) {
 
         int size = (tbcd == null ? 0 : tbcd.length);
-        StringBuffer buffer = new StringBuffer(2*size);
+        StringBuilder buffer = new StringBuilder(2*size);
         for (int i=0; i<size; ++i) {
             int octet = tbcd[i];
             int n2 = (octet >> 4) & 0xF;

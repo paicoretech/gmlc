@@ -3,6 +3,7 @@ package org.mobicents.gmlc.slee.primitives;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -17,6 +18,8 @@ import java.io.IOException;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class TrackingAreaIdImpl extends OctetStringBase implements TrackingAreaId {
+
+  private static final Logger logger = Logger.getLogger(TrackingAreaIdImpl.class.getName());
 
   private static final String MCC = "mcc";
   private static final String MNC = "mnc";
@@ -154,7 +157,7 @@ public class TrackingAreaIdImpl extends OctetStringBase implements TrackingAreaI
       tac = this.getTAC();
       correctData = true;
     } catch (MAPException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
 
     StringBuilder sb = new StringBuilder();

@@ -51,14 +51,13 @@ public class CivicAddressElements {
      *        <xs:anyAttribute namespace="##any" processContents="lax"/>
      *      </xs:complexType>
      *    </xs:schema>
-
      *  Civic Address Extensions
      *  XML Schema
      *  <?xml version="1.0"?>
      *  <xs:schema
      *    targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext"
      *    xmlns:ca="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr"
-     *    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     *    xmlns:xs="<a href="http://www.w3.org/2001/XMLSchema">...</a>"
      *    xmlns:cae="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext"
      *    xmlns:xml="http://www.w3.org/XML/1998/namespace"
      *    elementFormDefault="qualified" attributeFormDefault="unqualified">

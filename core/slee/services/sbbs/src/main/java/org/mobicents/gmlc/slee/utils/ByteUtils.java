@@ -2,6 +2,7 @@ package org.mobicents.gmlc.slee.utils;
 
 import com.objsys.asn1j.runtime.Asn1Integer;
 import com.objsys.asn1j.runtime.Asn1PerEncodeBuffer;
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.supl.SUPL_INIT.SUPLINIT;
 import org.mobicents.gmlc.slee.supl.ULP.ULP_PDU;
 
@@ -15,6 +16,8 @@ import java.util.Random;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ByteUtils {
+
+    private static final Logger logger = Logger.getLogger(ByteUtils.class.getName());
 
     public static String byteToHex(byte num) {
         char[] hexDigits = new char[2];
@@ -49,7 +52,7 @@ public class ByteUtils {
         if ( buffer == null ) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte b : buffer) {
             sb.append("0x").append((char) (HEX_CHAR[(b & 0x00F0) >> 4])).append((char) (HEX_CHAR[b & 0x000F])).append(" ");
         }
@@ -60,7 +63,7 @@ public class ByteUtils {
         if ( buffer == null ) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte b : buffer) {
             sb.append((char) (HEX_CHAR[(b & 0x00F0) >> 4])).append((char) (HEX_CHAR[b & 0x000F]));
         }
@@ -88,7 +91,7 @@ public class ByteUtils {
             int i = x / 8;
             int j = x % 8;
             value = (b[i] >> j) & 1;
-            System.out.print(value);
+            logger.info(value);
             intArray[index] = value;
             x--;
             index--;
@@ -118,7 +121,7 @@ public class ByteUtils {
     }
 
     public static String encodeHexString(byte[] byteArray) {
-        StringBuffer hexStringBuffer = new StringBuffer();
+        StringBuilder hexStringBuffer = new StringBuilder();
         for (byte b : byteArray) {
             hexStringBuffer.append(byteToHex(b));
         }
@@ -223,7 +226,7 @@ public class ByteUtils {
             buffer.putShort((short) outputStream.getBuffer().length);
             return buffer.array();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return null;
     }
@@ -238,7 +241,7 @@ public class ByteUtils {
             buffer.putShort((short) outputStream.getBuffer().length);
             return buffer.array();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return null;
     }

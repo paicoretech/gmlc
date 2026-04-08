@@ -33,19 +33,19 @@ public class GmlcService implements Service<GmlcService> {
     return ServiceName.of("restcomm", "gmlc-service");
   }
 
-  private final InjectedValue<SS7ServiceInterface> ss7Service = new InjectedValue<SS7ServiceInterface>();
+  private final InjectedValue<SS7ServiceInterface> ss7Service = new InjectedValue<>();
 
   public InjectedValue<SS7ServiceInterface> getSS7Service() {
     return ss7Service;
   }
 
-  private final InjectedValue<PathManager> pathManagerInjector = new InjectedValue<PathManager>();
+  private final InjectedValue<PathManager> pathManagerInjector = new InjectedValue<>();
 
   public InjectedValue<PathManager> getPathManagerInjector() {
     return pathManagerInjector;
   }
 
-  private final InjectedValue<MBeanServer> mbeanServer = new InjectedValue<MBeanServer>();
+  private final InjectedValue<MBeanServer> mbeanServer = new InjectedValue<>();
 
   public InjectedValue<MBeanServer> getMbeanServer() {
     return mbeanServer;

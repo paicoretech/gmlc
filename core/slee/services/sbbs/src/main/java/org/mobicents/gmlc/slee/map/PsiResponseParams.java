@@ -19,11 +19,15 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TimeZone;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class PsiResponseParams {
+
+    private final Logger logger = LoggerFactory.getLogger(PsiResponseParams.class.getName());
 
     /**
      * ProvideSubscriberInfoArg ::= SEQUENCE {
@@ -190,7 +194,7 @@ public class PsiResponseParams {
                 }
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -249,7 +253,7 @@ public class PsiResponseParams {
                 setUncertainty(locationInformationGPRS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -356,7 +360,7 @@ public class PsiResponseParams {
                 setUncertainty(locationInformationEPS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -417,7 +421,7 @@ public class PsiResponseParams {
                 setUncertainty(locationInformation5GS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

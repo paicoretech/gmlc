@@ -6,7 +6,7 @@
 
 *msisdn*: [numeric]
 
-*operation*: [string]
+*imsi*: [numeric]
 
 *token*: [string]
 
@@ -30,9 +30,9 @@
 
 ==== Parameters description
 
-*msisdn*: ITU-T E.164 digits of the target subscriber.
+*msisdn*: ITU-T E.164 digits of the target subscriber. f absent, then the `imsi` must be present.
 
-*operation*: MAP or Diameter operation for this request. In this case, the only valid option is `ATI` (case-insensitive).
+*imsi*: E.212 value (IMSI) of the target subscriber. If absent, then the `msisdn` must be present.
 
 *token*: cURL request token. This value must match the one configured as _curltoken_ at the _GmlcManagement_gmlcproperties.xml_ file or the _token_ at the MongoDB database within the _curl-account_ collection.
 
@@ -56,17 +56,13 @@
 
 
 
-== API parameters for MAP SRILCS ans MAP PSL requests
-
-== API parameters for MAP SRISM - PSI
+== API parameters for MAP SRILCS and MAP PSL requests
 
 === Mandatory and conditional parameters
 
 *msisdn*: [numeric]
 
 *imsi*: [numeric]
-
-*operation*: [string]
 
 *lcsLocationType*: [string]
 
@@ -136,8 +132,6 @@
 
 *imsi*: E.212 value (IMSI) of the target subscriber. If absent, then the `msisdn` must be present.
 
-*operation*: MAP or Diameter operation for this request. In this case, the only valid option is *PSL* (case-insensitive).
-
 *token*: cURL request token. This value must match the one configured as _curltoken_ at the _GmlcManagement_gmlcproperties.xml_ file or the _token_ at the MongoDB database within the _curl-account_ collection.
 
 *lcsLocationType*: indication of the type of location request required. Possible values are `currentLocation`, `currentOrLastKnownLocation`, `initialLocation`, `activateDeferredLocation`, `cancelDeferredLocation` or `notificationVerificationOnly`.
@@ -164,9 +158,9 @@
 
 *lcsPriority*: indication of the location request prioritization. Accepted values are `highestPriority` or `normalPriority`.
 
-*horizontalAccuracy*: requested horizontal location accuracy. Must be an integer value from 0 to 127, governed by the equation r=C((1+x)^k -1) with C = 10 and x = 0,1. With 0 <= K <= 127, a suitably useful range between 0 and 1800 kilometres. The horizontal location error should be less than the error indicated by the uncertainty code (r) with 67% confidence.
+*horizontalAccuracy*: requested horizontal location accuracy. Must be an integer value from 0 to 127, governed by the equation _r=C((1+x)^k -1)_ with _C=10_ and _x=0,1_. With _0<=K<=127_, a suitably useful range between 0 and 1800 kilometres. The horizontal location error should be less than the error indicated by the uncertainty code (r) with 67% confidence.
 
-*verticalAccuracy*: requested vertical location accuracy. Must be an integer value from 0 to 127, governed by the equation h=C((1+x)^k -1), with C = 45 and x = 0,025. With 0 <= K <= 127, a suitably useful range between 0 and 990.5 kilometres. The horizontal location error should be less than the error indicated by the uncertainty code (h) with 67% confidence.
+*verticalAccuracy*: requested vertical location accuracy. Must be an integer value from 0 to 127, governed by the equation _h=C((1+x)^k -1)_, with _C=45_ and _x=0,025_. With _0<=K<= 127_, a suitably useful range between 0 and 990.5 kilometres. The horizontal location error should be less than the error indicated by the uncertainty code (h) with 67% confidence.
 
 *verticalCoordinateRequest*: indication if the vertical coordinate is requested. Accepted values are `false` (default) or `true`.
 
@@ -210,13 +204,9 @@
 
 *imsi*: [numeric]
 
-*operation*: [string]
-
 *token*: [string]
 
 *clientReferenceNumber*: [numeric]
-
-*lcsReferenceNumber*: [numeric]
 
 *lcsLocationType*: [numeric]
 
@@ -320,11 +310,7 @@
 
 *imsi*: ITU-T E.212 digits (IMSI) of the target subscriber. If absent, then the _msisdn_ parameter must be present.
 
-*operation*: MAP or Diameter operation for this request. In this case, the only valid option is *PLR* (case-insensitive).
-
 *token*: cURL request token. This value must match the one configured as _curltoken_ at the _GmlcManagement_gmlcproperties.xml_ file or the _token_ at the MongoDB database within the _curl-account_ collection.
-
-*lcsReferenceNumber*: correlation reference number between a request and a response of a deferred Mobile Terminating Location Request procedure (MT-LR) sent by the GMLC to the core network destination entity (MME or SGSN)
 
 *lcsLocationType*: indicates the type of location request. It can take the following integer values: `0` (current location), `1` (current or last known location), `2` (initial location), `3` (active deferred location), `4` (cancel deferred location), `5` (notification verification only).
 
@@ -346,7 +332,7 @@
 
 *responseTime*: indication of the urgency of the location request. Accepted values are `0` (low delay) or `1` (delay tolerant).
 
-*lcsRequestorId*: contains the identification of the requestor,  an UTF8 string consistent with its format indicator.
+*lcsRequestorId*: contains the identification of the requestor, an UTF8 string consistent with its format indicator.
 
 *lcsRequestorFormatIndicator*: contains the format of the LCS Requestor Id. It can be one of the following integer values: `0` (logical name), `1` (email address), `2` (MSISDN), `3` (URL), `4`(SIP URL).
 
@@ -426,8 +412,6 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
 
 *msisdn*: [numeric]
 
-*operation*: [string]
-
 *token*: [string]
 
 === Optional parameters
@@ -449,8 +433,6 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
 ==== Parameters description
 
 *msisdn*: the E.164 number of the target subscriber.
-
-*operation*: MAP or Diameter operation for this request. In this case, the only valid option is *UDR* (case-insensitive).
 
 *token*: cURL request token. This value must match the one configured as _curltoken_ at the _GmlcManagement_gmlcproperties.xml_ file or the _token_ at the MongoDB database within the _curl-account_ collection.
 
@@ -482,7 +464,7 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
 
 *network*: possible values are `GSM/UMTS`, `IMS` or `LTE` (informative only).
 
-*protocol*: possible values are `MAP`, `UMTS`, `Diameter SLh-SLg(ELP)` or `Diameter Sh` (informative only).
+*protocol*: possible values are `MAP`, `Diameter SLh-SLg(ELP)` or `Diameter Sh` (informative only).
 
 *operation*: possible values are `ATI`, `PSI`, `SRILCS-PSL` `SLR`, `RIR/RIA PLR/PLA`, `LRR`, `UDR/UDA`, `SRI`, `SRISM` or `SRILCS`.
 
@@ -530,6 +512,34 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
 
 === SS7 MAP SRI, SRISM and SRILCS response parameters description
 
+*msisdn*: ITU-T E.164 number of the subscriber.
+
+*imsi*: ITU-T E.212 number (IMSI) of the subscriber.
+
+*LCSLocationInfo*: an array containing serving and eventually additional serving node related information (only applicable to *SRILCS*) which shall contain some of the following parameters: `networkNodeNumber`, `lmsi`, `gprsNodeIndicator`, `additionalNetworkNodeNumber`, `SupportedLCSCapabilitySets`, `AdditionalLCSCapabilitySets`, `mmeName`, `3GPPAAAServerName`, `sgsnName`, `sgsnRealm`.
+
+*networkNodeNumber*: `Global Title (E.164) digits of the network node that sends the report.
+
+*lmsi*: if present, it contains the `temporary identification` that is assigned to a visiting MS/UE for security, allocated by the VLR upon location updates and sent to the HLR/HSS along with the IMSI.
+
+*gprsNodeIndicator*: if present, it contains the `GPRS Node Indicator`, which reveals if the value provided in the networkNodeNumber parameter corresponds to an SGSN or not. Possible values are `true` or `false`.
+
+*additionalNetworkNodeNumber*: if present, it contains the Global Title digits of the network entity at which the target subscriber may also be attached to. It must be a different entity than the `Network Node Number`, for example, if the latter is the VLR, the `Additional Network Node Number` may be the SGSN.
+
+*SupportedLCSCapabilitySets*: LCS capability sets as per 3GPP specification releases. If present, it shall contain the following array parameters:
+
+*release98_99*: possible values are `true` or `false`.
+
+*release4*: possible values are `true` or `false`.
+
+*release5*: possible values are `true` or `false`.
+
+*release6*: possible values are `true` or `false`.
+
+*release7*: possible values are `true` or `false`.
+
+*AdditionalLCSCapabilitySets*: Additional LCS capability sets as per 3GPP specification releases. If present, it shall contain the same parameters as _SupportedLCSCapabilitySets_.
+
 *mmeName*: if present, it comprises a string which contains the LTE EPC MME node's host name (MME-Name) in a format consistent with the Network Access Identifier (NAI) specification.
 
 *3GPPAAAServerName*: if present, it comprises a string which contains the 3GPP AAA Server name in a format consistent with the Network Access Identifier (NAI) specification.
@@ -546,8 +556,6 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
 
 *addVGmlcAddress*: if present, it contains the Additional-GMLC IP address residing at the visited (V-PLMN).
 
-*mnpStatus*: if present, it contains the Mobile Number Portability status. Possible values are: `notKnownToBePorted`, `ownNumberPortedOut`, `foreignNumberPortedToForeignNetwork`, `ownNumberNotPortedOut` or `foreignNumberPortedIn`.
-
 *SRILCS*: SS7 MAP SRILCS response. If present, an array that might contain some of the preceding parameters:
 
 `SRILCS` example:
@@ -559,10 +567,30 @@ Possible values are:  `0` (ellipsoidPoint), `1` (ellipsoidPointWithUncertaintyCi
     "msisdn": 59899077937,
     "imsi": 748026871012345,
     "lmsi": "7213917157",
+    "LCSLocationInfo": {
+      "networkNodeNumber": 59899180071,
+      "gprsNodeIndicator": false,
+      "lmsi": "71ffacce",
+      "additionalNetworkNodeNumber": 61000030215,
+      "sgsnName": "sgsn19.mnc02.mcc748.gprs",
+      "sgsnRealm": "mnc02.mcc748.gprs",
+      "SupportedLCSCapabilitySets": {
+        "release98_99": true,
+        "release4": true,
+        "release5": true,
+        "release6": false,
+        "release7": false
+      },
+      "AdditionalLCSCapabilitySets": {
+        "release98_99": true,
+        "release4": true,
+        "release5": true,
+        "release6": true,
+        "release7": false
+      }
+    },
     "networkNodeNumber": 5982123007,
     "gprsNodeIndicator": false,
-    "mmeName": "mmec03.mmeer3000.mme.epc.mnc002.mcc748.3gppnetwork.org",
-    "3GPPAAAServerName": "aaa04.aaa3000.aaa.epc.mnc002.mcc748.3gppnetwork.org",
     "hGmlcAddress": "191.32.101.7",
     "vGmlcAddress": "200.10.21.34",
     "pprAddress": "191.32.102.17",
@@ -911,6 +939,20 @@ Example of `CSLocationInformation`:
 
 *currentLocationRetrieved*: same as explained before for _CSLocationInformation_.
 
+*VisitedPLMNId*: identiication of the Visited Public Land Mobile Network, an array composed of following parameters:
+
+*mcc*: the Mobile Country Code (MCC) of the V-PLMN.
+
+*mnc*: the Mobile Network Code (MNC) of the V-PLMN.
+
+LocalTimeZone: time zone at the location of the target subscriber, an array composed of the following parameters:
+
+*timeZone*: time zone defined by the standard offset from Coordinated Universal Time (UTC).
+
+*daylightSavingTime*: daylight saving time in shift units.
+
+*ratType*: RAT type. Possible values for MAP ATI or PSI are: `utran`, `geran`, `gan`, `iHspaEvolution`, `eUtran` or `nbIoT`. Possible value for Diameter Sh UDA are: `WLAN`, `VIRTUAL`, `UTRAN`,`GERAN`,`GAN`,`HSPA_EVOLUTION`,`EUTRAN`,`EUTRAN-NB-IoT`,`NR`,`LTE-M`,`CDMA2000_1X`,`HRPD`,`UMB` or `EHRPD`.
+
 Example of `EPSLocationInformation`:
 
 [source,json]
@@ -937,7 +979,7 @@ Example of `EPSLocationInformation`:
     },
     "ageOfLocationInformation": 0,
     "currentLocationRetrieved": true,
-    "mmeName": "mmec03.mmegi3000.mme.epc.mnc002.mcc748.3gppnetwork.org"
+    "mmeName": "mmec03.mmegi3000.mme.epc.mnc01.mcc748.3gppnetwork.org"
   }
 }
 ----
@@ -967,6 +1009,12 @@ Example of `EPSLocationInformation`:
 *currentLocationRetrieved*: same as explained before for _CSLocationInformation_.
 
 *sgsnNumber*: if present, it contains the SGSN Global Title (E.164) digits at which the target subscriber is attached to.
+
+*VisitedPLMNId*: same as explained previously for `EPSLocationInformation`.
+
+LocalTimeZone: same as explained previously for `EPSLocationInformation`.
+
+*ratType*: same as explained previously for `EPSLocationInformation`.
 
 Example of `PSLocationInformation`:
 
@@ -998,6 +1046,7 @@ Example of `PSLocationInformation`:
         "uncertainty": 0.0
     },
     "ageOfLocationInformation": 2,
+    "currentLocationRetrieved": false,
     "sgsnNumber": 598992000089
   }
 }
@@ -1040,6 +1089,10 @@ Example of `PSLocationInformation`:
 *mcc*: Mobile Country Code.
 
 *mnc*: Mobile Country Code.
+
+*VisitedPLMNId*: same as explained previously for `EPSLocationInformation`.
+
+LocalTimeZone: same as explained previously for `EPSLocationInformation`.
 
 *Used-RAT-Type*: if present, it shall contain the Radio Access Technology (RAT) type used by the target subscriber. It shall contain the following parameter:
 
@@ -1088,7 +1141,7 @@ Example of `5GSLocationInformation`:
         "mnc": 1
     },
     "Used-RAT-Type": {
-        "RAT": "eUtran"
+        "ratType": "eUtran"
     }
   }
 }
@@ -1100,7 +1153,7 @@ Example of `5GSLocationInformation`:
 
 *MNPInfoResult*: Mobile Number Portability Info Result retrieved either by SS7 MAP ATI or PSI. If present, it may contain the following parameters:
 
-*mnpStatus*: Mobile Number Portability status. Possible values are: `notKnownToBePorted`, `ownNumberPortedOut`, `foreignNumberPortedToForeignNetwork`, `ownNumberNotPortedOut` or `foreignNumberPortedIn`.
+*mnpStatus*: if present, it contains the Mobile Number Portability status. Possible values are: `notKnownToBePorted`, `ownNumberPortedOut`, `foreignNumberPortedToForeignNetwork`, `ownNumberNotPortedOut` or `foreignNumberPortedIn`.
 
 *mnpMsisdn*: Mobile Number Portability MSISDN digits.
 
@@ -1144,7 +1197,6 @@ Example of `5GSLocationInformation`:
 *second*: second of the last activity time of the target subscriber's user equipment.
 
 *LastRATType*: f present, it shall contain the last Radio Access Technology (RAT) type used by the target subscriber. Possible value are: `utran`, `geran`, `gan`, `iHspaEvolution`, `eUtran` or `nbIoT`.
-
 
 
 == SS7 MAP PSL Response parameters
@@ -1339,6 +1391,10 @@ Example of `5GSLocationInformation`:
 
 === SS7 MAP PSL Response parameters description
 
+*clientReferenceNumber*: a reference number with significance only for the GMLC client.
+
+*lcsReferenceNumber*: reference number assigned for deferred location reports to be sent back to the GMLC as a response of a deferred Mobile Terminating Location Request procedure (MT-LR) sent in the MAP PSL request.
+
 *PSL*: SS7 MAP Provide Subscriber Location response. It shall contain an estimate of the location of the UE in universal coordinates. If present, it may contain the following parameters:
 
 *LocationEstimate*: if present, might contain the following parameters (being their presence determined by the type of shape):
@@ -1529,11 +1585,11 @@ Example of `5GSLocationInformation`:
 
 *VelocityEstimate*: if present, might contain the following parameters:
 
-*horizontalSpeed*: the horizontal speed gives the magnitude of the horizontal component of the velocity of the target entity.
+*horizontalSpeed*: magnitude of the horizontal component of the velocity of the target entity (in kilometres per hour).
 
 *bearing*: provides the direction of the horizontal component of velocity taken clockwise from North.
 
-*verticalSpeed*: vertical component of the velocity of the target entity.
+*verticalSpeed*: magnitude of the vertical component of the velocity of the target entity (in kilometres per hour).
 
 *uncertaintyHorizontalSpeed*: uncertainty of the horizontal speed.
 
@@ -1556,7 +1612,7 @@ Example of `5GSLocationInformation`:
 }
 ----
 
-*moLrShortCircuitIndicator*: indicates that the Mobile Originate Location Report (MO-LR) short circuit feature is accepted by the MS/UE. Possible values are `true` or `false`.
+*moLrShortCircuitIndicator*: indicates that the Mobile Originate Location Request (MO-LR) Short Circuit feature is accepted by the MS/UE, used to provide a location estimate directly from the UE to the serving SGSN or MSC using a Mobile-Based positioning method (e.g. GPS) according to the requested LCS-QoS and that is not obtained or verified by the RAN. Possible values are `true` or `false`.
 
 *GeranGANSSPositioningData*: if present, it lists the positioning data set associated with a successful or unsuccessful location attempt for a target MS using Galileo and Additional Navigation Satellite Systems (GANSS) under GERAN coverage. It constitutes an array of positioning data sets, with each item containing the method, GANSS Identifier (_ganssId_) and usage. The possible values for the _method_ parameter are: `MS-Based`, `MS-Assisted`, `Conventional` and `Reserved`. The possible values for the _ganssId_ parameter are: `Galileo`, `SBAS` (Satellite Based Augmentation Systems), `Modernized GPS`, `QZSS` (Quasi Zenith Satellite System), `GLONASS` and `BDS`. The possible values for the _usage_ parameter are the same ones as the ones defined for _GeranPositioningData_.
 
@@ -2062,7 +2118,7 @@ Possible values are: `0` (LOGICAL_NAME), `1` (EMAIL_ADDRESS), `2` (MSISDN), `3` 
 }
 ----
 
-*LCSLocationInfo*: it shall contain the following parameters:
+*LCSLocationInfo*: an array containing serving and eventually additional serving node related information which shall contain some of the following parameters:
 
 *networkNodeNumber*: `Global Title (E.164) digits of the network node that sends the report.
 
@@ -2100,24 +2156,24 @@ Possible values are: `0` (LOGICAL_NAME), `1` (EMAIL_ADDRESS), `2` (MSISDN), `3` 
 {
   "LCSLocationInfo" : {
     "networkNodeNumber" : 59899180071,
-    "gprsNodeIndicator" : true,
+    "gprsNodeIndicator" : false,
     "lmsi" : "7202e98c",
     "additionalNetworkNodeNumber" : 598992000077,
-    "sgsnName": "sgsn01.sgsnci2500.sgsn.gprs.mnc002.mcc748.3gppnetwork.org",
-    "sgsnRealm": "gprs.mnc002.mcc748.3gppnetwork.org",
+    "sgsnName": "sgsn01.mnc102.mcc748.gprs",
+    "sgsnRealm": "mnc102.mcc748.gprs",
     "SupportedLCSCapabilitySets" : {
         "release98_99" : true,
         "release4" : true,
         "release5" : true,
         "release6" : true,
         "release7" : false
-  },
-  "AdditionalLCSCapabilitySets" : {
-    "release98_99" : true,
-    "release4" : true,
-    "release5" : true,
-    "release6" : true,
-    "release7" : true
+    },
+    "AdditionalLCSCapabilitySets" : {
+        "release98_99" : true,
+        "release4" : true,
+        "release5" : true,
+        "release6" : true,
+        "release7" : true
     }
   }
 }
@@ -2154,31 +2210,34 @@ Possible values are: `0` (LOGICAL_NAME), `1` (EMAIL_ADDRESS), `2` (MSISDN), `3` 
 
 *AdditionalLocationEstimate*: same as explained previously for _PSL_ operation.
 
-*DeferredMTLRData*: data obtained for deferred Mobile-Terminated Location-Reports, if and only if _lcsEvent_=`DEFERRED_MT_LR_RESPONSE`. If not nul, it might contain the following parameters:
+*DeferredMTLRData*: data obtained for deferred Mobile-Terminated Location Requests, if and only if _lcsEvent_=`DEFERRED_MT_LR_RESPONSE`. This parameter is used to report the deferred location event type, the location information and reason why the serving node aborted monitoring the event to the GMLC. The termination cause mt-lrRestart shall be used to trigger the GMLC to restart the location procedure in all the cases where the sending node detects that the location procedure cannot be successfully performed anymore by the sending node and that it could be successfully performed by another node. The location information shall be included only if the termination cause is mt-lrRestart. The network node number contained in the location information refers to the node where the MS/UE has moved to and shall be included if available (e.g, the MS/UE has been correctly registered). If present, it might contain the following parameters:
 
 *deferredLocationEventType*: type of event of the deferred MT-LR data. Possible values include those related to area events reports: `UE-AVAILABLE`, `ENTERING_INTO_AREA`, `LEAVING_FROM_AREA` or `BEING_INSIDE_AREA`, periodic location deferred reports: `PERIODIC_LDR`, and motion event reports: `MOTION_EVENT`.
 
 *terminationCause*: refers to the MT-LR termination cause. Possible values are: `NORMAL`, `ERROR_UNDEFINED`, `INTERNAL_TIMEOUT`, `CONGESTION`, `MT_LR_RESTART`, `PRIVACY_VIOLATION`, `SHAPE_OF_LOCATION_ESTIMATE_NOT_SUPPORTED`, `SUBSCRIBER_TERMINATION`, `UE_TERMINATION` or `NETWORK_TERMINATION`.
 
-*ServingNode*: refers to the node where the UE has moved to and shall be included, if available. Should only be present if `terminationCause` equals `MT_LR_RESTART`. If present, it shall contain some of the following array parameters:
+*LCSLocationInfo*: refers to the node where the UE has moved to and shall be included, if available. Should only be present if `terminationCause` equals `MT_LR_RESTART`. If present, it shall contain some of the following array parameters:
+
+*networkNodeNumber*: same as explained previously for _LCSLocationInfo_.
+
+*lmsi*: same as explained previously for _LCSLocationInfo_.
+
+*gprsNodeIndicator*: same as explained previously for _LCSLocationInfo_.
+
+*additionalNetworkNodeNumber*: same as explained previously for _LCSLocationInfo_.
+
+*SupportedLCSCapabilitySets*: same as explained previously for _LCSLocationInfo_.
+
+*AdditionalSupportedLCSCapabilitySets*: same as explained previously for _LCSLocationInfo_.
 
 *mmeName*: same as explained previously for _LCSLocationInfo_.
 
-*mmeRealm*: same as explained previously for _LCSLocationInfo_.
-
-*sgsnNumber*: same as explained previously for _LCSLocationInfo_.
+*3GPPAAAServerName*: same as explained previously for _LCSLocationInfo_.
 
 *sgsnName*: same as explained previously for _LCSLocationInfo_.
 
 *sgsnRealm*: same as explained previously for _LCSLocationInfo_.
 
-*3GPPAAAServerName*: same as explained previously for _LCSLocationInfo_.
-
-*gmlcAddress*: same as explained previously for _LCSLocationInfo_.
-
-*SupportedLCSCapabilitySets*: same as explained previously for _LCSLocationInfo_.
-
-*AdditionalLCSCapabilitySets*: same as explained previously for _LCSLocationInfo_.
 
 `DeferredMTLRData` example:
 [source,json]
@@ -2187,7 +2246,7 @@ Possible values are: `0` (LOGICAL_NAME), `1` (EMAIL_ADDRESS), `2` (MSISDN), `3` 
   "DeferredMTLRData" : {
     "deferredLocationEventType" : "LEAVING_FROM_AREA",
     "terminationCause" : "MT_LR_RESTART",
-    "ServingNode" : {
+    "LCSLocationInfo" : {
       "gprsNodeIndicator" : true,
       "networkNodeNumber" : 59899180071,
       "lmsi" : "7202e7d5",
@@ -2302,7 +2361,7 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 
 *riaFlags*: [numeric]
 
-=== Diameter SLh Routing-Information-Answer (RIA) parameters
+=== Diameter SLh Routing-Information-Answer (RIA) parameters description
 
 *Routing-Info-Answer*: analogous as _SRILCS_ operation but for LTE LCS. if present, might contain the following parameters:
 
@@ -2347,10 +2406,9 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 ----
 {
   "ServingNode": {
-    "mmeName": "dra.simulator",
-    "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+    "mmeName": "mmec03.mmegi3000.mme.epc.mnc123.mcc748.3gppnetwork.org",
+    "mmeRealm": "epc.mnc123.mcc748.3gppnetwork.org",
     "mscNumber": 5989900008,
-    "3GPPAAAServerName": "aaa003",
     "lcsCapabilitySets": "release7",
     "gmlcAddress": "200.123.44.108"
   }
@@ -2365,8 +2423,8 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 {
   "AdditionalServingNode": {
     "sgsnNumber": 5989900023,
-    "sgsnName": "dra.simulator",
-    "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+    "sgsnName": "sgsn01.mnc02.mcc748.gprs",
+    "sgsnRealm": "mnc102.mcc748.gprs",
     "lcsCapabilitySets": "release6",
     "gmlcAddress": "189.0.29.201"
   }
@@ -2381,6 +2439,8 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 == Diameter SLg Provide-Location-Answer (PLA) parameters
 
 *clientReferenceNumber*: [numeric]
+
+*lcsReferenceNumber*: [numeric]
 
 *plrFlags*: [numeric]
 
@@ -2571,6 +2631,8 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 === Diameter SLg Provide-Location-Answer (PLA) parameters description
 
 *clientReferenceNumber*: same as analogous as _PSL_ operation in the CS domain, but using Diameter SLg or Lgd reference points.
+
+*lcsReferenceNumber*: reference number assigned for deferred location reports to be sent back to the GMLC as a response of a deferred Mobile Terminating Location Request procedure (MT-LR) sent in the Diameter PLR.
 
 *Provide-Location-Answer*: analogous as _PSL_ operation in the CS domain, but retrieved from the MME or SGSN via Diameter SLg or Lgd reference points. if present, might contain the following array parameters:
 
@@ -2955,7 +3017,7 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 
 *TargetServingNodeForHandover*: same as explained previously for _Provide-Location-Answer_.
 
-*lrrFlags*: indicates the Unsigned32 value of the LRR-Flags AVP, which contains a bit mask. When Lgd/SLg-Indicator is set (bit 0), it indicates that the LRR request source node is an SGSN or a combined MME/SGSN to which the UE is attached via UTRAN or GERAN). When MO-LR-ShortCircuit-Indicator is set (bit 1), it indicates that the MO-LR short circuit feature is used by the UE for location estimate (applies only when for deferred MT-LR procedure and when the message is sent over Lgd interface). When bit 2 is set (bit 2), it indicates that the UE is requesting to use MO-LR short circuit feature for location estimate (applies only when periodic MO-LR TTTP procedure is initiated by the UE and when the message is sent over Lgd interface).
+*lrrFlags*: indicates the Unsigned32 value of the LRR-Flags AVP, which contains a bit mask. When Lgd/SLg-Indicator is set (bit 0), it indicates that the LRR source node is an SGSN or a combined MME/SGSN to which the UE is attached via UTRAN or GERAN). When MO-LR-ShortCircuit-Indicator is set (bit 1), it indicates that the MO-LR short circuit feature is used by the UE for location estimate (applies only when for deferred MT-LR procedure and when the message is sent over Lgd interface). When bit 2 is set (bit 2), it indicates that the UE is requesting to use MO-LR short circuit feature for location estimate (applies only when periodic MO-LR TTTP procedure is initiated by the UE and when the message is sent over Lgd interface).
 
 *DeferredMTLRData*: almost identical as explained for analogous _MAP SLR_, but with parameters specific for LTE LCS. If present, it might contain the following parameters:
 
@@ -3019,8 +3081,8 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
   "DelayedLocationReportingData" : {
     "terminationCause" : "MT_LR_RESTART",
     "ServingNode" : {
-        "sgsnName" : "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm" : "gprs.mnc019.mcc502.3gppnetwork.org",
+        "sgsnName" : "sgsn19.mnc109.mcc502.gprs",
+        "sgsnRealm" : "mnc100.mcc502.gprs",
         "sgsnNumber" : 5989900024,
         "lcsCapabilitySets" : "release4",
         "gmlcAddress" : "200.123.44.10"
@@ -3040,7 +3102,7 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 *CivicAddress*: same as explained previously for analogous _SLR_ operation in the CS domain, but for LTE LCS.
 
 *amfInstanceId*: if present, it identifies the Access and Mobility Management Function (AMF) ID for LCS Handover to 5GC. It corresponds to the AMF-Instance-Id AVP, which is of type UTF8String and shall be coded as the NfInstanceId according to clause 5.3.2-1, in 3GPP TS 29.571, i.e., a string uniquely identifying a NF instance. The format of the NF Instance ID shall be a Universally Unique Identifier (UUID) version 4, as described in IETF RFC 4122. The String identifying the AMF ID is composed of AMF Region ID (8 bits), AMF Set ID (10 bits) and AMF Pointer (6 bits) as specified in clause 2.10.1 of 3GPP TS 23.003, i.e.,
-<AMF Identifier> = <AMF Region ID><AMF Set ID><AMF Pointer>. It is encoded as a string of 6 hexadecimal characters (i.e., 24 bits). AMF Region ID pattern: '^[A-Fa-f0-9]{6}$', AMF Set ID and AMF Pointer patterns: '^[A-Fa-f0-9]{2}$',
+<AMF Identifier> = <AMF Region ID><AMF Set ID><AMF Pointer>. It is encoded as a string of 6 hexadecimal characters (i.e., 24 bits). AMF Region ID pattern: `^[A-Fa-f0-9]{6}$`, AMF Set ID and AMF Pointer patterns: `^[A-Fa-f0-9]{2}$`,
 
 
 
@@ -3053,91 +3115,91 @@ _weather_ (`13`), _asset and service finding_ (`14`), _gaming_ (`15`), _find you
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/ati
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 137.51.43.204:8180/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 137.51.43.204:8180/restcomm/gmlc/rest/ati
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=8801913414266&operation=ATI&token=n4ndO&domain=ps" -X POST 180.29.0.18:8080/restcomm/gmlc/rest
+curl -d "msisdn=8801913414266&token=n4ndO&domain=ps" -X POST 180.29.0.18:8080/restcomm/gmlc/rest/ati
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfoEps=false" -X POST 192.168.1.38:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfoEps=false" -X POST 192.168.1.38:8080/restcomm/gmlc/rest/ati
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=70198303030&operation=ATI&token=n4ndO&extraRequestedInfo=false" -X POST 180.29.0.18:8080/restcomm/gmlc/rest
+curl -d "msisdn=70198303030&token=n4ndO&extraRequestedInfo=false" -X POST 180.29.0.18:8080/restcomm/gmlc/rest/ati
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&tt=33" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&tt=33" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/ati
 ----
 
 | *MAP SRISM-PSI* a|
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=8801913414266&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 10.0.0.1:8180/restcomm/gmlc/rest
+curl -d "msisdn=8801913414266&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 10.0.0.1:8180/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "&msisdn=59173710072&operation=PSI&token=TWVuZGlvcm96&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "&msisdn=59173710072&token=TWVuZGlvcm96&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 192.168.1.38:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 192.168.1.38:8080/restcomm/gmlc/rest
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=22503006132&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSriSm&domain=cs" -X POST 172.16.0.122:8080/restcomm/gmlc/rest
+curl -d "msisdn=22503006132&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSriSm&domain=cs" -X POST 172.16.0.122:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=TWVuZGlvcm96&tt=63" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=TWVuZGlvcm96&tt=63" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 | *MAP SRI-PSI* a|
 
 [source,shell]
 ----
-curl -d "msisdn=35799324454&operation=PSI&token=n4ndO&psiServiceType=useSri" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799324454&token=n4ndO&psiServiceType=useSri" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799324454&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri" -X POST 10.0.0.21:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799324454&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri" -X POST 10.0.0.21:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=n4ndO&psiServiceType=useSri&domain=cs" -X POST 192.168.0.5:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=n4ndO&psiServiceType=useSri&domain=cs" -X POST 192.168.0.5:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=56984285265&operation=PSI&token=n4ndO&psiServiceType=useSri&domain=ps" -X POST 10.0.0.4:8280/restcomm/gmlc/rest
+curl -d "msisdn=56984285265&token=n4ndO&psiServiceType=useSri&domain=ps" -X POST 10.0.0.4:8280/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799324454&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri&tt=45" -X POST 172.16.0.122:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799324454&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri&tt=45" -X POST 172.16.0.122:8080/restcomm/gmlc/rest/psi
 ----
 
 
@@ -3145,27 +3207,27 @@ curl -d "msisdn=35799324454&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServi
 
 [source,shell]
 ----
-curl -d "msisdn=35799919410&operation=PSI&token=n4ndO&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799919410&token=n4ndO&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799919410&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002" -X POST 172.16.0.221:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799919410&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002" -X POST 172.16.0.221:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799919410&operation=PSI&token=n4ndO&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697004&domain=cs" -X POST 192.168.0.5:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799919410&token=n4ndO&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697004&domain=cs" -X POST 192.168.0.5:8080/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799919410&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697021&domain=ps" -X POST 10.0.0.4:8280/restcomm/gmlc/rest
+curl -d "msisdn=35799919410&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697021&domain=ps" -X POST 10.0.0.4:8280/restcomm/gmlc/rest/psi
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=35799919410&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002&tt=55" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=35799919410&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=280101844109995&psiNnn=3579697002&tt=55" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psi
 ----
 
 
@@ -3173,28 +3235,28 @@ curl -d "msisdn=35799919410&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServi
 
 [source,shell]
 ----
-curl -d "imsi=748026871012340&operation=PSL&lcsClientType=1&lcsClientExternalID=748203910357&lcsClientName=Fer&lcsClientFormatIndicator=0&lcsRequestorId=sip:fer.bloggs@212.123.1.213&lcsRequestorFormatIndicator=4&lcsLocationType=currentOrLastKnownLocation&clientReferenceNumber=30011&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "imsi=748026871012340&lcsClientType=1&lcsClientExternalID=748203910357&lcsClientName=Fer&lcsClientFormatIndicator=0&lcsRequestorId=sip:fer.bloggs@212.123.1.213&lcsRequestorFormatIndicator=4&lcsLocationType=currentOrLastKnownLocation&clientReferenceNumber=30011&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psl
 " -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSL&clientReferenceNumber=15812&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=inside&lcsAreaType=plmnId&lcsAreaId=748-1&lcsAreaEventOccurrenceInfo=multipleTimeEvent&lcsAreaEventIntervalTime=60&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 192.168.1.145:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&clientReferenceNumber=15812&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=inside&lcsAreaType=plmnId&lcsAreaId=748-1&lcsAreaEventOccurrenceInfo=multipleTimeEvent&lcsAreaEventIntervalTime=60&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 192.168.1.145:8080/restcomm/gmlc/rest/psl
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077938&operation=PSL&clientReferenceNumber=21801&lcsClientType=0&lcsClientExternalID=1234567890123456&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=available&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 172.16.0.5:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077938&clientReferenceNumber=21801&lcsClientType=0&lcsClientExternalID=1234567890123456&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=available&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 172.16.0.5:8080/restcomm/gmlc/rest/psl
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077939&operation=PSL&clientReferenceNumber=1592&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=periodicLDR&lcsPeriodicReportingAmount=5&lcsPeriodicReportingInterval=180&lcsPriority=highestPriority&horizontalAccuracy=127&verticalAccuracy=0&verticalCoordinateRequest=true&responseTime=lowdelay&lcsServiceTypeId=1&lcsCodeword=MSC0d3w0rd&token=n4ndO" -X POST 192.168.0.3:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077939&clientReferenceNumber=1592&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=periodicLDR&lcsPeriodicReportingAmount=5&lcsPeriodicReportingInterval=180&lcsPriority=highestPriority&horizontalAccuracy=127&verticalAccuracy=0&verticalCoordinateRequest=true&responseTime=lowdelay&lcsServiceTypeId=1&lcsCodeword=MSC0d3w0rd&token=n4ndO" -X POST 192.168.0.3:8080/restcomm/gmlc/rest/psl
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSL&lcsClientType=3&lcsLocationType=currentLocation&clientReferenceNumber=4003&lcsVisitedPLMNId=748-2&lcsVisitedPLMNIdRAN=1&lcsPeriodicLocationSupportIndicator=1&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&lcsClientType=3&lcsLocationType=currentLocation&clientReferenceNumber=4003&lcsVisitedPLMNId=748-2&lcsVisitedPLMNIdRAN=1&lcsPeriodicLocationSupportIndicator=1&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/psl
 ----
 
 
@@ -3202,64 +3264,64 @@ curl -d "msisdn=59899077937&operation=PSL&lcsClientType=3&lcsLocationType=curren
 
 [source,shell]
 ----
-curl -d "msisdn=573195897489&operation=PLR&clientReferenceNumber=104&lcsLocationType=0&lcsClientName=sip:fer.bloggs@212.123.1.213&lcsClientFormatIndicator=4&lcsClientType=0&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897489&clientReferenceNumber=104&lcsLocationType=0&lcsClientName=sip:fer.bloggs@212.123.1.213&lcsClientFormatIndicator=4&lcsClientType=0&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&clientReferenceNumber=1089&lcsLocationType=1&lcsClientName=fernando.mendioroz@gmail.com&&lcsClientType=1&lcsClientFormatIndicator=1&lcsQoSClass=1&horizontalAccuracy=127&verticalAccuracy=127&verticalCoordinateRequest=1&responseTime=0&token=n4ndO" -X POST 10.0.0.21:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&clientReferenceNumber=1089&lcsLocationType=1&lcsClientName=fernando.mendioroz@gmail.com&&lcsClientType=1&lcsClientFormatIndicator=1&lcsQoSClass=1&horizontalAccuracy=127&verticalAccuracy=127&verticalCoordinateRequest=1&responseTime=0&token=n4ndO" -X POST 10.0.0.21:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077939&operation=PLR&clientReferenceNumber=801&lcsLocationType=3&lcsClientName=Gmlc1&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsDeferredLocationType=1&horizontalAccuracy=127&verticalAccuracy=127&verticalCoordinateRequest=1&responseTime=0&lcsRequestorId=landasan&lcsRequestorFormatIndicator=1&lcsPriority=0&lcsServiceTypeId=0&velocityRequested=1&lcsSupportedGADShapes=255&lcsVisitedPLMNId=748-1&lcsPeriodicLocationSupportIndicator=1&lcsPrioritizedListIndicator=0&lcsCodeword=U3C0d3w0rd&lcsPrivacyCheckNonSession=4&lcsPrivacyCheckSession=0&lcsApn=mnc02.mcc598.gprs&imei=011714004661051&plrFlags=2&token=n4ndO" -X POST 192.168.1.131:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077939&clientReferenceNumber=801&lcsLocationType=3&lcsClientName=Gmlc1&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsDeferredLocationType=1&horizontalAccuracy=127&verticalAccuracy=127&verticalCoordinateRequest=1&responseTime=0&lcsRequestorId=landasan&lcsRequestorFormatIndicator=1&lcsPriority=0&lcsServiceTypeId=0&velocityRequested=1&lcsSupportedGADShapes=255&lcsVisitedPLMNId=748-1&lcsPeriodicLocationSupportIndicator=1&lcsPrioritizedListIndicator=0&lcsCodeword=U3C0d3w0rd&lcsPrivacyCheckNonSession=4&lcsPrivacyCheckSession=0&lcsApn=mnc02.mcc598.gprs&imei=011714004661051&plrFlags=2&token=n4ndO" -X POST 192.168.1.131:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077938&operation=PLR&clientReferenceNumber=912&lcsLocationType=4&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=8&lcsAreaType=4&lcsAreaId=502-19-3081-33045&lcsAreaEventOccurrenceInfo=1&lcsAreaEventIntervalTime=600&lcsAreaEventMaxInterval=86400&lcsAreaEventSamplingInterval=3600&lcsAreaEventReportingDuration=8640000&lcsAreaEventReportLocationReqs=0&lcsAdditionalAreaType=7&lcsAdditionalAreaId=502-18-811059-3&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 172.16.0.201:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077938&clientReferenceNumber=912&lcsLocationType=4&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=8&lcsAreaType=4&lcsAreaId=502-19-3081-33045&lcsAreaEventOccurrenceInfo=1&lcsAreaEventIntervalTime=600&lcsAreaEventMaxInterval=86400&lcsAreaEventSamplingInterval=3600&lcsAreaEventReportingDuration=8640000&lcsAreaEventReportLocationReqs=0&lcsAdditionalAreaType=7&lcsAdditionalAreaId=502-18-811059-3&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 172.16.0.201:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077938&operation=PLR&token=n4ndO&clientReferenceNumber=500&lcsLocationType=3&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsDeferredLocationType=32&lcsMotionEventLinearDistance=10000&lcsMotionEventOccurrenceInfo=1&lcsMotionEventIntervalTime=32767&lcsMotionEventMaxInterval=86400&lcsMotionEventSamplingInterval=3600&lcsMotionEventReportingDuration=8640000&lcsMotionEventReportLocationReqs=2" -X POST 192.168.1.7:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077938&token=n4ndO&clientReferenceNumber=500&lcsLocationType=3&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsDeferredLocationType=32&lcsMotionEventLinearDistance=10000&lcsMotionEventOccurrenceInfo=1&lcsMotionEventIntervalTime=32767&lcsMotionEventMaxInterval=86400&lcsMotionEventSamplingInterval=3600&lcsMotionEventReportingDuration=8640000&lcsMotionEventReportLocationReqs=2" -X POST 192.168.1.7:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&clientReferenceNumber=1094&lcsLocationType=3&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=16&lcsPeriodicReportingAmount=8639999&lcsPeriodicReportingInterval=8639999&token=n4ndO" -X POST 192.168.1.7:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&clientReferenceNumber=1094&lcsLocationType=3&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=16&lcsPeriodicReportingAmount=8639999&lcsPeriodicReportingInterval=8639999&token=n4ndO" -X POST 192.168.1.7:8080/restcomm/gmlc/rest/plr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59899077938&operation=PLR&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=5089&lcsLocationType=1&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsVisitedPLMNId=748-1&lcsPeriodicLocationSupportIndicator=1&lcsPrioritizedListIndicator=1" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077938&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=5089&lcsLocationType=1&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://localhost:8081/api/report&lcsVisitedPLMNId=748-1&lcsPeriodicLocationSupportIndicator=1&lcsPrioritizedListIndicator=1" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/plr
 ----
 
 | *Diameter Sh UDR* a|
 
 [source,shell]
 ----
-curl -d "msisdn=573017706052&operation=UDR&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573017706052&token=n4ndO" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/udr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=Udr&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps&activeLocation=false" -X POST 192.168.0.41:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps&activeLocation=false" -X POST 192.168.0.41:8080/restcomm/gmlc/rest/udr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=60192235901&operation=udr&token=n4ndO&domain=cs&locationInfoEps=false&activeLocation=false" -X POST 192.168.2.18:8080/restcomm/gmlc/rest
+curl -d "msisdn=60192235901&token=n4ndO&domain=cs&locationInfoEps=false&activeLocation=false" -X POST 192.168.2.18:8080/restcomm/gmlc/rest/udr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59897077938&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfo5gs=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59897077938&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfo5gs=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/udr
 ----
 
 [source,shell]
 ----
-curl -d "msisdn=59897077938&operation=UDR&token=n4ndO&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59897077938&token=n4ndO&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest/udr
 ----
 
 |=======================================================================

@@ -27,7 +27,8 @@ public class MLPLocationRequest {
   ReportingService reportingService;
   Boolean psiService = false;
   String psiServiceType;
-  String operation = null, curlToken = null, msisdn = null, imsi = null, locationInfoEps = null, atiExtraRequestedInfo = null, domain = null;
+  String operation = null, curlToken = null, msisdn = null, imsi = null, imei = null,
+      locationInfoEps = null, atiExtraRequestedInfo = null, domain = null;
   LCSClientType lcsClientType = null;
   String lcsClientName, lcsRequestorId, lcsClientExternalId, lcsClientInternalId;
   String slpClientId, slpClientPwd, slpClientSessionId, slpClientServiceId, slpClientRequestModeType,
@@ -113,6 +114,10 @@ public class MLPLocationRequest {
 
   public String getImsi() {
     return imsi;
+  }
+
+  public String getImei() {
+    return imei;
   }
 
   public String getLocationInfoEps() {
@@ -337,6 +342,10 @@ public class MLPLocationRequest {
 
   public void setImsi(String imsi) {
     this.imsi = imsi;
+  }
+
+  public void setImei(String imei) {
+    this.imei = imei;
   }
 
   public void setLocationInfoEps(String locationInfoEps) {

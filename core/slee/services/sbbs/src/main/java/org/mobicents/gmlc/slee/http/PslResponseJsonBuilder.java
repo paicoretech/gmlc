@@ -56,6 +56,7 @@ import static org.mobicents.gmlc.slee.http.JsonWriter.writeGeranPositioningUsage
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeGprsNodeIndicator;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeHGmlcAddress;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeHorizontalSpeed;
+import static org.mobicents.gmlc.slee.http.JsonWriter.writeImei;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeImsi;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeIncludedAngle;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeInnerRadius;
@@ -82,6 +83,7 @@ import static org.mobicents.gmlc.slee.http.JsonWriter.writeProtocol;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeServiceAreaCode;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeSgsnName;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeSgsnNumber;
+import static org.mobicents.gmlc.slee.http.JsonWriter.writeSgsnRealm;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeSupportedLCSCapabilitySets;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeTypeOfShape;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeUncertainty;
@@ -121,11 +123,12 @@ public class PslResponseJsonBuilder {
      * @param psl                   Subscriber Information values gathered from PSL response event
      * @param sriPslMsisdn          Subscriber's MSISDN
      * @param sriPslImsi            Subscriber's IMSI
+     * @param pslImei               Subscriber's IMEI
      * @param clientReferenceNumber Reference Number gathered from the originating HTTP request sent by the GMLC Client
      * @param lcsReferenceNumber    LCS-ReferenceNumber exchanged between the GMLC and the UMTS core network
      */
     public static String buildJsonResponseForPsl(SriLcsResponseParams sriLcs, PslResponseParams psl, String sriPslMsisdn, String sriPslImsi,
-                                                 Integer clientReferenceNumber, Integer lcsReferenceNumber) throws MAPException {
+                                                 String pslImei, Integer clientReferenceNumber, Integer lcsReferenceNumber) throws MAPException {
 
         String typeOfShape, additionalTypeOfShape = null;
         Double latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, uncertaintyAltitude, uncertaintyInnerRadius,
@@ -154,6 +157,8 @@ public class PslResponseJsonBuilder {
         writeProtocol("MAP", sriPslJsonObject);
         writeOperation("SRILCS-PSL", sriPslJsonObject);
         writeOperationResult("SUCCESS", sriPslJsonObject);
+        if (pslImei != null)
+            writeImei(pslImei, sriPslJsonObject);
         writeClientReferenceNumber(clientReferenceNumber, sriPslJsonObject);
         writeLcsReferenceNumber(lcsReferenceNumber, sriPslJsonObject);
 
@@ -177,19 +182,6 @@ public class PslResponseJsonBuilder {
                 writeImsi(sriPslImsi, sriForLcsJsonObject);
             }
 
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** networkNode-Number ISDN-AddressString ***/
-            if (sriLcs.getNetworkNodeNumber() != null) {
-                writeNetworkNodeNumber(sriLcs.getNetworkNodeNumber().getAddress(), sriForLcsJsonObject);
-            }
-
-            /*** gprsNodeIndicator [2] NULL OPTIONAL ***/
-            if (sriLcs.isGprsNodeIndicator() != null) {
-                // gprsNodeIndicator is set only if the SGSN number is sent as the Network Node Number
-                writeGprsNodeIndicator(sriLcs.isGprsNodeIndicator(), sriForLcsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
             /*** lmsi [0] LMSI OPTIONAL ***/
             if (sriLcs.getLmsi() != null) {
                 String lmsi = bytesToHex(sriLcs.getLmsi().getData());
@@ -197,70 +189,73 @@ public class PslResponseJsonBuilder {
             }
 
             /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** additional-Number [3] Additional-Number OPTIONAL ***/
-            if (sriLcs.getAdditionalNumber() != null) {
-                String additionalNumber = null;
-                if (sriLcs.getAdditionalNumber().getMSCNumber() != null)
-                    additionalNumber = sriLcs.getAdditionalNumber().getMSCNumber().getAddress();
-                else if (sriLcs.getAdditionalNumber().getSGSNNumber() != null)
-                    additionalNumber = sriLcs.getAdditionalNumber().getSGSNNumber().getAddress();
-                writeAdditionalNetworkNodeNumber(additionalNumber, sriForLcsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** supportedLCS-CapabilitySets [4] SupportedLCS-CapabilitySets OPTIONAL ***/
-            if (sriLcs.getSupportedLCSCapabilitySets() != null) {
-                JsonObject supportedLCSCapSetsJsonObject = new JsonObject();
-                boolean supportedLCSCapabilitySetRelease98_99 = sriLcs.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99();
-                boolean supportedLCSCapabilitySetRelease4 = sriLcs.getSupportedLCSCapabilitySets().getCapabilitySetRelease4();
-                boolean supportedLCSCapabilitySetRelease5 = sriLcs.getSupportedLCSCapabilitySets().getCapabilitySetRelease5();
-                boolean supportedLCSCapabilitySetRelease6 = sriLcs.getSupportedLCSCapabilitySets().getCapabilitySetRelease6();
-                boolean supportedLCSCapabilitySetRelease7 = sriLcs.getSupportedLCSCapabilitySets().getCapabilitySetRelease7();
-                writeSupportedLCSCapabilitySets(true, supportedLCSCapabilitySetRelease98_99, supportedLCSCapabilitySetRelease4,
+            if (sriLcs.getLcsLocationInfo() != null) {
+                JsonObject sriLcsLocationInfo = new JsonObject();
+                /*** networkNode-Number ISDN-AddressString ***/
+                if (sriLcs.getLcsLocationInfo().getNetworkNodeNumber() != null) {
+                    writeNetworkNodeNumber(sriLcs.getLcsLocationInfo().getNetworkNodeNumber().getAddress(), sriLcsLocationInfo);
+                }
+                /*** gprsNodeIndicator [2] NULL OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getGprsNodeIndicator()) {
+                    // gprsNodeIndicator is set only if the SGSN number is sent as the Network Node Number
+                    writeGprsNodeIndicator(sriLcs.getLcsLocationInfo().getGprsNodeIndicator(), sriLcsLocationInfo);
+                }
+                /*** additional-Number [3] Additional-Number OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getAdditionalNumber() != null) {
+                    String additionalNumber = null;
+                    if (sriLcs.getLcsLocationInfo().getAdditionalNumber().getMSCNumber() != null)
+                        additionalNumber = sriLcs.getLcsLocationInfo().getAdditionalNumber().getMSCNumber().getAddress();
+                    else if (sriLcs.getLcsLocationInfo().getAdditionalNumber().getSGSNNumber() != null)
+                        additionalNumber = sriLcs.getLcsLocationInfo().getAdditionalNumber().getSGSNNumber().getAddress();
+                    writeAdditionalNetworkNodeNumber(additionalNumber, sriLcsLocationInfo);
+                }
+                /*** supportedLCS-CapabilitySets [4] SupportedLCS-CapabilitySets OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets() != null) {
+                    JsonObject supportedLCSCapSetsJsonObject = new JsonObject();
+                    boolean supportedLCSCapabilitySetRelease98_99 = sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99();
+                    boolean supportedLCSCapabilitySetRelease4 = sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease4();
+                    boolean supportedLCSCapabilitySetRelease5 = sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease5();
+                    boolean supportedLCSCapabilitySetRelease6 = sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease6();
+                    boolean supportedLCSCapabilitySetRelease7 = sriLcs.getLcsLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease7();
+                    writeSupportedLCSCapabilitySets(true, supportedLCSCapabilitySetRelease98_99, supportedLCSCapabilitySetRelease4,
                         supportedLCSCapabilitySetRelease5, supportedLCSCapabilitySetRelease6, supportedLCSCapabilitySetRelease7, supportedLCSCapSetsJsonObject);
-                sriForLcsJsonObject.add("SupportedLCSCapabilitySets", supportedLCSCapSetsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** additional-LCS-CapabilitySets [5] SupportedLCS-CapabilitySets OPTIONAL ***/
-            if (sriLcs.getAddSupportedLCSCapabilitySets() != null) {
-                JsonObject additionalLCSCapSetsJsonObject = new JsonObject();
-                boolean addSupportedLCSCapabilitySetRelease98_99 = sriLcs.getAddSupportedLCSCapabilitySets().getCapabilitySetRelease98_99();
-                boolean addSupportedLCSCapabilitySetRelease4 = sriLcs.getAddSupportedLCSCapabilitySets().getCapabilitySetRelease4();
-                boolean addSupportedLCSCapabilitySetRelease5 = sriLcs.getAddSupportedLCSCapabilitySets().getCapabilitySetRelease5();
-                boolean addSupportedLCSCapabilitySetRelease6 = sriLcs.getAddSupportedLCSCapabilitySets().getCapabilitySetRelease6();
-                boolean addSupportedLCSCapabilitySetRelease7 = sriLcs.getAddSupportedLCSCapabilitySets().getCapabilitySetRelease7();
-                writeAdditionalLCSCapabilitySets(true, addSupportedLCSCapabilitySetRelease98_99, addSupportedLCSCapabilitySetRelease4, addSupportedLCSCapabilitySetRelease5,
+                    sriLcsLocationInfo.add("SupportedLCSCapabilitySets", supportedLCSCapSetsJsonObject);
+                }
+                /*** additional-LCS-CapabilitySets [5] SupportedLCS-CapabilitySets OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets() != null) {
+                    JsonObject additionalLCSCapSetsJsonObject = new JsonObject();
+                    boolean addSupportedLCSCapabilitySetRelease98_99 = sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease98_99();
+                    boolean addSupportedLCSCapabilitySetRelease4 = sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease4();
+                    boolean addSupportedLCSCapabilitySetRelease5 = sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease5();
+                    boolean addSupportedLCSCapabilitySetRelease6 = sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease6();
+                    boolean addSupportedLCSCapabilitySetRelease7 = sriLcs.getLcsLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease7();
+                    writeAdditionalLCSCapabilitySets(true, addSupportedLCSCapabilitySetRelease98_99, addSupportedLCSCapabilitySetRelease4, addSupportedLCSCapabilitySetRelease5,
                         addSupportedLCSCapabilitySetRelease6, addSupportedLCSCapabilitySetRelease7, additionalLCSCapSetsJsonObject);
-                sriForLcsJsonObject.add("AdditionalLCSCapabilitySets", additionalLCSCapSetsJsonObject);
-            }
+                    sriLcsLocationInfo.add("AdditionalLCSCapabilitySets", additionalLCSCapSetsJsonObject);
+                }
+                /*** mme-Name [6] DiameterIdentity OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getMmeName() != null) {
+                    String mmeName = new String(sriLcs.getLcsLocationInfo().getMmeName().getData());
+                    writeMmeName(mmeName, sriLcsLocationInfo);
+                }
+                /*** aaa-Server-Name [8] DiameterIdentity OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getAaaServerName() != null) {
+                    String tgppAAAServerName = new String(sriLcs.getLcsLocationInfo().getAaaServerName().getData());
+                    write3gppAaaServerName(tgppAAAServerName, sriLcsLocationInfo);
+                }
+                /*** sgsn-Name [9] DiameterIdentity OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getSgsnName() != null) {
+                    String sgsnName = new String(sriLcs.getLcsLocationInfo().getSgsnName().getData());
+                    writeSgsnName(sgsnName, sriLcsLocationInfo);
+                }
 
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** mme-Name [6] DiameterIdentity OPTIONAL ***/
-            if (sriLcs.getMmeName() != null) {
-                String mmeName = new String(sriLcs.getMmeName().getData());
-                writeMmeName(mmeName, sriForLcsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** aaa-Server-Name [8] DiameterIdentity OPTIONAL ***/
-            if (sriLcs.getAaaServerName() != null) {
-                String tgppAAAServerName = new String(sriLcs.getAaaServerName().getData());
-                write3gppAaaServerName(tgppAAAServerName, sriForLcsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** sgsn-Name [9] DiameterIdentity OPTIONAL ***/
-            if (sriLcs.getSgsnName() != null) {
-                String sgsnName = new String(sriLcs.getSgsnName().getData());
-                writeSgsnName(sgsnName, sriForLcsJsonObject);
-            }
-
-            /*** lcsLocationInfo [1] LCSLocationInfo ***/
-            /*** sgsn-Realm [10] DiameterIdentity OPTIONAL ***/
-            if (sriLcs.getSgsnRealm() != null) {
-                String sgsnRealm = new String(sriLcs.getSgsnRealm().getData());
-                writeSgsnName(sgsnRealm, sriForLcsJsonObject);
+                /*** lcsLocationInfo [1] LCSLocationInfo ***/
+                /*** sgsn-Realm [10] DiameterIdentity OPTIONAL ***/
+                if (sriLcs.getLcsLocationInfo().getSgsnRealm() != null) {
+                    String sgsnRealm = new String(sriLcs.getLcsLocationInfo().getSgsnRealm().getData());
+                    writeSgsnRealm(sgsnRealm, sriLcsLocationInfo);
+                }
+                sriForLcsJsonObject.add("LCSLocationInfo", sriLcsLocationInfo);
             }
 
             /*** v-gmlc-Address [3] GSN-Address OPTIONAL ***/

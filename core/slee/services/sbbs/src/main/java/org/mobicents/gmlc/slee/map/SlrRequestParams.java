@@ -93,7 +93,7 @@ public class SlrRequestParams  implements Serializable {
   private boolean gprsNodeIndicator;
   private AddGeographicalInformation additionalLocationEstimate;
   private DeferredmtlrData deferredmtlrData;
-  private Integer lcsReferenceNumber, originatorLcsReferenceNumber;
+  private Integer lcsReferenceNumber;
   private CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI;
   private boolean saiPresent;
   private GSNAddress hGmlcAddress;
@@ -266,14 +266,6 @@ public class SlrRequestParams  implements Serializable {
     this.lcsReferenceNumber = lcsReferenceNumber;
   }
 
-  public Integer getOriginatorLcsReferenceNumber() {
-    return originatorLcsReferenceNumber;
-  }
-
-  public void setOriginatorLcsReferenceNumber(Integer originatorLcsReferenceNumber) {
-    this.originatorLcsReferenceNumber = originatorLcsReferenceNumber;
-  }
-
   public CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI() {
     return cellGlobalIdOrServiceAreaIdOrLAI;
   }
@@ -436,7 +428,6 @@ public class SlrRequestParams  implements Serializable {
         ", additionalLocationEstimate=" + additionalLocationEstimate +
         ", deferredmtlrData=" + deferredmtlrData +
         ", lcsReferenceNumber=" + lcsReferenceNumber +
-        ", originatorLcsReferenceNumber=" + originatorLcsReferenceNumber +
         ", cellGlobalIdOrServiceAreaIdOrLAI=" + cellGlobalIdOrServiceAreaIdOrLAI +
         ", saiPresent=" + saiPresent +
         ", hGmlcAddress=" + hGmlcAddress +

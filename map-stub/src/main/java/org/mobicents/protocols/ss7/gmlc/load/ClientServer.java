@@ -615,7 +615,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
     try {
       server.initializeServerStack(ipChannelType);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
 
     final ClientServer client = new ClientServer();
@@ -647,7 +647,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 
@@ -661,7 +661,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateMapAti method:" + e));
         }
       }
 
@@ -720,7 +720,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateSRILCS method:" + e));
         }
       }
 
@@ -1348,6 +1348,16 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
   }
 
   @Override
+  public void onAnyTimeModificationRequest(AnyTimeModificationRequest anyTimeModificationRequest) {
+
+  }
+
+  @Override
+  public void onAnyTimeModificationResponse(AnyTimeModificationResponse anyTimeModificationResponse) {
+
+  }
+
+  @Override
   public void onSendRoutingInfoForLCSRequest(SendRoutingInfoForLCSRequest sendRoutingInfoForLCSRequestIndication) {
 
     if (logger.isDebugEnabled()) {
@@ -1616,7 +1626,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateMapPSL method:" + e));
         }
       }
 
@@ -2584,7 +2594,7 @@ public class ClientServer extends TestHarness implements MAPServiceMobilityListe
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on sendMapSLR method:" + e));
         }
       }
 

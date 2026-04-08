@@ -68,6 +68,7 @@ import static org.mobicents.gmlc.slee.http.JsonWriter.writeGeranPositioningMetho
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeGeranPositioningUsage;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeGmlcAddress;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeHorizontalSpeed;
+import static org.mobicents.gmlc.slee.http.JsonWriter.writeImei;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeImsi;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeIncludedAngle;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeInnerRadius;
@@ -138,8 +139,8 @@ public class PlrResponseJsonBuilder {
      * @param clientReferenceNumber Reference Number gathered from the originating HTTP request sent by the GMLC Client
      * @param lcsReferenceNumber    LCS-Reference-Number exchanged between the GMLC and the LTE EPC network
      */
-    public static String buildJsonResponseForPlr(SLhRiaAvpValues ria, SLgPlaAvpValues pla, String plrMsisdn, String plrImsi, Long plrFlags, Integer clientReferenceNumber,
-                                                 Integer lcsReferenceNumber, String diameterResultMessage) {
+    public static String buildJsonResponseForPlr(SLhRiaAvpValues ria, SLgPlaAvpValues pla, String plrMsisdn, String plrImsi, String plrImei,
+                                                 Long plrFlags, Integer clientReferenceNumber, Integer lcsReferenceNumber, String diameterResultMessage) {
 
         String msisdn, imsi, lmsi, mmeName, mmeRealm, mscNumber, sgsnName, sgsnRealm, sgsnNumber, aaaServerName, gmlcAddress,
                 typeOfShape, velocityType, civicAddress;
@@ -164,6 +165,8 @@ public class PlrResponseJsonBuilder {
         writeProtocol("Diameter SLh-SLg(ELP)", riaPlrPlaJsonObject);
         writeOperation("RIR/RIA PLR/PLA", riaPlrPlaJsonObject);
         writeOperationResult("SUCCESS", riaPlrPlaJsonObject);
+        if (plrImei != null)
+            writeImei(plrImei, riaPlrPlaJsonObject);
         writeClientReferenceNumber(clientReferenceNumber, riaPlrPlaJsonObject);
         writeLcsReferenceNumber(lcsReferenceNumber, riaPlrPlaJsonObject);
         writePlrFlags(plrFlags, riaPlrPlaJsonObject);

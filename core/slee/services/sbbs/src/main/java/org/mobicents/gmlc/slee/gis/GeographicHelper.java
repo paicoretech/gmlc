@@ -1,11 +1,15 @@
 package org.mobicents.gmlc.slee.gis;
 
+import org.apache.log4j.Logger;
+
 import java.awt.geom.Point2D;
 
 /**
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class GeographicHelper {
+
+    private static final Logger logger = Logger.getLogger(GeographicHelper.class.getName());
 
     /**
      * Function to calculate the area of a polygon, according to the algorithm
@@ -118,10 +122,10 @@ public class GeographicHelper {
 
 
     public static void main(String[] args) {
-        System.out.println("Geodetic distance between Montevideo and Punta del Este (Uruguay) = " + calculateGeoDistance(-34.9011, -56.1645, -34.9363, -54.9378) / 1000 + " kilometres");
-        System.out.println("Geodetic distance between New York (USA) and Paris (France) = " + calculateGeoDistance(40.7128, -74.0060, 48.8566, 2.3522) / 1000 + " kilometres");
-        System.out.println(validateWGS84CoordinatesReferenceSystem("34º54'23.73''S"));
-        System.out.println(validateWGS84CoordinatesReferenceSystem("30 27 45.3N"));
+        logger.info("Geodetic distance between Montevideo and Punta del Este (Uruguay) = " + calculateGeoDistance(-34.9011, -56.1645, -34.9363, -54.9378) / 1000 + " kilometres");
+        logger.info("Geodetic distance between New York (USA) and Paris (France) = " + calculateGeoDistance(40.7128, -74.0060, 48.8566, 2.3522) / 1000 + " kilometres");
+        logger.info(validateWGS84CoordinatesReferenceSystem("34º54'23.73''S"));
+        logger.info(validateWGS84CoordinatesReferenceSystem("30 27 45.3N"));
     }
 
 }

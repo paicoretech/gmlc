@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
@@ -10,6 +11,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShLocationAreaId {
+
+    private static final Logger logger = Logger.getLogger(ShLocationAreaId.class.getName());
 
     private static final String MCC = "mcc";
     private static final String MNC = "mnc";
@@ -82,7 +85,7 @@ public class ShLocationAreaId {
                 sb.append(this.laiFixedLength.getLac());
 
             } catch (MAPException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
 
         }

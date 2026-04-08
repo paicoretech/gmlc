@@ -1,5 +1,7 @@
 package org.mobicents.gmlc.slee.diameter.sh;
 
+import org.apache.log4j.Logger;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
@@ -10,6 +12,8 @@ import java.io.StringReader;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShDataReader {
+
+    private static final Logger logger = Logger.getLogger(ShDataReader.class.getName());
 
     private PublicIds shPublicIdentifiers = new PublicIds();
     private CSLocationInformation shCSLocationInfo = new CSLocationInformation();
@@ -100,7 +104,7 @@ public class ShDataReader {
             this.sh5GSLocationInfo = shData5gsLocation.getExtension();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

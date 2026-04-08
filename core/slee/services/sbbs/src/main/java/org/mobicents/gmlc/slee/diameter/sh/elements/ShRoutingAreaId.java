@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.primitives.RoutingAreaId;
 import org.mobicents.gmlc.slee.primitives.RoutingAreaIdImpl;
 
@@ -9,6 +10,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShRoutingAreaId {
+
+  private static final Logger logger = Logger.getLogger(ShRoutingAreaId.class.getName());
 
   private static final String MCC = "mcc";
   private static final String MNC = "mnc";
@@ -85,7 +88,7 @@ public class ShRoutingAreaId {
         sb.append(this.routingAreaIdentity.getRAC());
 
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
 
     }

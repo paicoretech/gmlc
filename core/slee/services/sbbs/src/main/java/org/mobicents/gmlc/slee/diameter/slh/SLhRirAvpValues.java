@@ -4,6 +4,8 @@ import net.java.slee.resource.diameter.base.events.avp.DiameterAvp;
 import net.java.slee.resource.diameter.slg.events.avp.ReportingPLMNListAvp;
 import net.java.slee.resource.diameter.slh.SLhAVPFactory;
 import net.java.slee.resource.diameter.slh.events.avp.LCSRoutingInfoAVPCodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
@@ -14,6 +16,7 @@ public class SLhRirAvpValues implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  protected final Logger logger = LoggerFactory.getLogger(SLhRirAvpValues.class.getName());
   private static final int DIAMETER_SLh_VENDOR_ID = 10415;
 
   /*
@@ -100,25 +103,7 @@ public class SLhRirAvpValues implements Serializable {
       setGmlcNumber(gmlcNumberAvp.byteArrayValue());
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
-
-  /*
-   * PUBLIC SECTION REQUEST VARIABLES */
-  public String plrUserName, plrMsisdn, plrImei, plrLcsNameString, plrLcsRequestorIdString, plrLcsCodeword, plrServiceSelection,
-      plrAreaIdentification, plrAdditionalAreaIdentification, plrVisitedPLMNIdList, lrrCallbackUrl;
-
-  public Long plrLcsPriority, plrHorizontalAccuracy, plrVerticalAccuracy, plrLcsSupportedGadShapes, plrLcsServiceTypeId, plrDeferredLocationType,
-      plrFlags, plrAreaType, plrAdditionalAreaType, plrAreaEventIntervalTime, plrAreaEventSamplingInterval, plrAreaEventMaxInterval,
-      plrAreaEventReportingDuration, plrAreaEventRepLocRequirements, plrPeriodicLDRReportingAmount, plrPeriodicLDRReportingInterval,
-      plrMotionEventLinearDistance, plrMotionEventIntervalTime, plrMotionEventMaximumInterval, plrMotionEventSamplingInterval,
-      plrMotionEvenReportingDuration, plrMotionEvenReportingLocationRequirements;
-
-  public Integer plrSlgLocationType, plrLcsFormatInd, plrLcsClientType, plrLcsRequestorFormatIndicator, plrLcsReferenceNumber, plrQoSClass,
-      plrVerticalRequested, plrResponseTime, plrVelocityRequested, plrPrivacyCheckNonSession, plrPrivacyCheckSession, plrAreaEventOccurrenceInfo,
-      plrPeriodicLocationSupportIndicator, plrPrioritizedListIndicator, plrMotionEventOccurrenceInfo;
-
-  public ReportingPLMNListAvp reportingPLMNListAvp;
-
 }

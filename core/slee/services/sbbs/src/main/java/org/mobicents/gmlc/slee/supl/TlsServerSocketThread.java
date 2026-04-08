@@ -72,7 +72,6 @@ public abstract class TlsServerSocketThread implements Runnable {
             });
         } catch (IOException e) {
             logger.severe("Class Server died: " + e.getMessage());
-            e.printStackTrace();
             return;
         }
 
@@ -146,14 +145,13 @@ public abstract class TlsServerSocketThread implements Runnable {
                 rawOut.flush();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
 
         } catch (IOException ex) {
             // eat exception (could log error to log file, but
             // write out to stdout for now).
             logger.severe("IOException over the call flow thread: " + ex.getMessage());
-            ex.printStackTrace();
 
         } finally {
             try {
@@ -340,7 +338,7 @@ public abstract class TlsServerSocketThread implements Runnable {
             byte[] bytes = buffer.array();
             return bytes;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         return null;
     }

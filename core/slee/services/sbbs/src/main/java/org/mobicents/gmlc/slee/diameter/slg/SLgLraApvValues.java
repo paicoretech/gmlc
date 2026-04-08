@@ -9,6 +9,7 @@ import net.java.slee.resource.diameter.slg.events.avp.PLMNIDListAvp;
 import net.java.slee.resource.diameter.slg.events.avp.PeriodicLocationSupportIndicator;
 import net.java.slee.resource.diameter.slg.events.avp.PrioritizedListIndicator;
 import net.java.slee.resource.diameter.slg.events.avp.ReportingPLMNListAvp;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 
@@ -20,6 +21,8 @@ public class SLgLraApvValues implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private static final int DIAMETER_SLg_VENDOR_ID = 10415;
+
+  private static final Logger logger = Logger.getLogger(SLgLraApvValues.class.getName());
 
   /*
     3GPP TS 29.172 v15.0.0 reference
@@ -190,7 +193,7 @@ public class SLgLraApvValues implements Serializable {
       setLcsReferenceNumber(lcsReferenceNumberAvp.byteArrayValue());
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 }

@@ -307,9 +307,9 @@ public class SuplChannel {
                             }
                         }
                     } catch (Asn1Exception asn1Exception) {
-                        asn1Exception.printStackTrace();
+                        logger.severe(asn1Exception.getMessage());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.severe(e.getMessage());
                     }
                     return processMessage(readBuffer());
                     //break;
@@ -379,9 +379,9 @@ public class SuplChannel {
                             updateSupSession(ulpPdu,suplResponseHelperForMLP);
                             return suplResponseHelperForMLP;
                         } catch (Asn1Exception asn1Exception) {
-                            asn1Exception.printStackTrace();
+                            logger.severe(asn1Exception.getMessage());
                         } catch (IOException ioException) {
-                            ioException.printStackTrace();
+                            logger.severe(ioException.getMessage());
                         }
                     }
                     break;
@@ -411,9 +411,9 @@ public class SuplChannel {
                         sendSuplTriggeredResponse(ulpPdu.getSessionID(), suplResponseHelperForMLP.getPosMethod(), suplResponseHelperForMLP.getTriggerParams());
                         return processMessage(readBuffer());
                     } catch (Asn1Exception asn1Exception) {
-                        asn1Exception.printStackTrace();
+                        logger.severe(asn1Exception.getMessage());
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.severe(e.getMessage());
                     }
                     break;
                 case "msSUPLREPORT":
@@ -481,8 +481,8 @@ public class SuplChannel {
         // Set the version of SUPL protocol
         // V2.1 or above is required for GLONASS assistance data
         Version version = new Version();
-        version.setMaj(new Asn1Integer((2l)));
-        version.setMin(new Asn1Integer((1l)));
+        version.setMaj(new Asn1Integer((2L)));
+        version.setMin(new Asn1Integer((1L)));
         version.setServind(new Asn1Integer(0));
         ULP_PDU.setVersion(version);
 
@@ -523,7 +523,7 @@ public class SuplChannel {
             byte[] bytes = buffer.array();
             return bytes;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         return null;
     }
@@ -535,7 +535,7 @@ public class SuplChannel {
             message.encode(outputStream);
             return outputStream.getMsgCopy();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         return null;
     }
@@ -545,7 +545,7 @@ public class SuplChannel {
         try {
             input = socket.getInputStream();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         while (input != null) {
             try {
@@ -558,7 +558,7 @@ public class SuplChannel {
                 if (receive.length == 0) continue;
                 return receive;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
         return null;

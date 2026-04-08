@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.map;
 
+import com.google.common.collect.Multimap;
 import org.mobicents.gmlc.slee.primitives.EllipsoidPoint;
 import org.mobicents.gmlc.slee.primitives.Polygon;
 import org.mobicents.gmlc.slee.primitives.PolygonImpl;
@@ -10,11 +11,16 @@ import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static org.mobicents.gmlc.slee.http.JsonWriter.bytesToHexString;
 import static org.mobicents.gmlc.slee.utils.ByteUtils.bytesToHex;
@@ -24,6 +30,7 @@ import static org.mobicents.gmlc.slee.utils.ByteUtils.bytesToHex;
  */
 public class MapLsmResponseHelperForMLP {
 
+    protected final Logger logger = LoggerFactory.getLogger(MapLsmResponseHelperForMLP.class.getName());
     protected static final DecimalFormat coordinatesFormat = new DecimalFormat("#0.000000");
     protected static final DecimalFormat radiusFormat = new DecimalFormat("#0.00");
     protected static final DecimalFormat angleFormat = new DecimalFormat("#0.00");
@@ -32,7 +39,7 @@ public class MapLsmResponseHelperForMLP {
     String msisdn, imsi, lmsi, imei;
     private Integer mcc, mnc, lac, ci, sac;
     private String vlrNumber, mscNumber, sgsnNumber;
-    private Boolean gprsNodeIndicator;
+    private boolean gprsNodeIndicator;
     private String nnn;
     private String mmeName, sgsnName, tgppAAAServerName, hGmlcAddress, vGmlcAddress, pprAddress;
     private String typeOfShape;
@@ -41,6 +48,7 @@ public class MapLsmResponseHelperForMLP {
     private Double uncertainty , uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
         uncertaintyAltitude, uncertaintyInnerRadius, offsetAngle, includedAngle;
     private Integer confidence, altitude, innerRadius, numberOfPoints;
+    private String positioningMethod;
     private Double radius = null;
     Polygon polygon = null;
     EllipsoidPoint[] polygonEllipsoidPoints;
@@ -57,6 +65,7 @@ public class MapLsmResponseHelperForMLP {
         supportedLCSCapabilitySetRelease7, addSupportedLCSCapabilitySetRelease98_99, addSupportedLCSCapabilitySetRelease4,
         addSupportedLCSCapabilitySetRelease5, addSupportedLCSCapabilitySetRelease6, addSupportedLCSCapabilitySetRelease7;
     private Integer ciOrsac;
+    private String civicAddress;
 
     public MapLsmResponseHelperForMLP() {
     }
@@ -79,24 +88,26 @@ public class MapLsmResponseHelperForMLP {
             this.lmsi = bytesToHex(sriLcs.getLmsi().getData());
         }
 
-        if (sriLcs.getNetworkNodeNumber() != null) {
-            this.nnn = sriLcs.getNetworkNodeNumber().getAddress();
-        }
+        if (sriLcs.getLcsLocationInfo() != null) {
+            if (sriLcs.getLcsLocationInfo().getNetworkNodeNumber() != null) {
+                this.nnn = sriLcs.getLcsLocationInfo().getNetworkNodeNumber().getAddress();
+            }
 
-        if (sriLcs.isGprsNodeIndicator() != null) {
-            this.gprsNodeIndicator = sriLcs.isGprsNodeIndicator();
-        }
+            if (sriLcs.getLcsLocationInfo().getGprsNodeIndicator()) {
+                this.gprsNodeIndicator = sriLcs.getLcsLocationInfo().getGprsNodeIndicator();
+            }
 
-        if (sriLcs.getMmeName() != null) {
-            this.mmeName = new String(sriLcs.getMmeName().getData());
-        }
+            if (sriLcs.getLcsLocationInfo().getMmeName() != null) {
+                this.mmeName = new String(sriLcs.getLcsLocationInfo().getMmeName().getData());
+            }
 
-        if (sriLcs.getSgsnName() != null) {
-            this.sgsnName = new String(sriLcs.getSgsnName().getData());
-        }
+            if (sriLcs.getLcsLocationInfo().getSgsnName() != null) {
+                this.sgsnName = new String(sriLcs.getLcsLocationInfo().getSgsnName().getData());
+            }
 
-        if (sriLcs.getAaaServerName() != null) {
-            this.tgppAAAServerName = new String(sriLcs.getAaaServerName().getData());
+            if (sriLcs.getLcsLocationInfo().getAaaServerName() != null) {
+                this.tgppAAAServerName = new String(sriLcs.getLcsLocationInfo().getAaaServerName().getData());
+            }
         }
 
         if (sriLcs.getHGmlcAddress() != null) {
@@ -105,7 +116,7 @@ public class MapLsmResponseHelperForMLP {
                 InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(hGmlcAddress));
                 this.hGmlcAddress = address.getHostAddress();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
 
@@ -115,7 +126,8 @@ public class MapLsmResponseHelperForMLP {
                 InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.vGmlcAddress));
                 this.vGmlcAddress = address.getHostAddress();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
+
             }
         }
 
@@ -125,7 +137,7 @@ public class MapLsmResponseHelperForMLP {
                 InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.pprAddress));
                 this.pprAddress = address.getHostAddress();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
     }
@@ -184,12 +196,12 @@ public class MapLsmResponseHelperForMLP {
                     try {
                         ((PolygonImpl) this.polygon).setData(polygonEllipsoidPoints);
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
 
-            if (psl.getAgeOfLocationEstimate() <= Integer.MAX_VALUE && psl.getAgeOfLocationEstimate() >= Integer.MIN_VALUE) {
+            if (psl.getAgeOfLocationEstimate() != null) {
                 this.ageOfLocationEstimate = psl.getAgeOfLocationEstimate();
             }
 
@@ -219,7 +231,7 @@ public class MapLsmResponseHelperForMLP {
                         this.mnc = laiFixedLength.getMNC();
                         this.lac = laiFixedLength.getLac();
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
 
                 } else if (cellGlobalIdOrServiceAreaIdFixedLength != null) {
@@ -233,26 +245,50 @@ public class MapLsmResponseHelperForMLP {
                         else
                             this.ci = ciOrsac;
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
 
             if (psl.getGeranPositioningDataInformation() != null || psl.getGeranGANSSpositioningData() != null) {
-                if (psl.getGeranPositioningDataInformation() != null) {
-                    //geranPositioningInfo = bytesToHexString(psl.getGeranPositioningDataInformation().getData());
+                try {
+                    if (psl.getGeranPositioningDataInformation() != null) {
+                        ArrayList<String> methods = psl.getGeranPositioningDataInformation().getLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                            this.positioningMethod = method;
+                        }
+                    } else if (psl.getGeranGANSSpositioningData() != null) {
+                        Multimap<String, String> methodsAndGanssIds = psl.getGeranGANSSpositioningData().getGeranGANSSPositioningMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (MAPException e) {
+                    logger.error(e.getMessage());
                 }
-                if (psl.getGeranGANSSpositioningData() != null) {
-                    //geranGanssPositioningData = bytesToHexString(psl.getGeranGANSSpositioningData().getData());
-                }
-            }
-
-            if (psl.getUtranPositioningDataInfo() != null || psl.getUtranGANSSpositioningData() != null) {
-                if (psl.getUtranPositioningDataInfo() != null) {
-                    //utranPositioningData = bytesToHexString(psl.getUtranPositioningDataInfo().getData());
-                }
-                if (psl.getUtranGANSSpositioningData() != null) {
-                    //utranGanssPositioningData = bytesToHexString(psl.getUtranGANSSpositioningData().getData());
+            } else if (psl.getUtranPositioningDataInfo() != null || psl.getUtranGANSSpositioningData() != null || psl.getUtranAdditionalPositioningData() != null) {
+                try {
+                    // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                    if (psl.getUtranPositioningDataInfo() != null) {
+                        ArrayList<String> methods = psl.getUtranPositioningDataInfo().getUtranLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                        }
+                    } else if (psl.getUtranGANSSpositioningData() != null) {
+                        Multimap<String, String> methodsAndGanssIds = psl.getUtranGANSSpositioningData().getLocationGeneratedMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    } else if (psl.getUtranAdditionalPositioningData() != null) {
+                        Multimap<String, String> methodsAndPosId = psl.getUtranAdditionalPositioningData().getLocationGeneratedMethodsAndAddPosIds();
+                        for (Map.Entry<String, String> entry : methodsAndPosId.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (MAPException e) {
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -269,6 +305,11 @@ public class MapLsmResponseHelperForMLP {
                     this.uncertaintyVerticalSpeed = psl.getVelocityEstimate().getUncertaintyVerticalSpeed();
                 if (psl.getVelocityEstimate().getVelocityType() != null)
                     this.velocityType = psl.getVelocityEstimate().getVelocityType().name();
+            }
+
+            /*** UTRAN Civic Address ***/
+            if (psl.getUtranCivicAddress() != null) {
+                this.civicAddress = new String(psl.getUtranCivicAddress().getData(), StandardCharsets.UTF_8);
             }
         }
     }
@@ -356,7 +397,7 @@ public class MapLsmResponseHelperForMLP {
                     try {
                         ((PolygonImpl) this.polygon).setData(polygonEllipsoidPoints);
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -380,7 +421,7 @@ public class MapLsmResponseHelperForMLP {
                         this.mnc = slr.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMNC();
                         this.lac = slr.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getLac();
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
 
                 }
@@ -396,7 +437,7 @@ public class MapLsmResponseHelperForMLP {
                         else
                             this.ci = ciOrsac;
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -445,15 +486,57 @@ public class MapLsmResponseHelperForMLP {
                 }
             }*/
 
-            /*if (slr.getGeranPositioningDataInformation() != null) {
-                geranPositioningData = bytesToHexString(slr.getGeranPositioningDataInformation().getData());
-                geranGanssPositioningData = bytesToHexString(slr.getGeranGANSSpositioningData().getData());
+            if (slr.getGeranPositioningDataInformation() != null || slr.getGeranGANSSpositioningData() != null) {
+                try {
+                    if (slr.getGeranPositioningDataInformation() != null) {
+                        ArrayList<String> methods = slr.getGeranPositioningDataInformation().getLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                            this.positioningMethod = method;
+                            if (logger.isDebugEnabled())
+                                logger.debug(this.positioningMethod);
+                        }
+                    } else if (slr.getGeranGANSSpositioningData() != null) {
+                        Multimap<String, String> methodsAndGanssIds = slr.getGeranGANSSpositioningData().getGeranGANSSPositioningMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                            this.positioningMethod = entry.getValue();
+                            if (logger.isDebugEnabled())
+                                logger.debug(this.positioningMethod);
+                        }
+                    }
+                } catch (MAPException e) {
+                    logger.error(e.getMessage());
+                }
+            } else if (slr.getUtranPositioningDataInfo() != null || slr.getUtranGANSSpositioningData() != null || slr.getUtranAdditionalPositioningData() != null) {
+                try {
+                    // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                    if (slr.getUtranPositioningDataInfo() != null) {
+                        ArrayList<String> methods = slr.getUtranPositioningDataInfo().getUtranLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                            if (logger.isDebugEnabled())
+                                logger.debug(method);
+                        }
+                    } else if (slr.getUtranGANSSpositioningData() != null) {
+                        Multimap<String, String> methodsAndGanssIds = slr.getUtranGANSSpositioningData().getLocationGeneratedMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                            if (logger.isDebugEnabled())
+                                logger.debug(this.positioningMethod);
+                        }
+                    } else if (slr.getUtranAdditionalPositioningData() != null) {
+                        Multimap<String, String> methodsAndPosId = slr.getUtranAdditionalPositioningData().getLocationGeneratedMethodsAndAddPosIds();
+                        for (Map.Entry<String, String> entry : methodsAndPosId.entries()) {
+                            this.positioningMethod = entry.getValue();
+                            if (logger.isDebugEnabled())
+                                logger.debug(this.positioningMethod);
+                        }
+                    }
+                } catch (MAPException e) {
+                    logger.error(e.getMessage());
+                }
             }
-
-            if (slr.getUtranPositioningDataInfo() != null) {
-                //utranPositioningData = bytesToHexString(slr.getUtranPositioningDataInfo().getData());
-                //utranGanssPositioningData = bytesToHexString(slr.getUtranGANSSpositioningData().getData());
-            }*/
 
             if (slr.getVelocityEstimate() != null) {
                 this.horizontalSpeed = slr.getVelocityEstimate().getHorizontalSpeed();
@@ -473,11 +556,7 @@ public class MapLsmResponseHelperForMLP {
                 this.lcsEvent = slr.getLcsEvent().getEvent();
             }
 
-            if (slr.isMoLrShortCircuitIndicator()) {
-                this.moLrShortCircuitIndicator = true;
-            } else {
-                this.moLrShortCircuitIndicator = false;
-            }
+          this.moLrShortCircuitIndicator = slr.isMoLrShortCircuitIndicator();
 
             if (slr.getPeriodicLDRInfo() != null) {
                 this.reportingAmount = slr.getPeriodicLDRInfo().getReportingAmount();
@@ -508,11 +587,7 @@ public class MapLsmResponseHelperForMLP {
                 if (slr.getDeferredmtlrData().getLCSLocationInfo() != null) {
 
                     // GPRS Node Indicator
-                    if (slr.isGprsNodeIndicator()) {
-                        this.gprsNodeIndicator = true;
-                    } else {
-                        this.gprsNodeIndicator = false;
-                    }
+                    this.gprsNodeIndicator = slr.isGprsNodeIndicator();
 
                     // Network Node Number
                     if (slr.getDeferredmtlrData().getLCSLocationInfo().getNetworkNodeNumber() != null) {
@@ -563,6 +638,11 @@ public class MapLsmResponseHelperForMLP {
                         this.addSupportedLCSCapabilitySetRelease7 = slr.getDeferredmtlrData().getLCSLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease7();
                     }
                 }
+            }
+
+            /*** UTRAN Civic Address ***/
+            if (slr.getUtranCivicAddress() != null) {
+                this.civicAddress = new String(slr.getUtranCivicAddress().getData(), StandardCharsets.UTF_8);
             }
         }
     }
@@ -636,11 +716,11 @@ public class MapLsmResponseHelperForMLP {
         this.sgsnNumber = sgsnNumber;
     }
 
-    public Boolean getGprsNodeIndicator() {
+    public boolean getGprsNodeIndicator() {
         return gprsNodeIndicator;
     }
 
-    public void setGprsNodeIndicator(Boolean gprsNodeIndicator) {
+    public void setGprsNodeIndicator(boolean gprsNodeIndicator) {
         this.gprsNodeIndicator = gprsNodeIndicator;
     }
 
@@ -745,7 +825,7 @@ public class MapLsmResponseHelperForMLP {
             String formattedLatitude = coordinatesFormat.format(this.latitude);
             return Double.valueOf(formattedLatitude);
         }
-        return this.latitude;
+        return null;
     }
 
     public void setLatitude(Double latitude) {
@@ -757,7 +837,7 @@ public class MapLsmResponseHelperForMLP {
             String formattedLongitude = coordinatesFormat.format(this.longitude);
             return Double.valueOf(formattedLongitude);
         }
-        return this.longitude;
+        return null;
     }
 
     public void setLongitude(Double longitude) {
@@ -932,6 +1012,14 @@ public class MapLsmResponseHelperForMLP {
 
     public void setPolygonArray(Double[][] polygonArray) {
         this.polygonArray = polygonArray;
+    }
+
+    public String getPositioningMethod() {
+        return this.positioningMethod;
+    }
+
+    public void setPositioningMethod(String positioningMethod) {
+        this.positioningMethod = positioningMethod;
     }
 
     public Integer getAgeOfLocationEstimate() {
@@ -1244,5 +1332,13 @@ public class MapLsmResponseHelperForMLP {
 
     public void setAddSupportedLCSCapabilitySetRelease7(Boolean addSupportedLCSCapabilitySetRelease7) {
         this.addSupportedLCSCapabilitySetRelease7 = addSupportedLCSCapabilitySetRelease7;
+    }
+
+    public String getCivicAddress() {
+        return civicAddress;
+    }
+
+    public void setCivicAddress(String civicAddress) {
+        this.civicAddress = civicAddress;
     }
 }

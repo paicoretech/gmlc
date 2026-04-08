@@ -1,6 +1,8 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
 import net.java.slee.resource.diameter.sh.events.avp.userdata.UserCSGInformation;
+import org.apache.log4j.Logger;
+
 import java.util.Base64;
 
 import java.nio.charset.StandardCharsets;
@@ -10,6 +12,8 @@ import java.nio.charset.StandardCharsets;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShUserCSGInformation {
+
+  private static final Logger logger = Logger.getLogger(ShUserCSGInformation.class.getName());
 
   private static final String CSG_ID = "CSGId";
 
@@ -60,7 +64,7 @@ public class ShUserCSGInformation {
         sb.append(this.userCSGInformationStr);
 
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
 
     }

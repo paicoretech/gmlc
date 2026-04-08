@@ -3,6 +3,7 @@ package org.mobicents.gmlc.slee.primitives;
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
 
+import org.apache.log4j.Logger;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -16,6 +17,8 @@ import java.io.IOException;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class EUTRANCGIImpl extends OctetStringBase implements EUTRANCGI {
+
+  private static final Logger logger = Logger.getLogger(EUTRANCGIImpl.class.getName());
 
   private static final String MCC = "mcc";
   private static final String MNC = "mnc";
@@ -218,14 +221,14 @@ public class EUTRANCGIImpl extends OctetStringBase implements EUTRANCGI {
         mcc = this.getMCC();
         mnc = this.getMNC();
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
       eci = this.getEci();
       enb = this.getENodeBId();
       ci = this.getCi();
       correctData = true;
     } catch (MAPException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
 
     StringBuilder sb = new StringBuilder();

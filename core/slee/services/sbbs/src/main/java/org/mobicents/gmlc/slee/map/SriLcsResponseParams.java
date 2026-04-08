@@ -1,12 +1,10 @@
 package org.mobicents.gmlc.slee.map;
 
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
 
 import java.io.Serializable;
 
@@ -48,13 +46,7 @@ public class SriLcsResponseParams implements Serializable {
   private ISDNAddressString msisdn; // The MSISDN is provided to identify the target MS.
   private IMSI imsi; // International Mobile Subscriber Identity defined in 3GPP TS 23.003.
   private LMSI lmsi; // Local MS identity allocated by the VLR to a given subscriber for internal management of data in the VLR
-  private ISDNAddressString networkNodeNumber; // ISDN number of LCS target node (MSC or MME, SGSN, or IP-SM-GW) or of an LCS Router.
-  private Boolean gprsNodeIndicator; // Indication that the Network Node Number received from HLR, etc. is to be considered as the SGSN number.
-  private AdditionalNumber additionalNumber; // This parameter refers to the ISDN number of an additional LCS target node (MSC or MME or SGSN) or of an LCS Router.
-  private SupportedLCSCapabilitySets supportedLCSCapabilitySets, addSupportedLCSCapabilitySets; // Capability sets of LCS supported in the VLR or SGSN. Provided only if LCS capability sets are available in HLR and Network Node Number is present in this message.
-  private DiameterIdentity mmeName; // Diameter Identity of an MME as defined in 3GPP TS 23.003.
-  private DiameterIdentity sgsnName, sgsnRealm; // Diameter Identity of an SGSN as defined in 3GPP TS 23.003. These parameters are provided in a successful response when the serving node is an SGSN and the SGSN has indicated its support for Lgd interface.
-  private DiameterIdentity aaaServerName; // Diameter Identity of a 3GPP AAA server as defined in 3GPP TS 29.273.
+  private LCSLocationInfo lcsLocationInfo;
   private GSNAddress hGmlcAddress, vGmlcAddress, pprAddress, addVGmlcAddress; // IP address of a H-GMLC, V-GMLC and PPR.
 
   private String pslMsisdn, pslImsi;
@@ -88,76 +80,12 @@ public class SriLcsResponseParams implements Serializable {
     this.lmsi = lmsi;
   }
 
-  public ISDNAddressString getNetworkNodeNumber() {
-    return networkNodeNumber;
+  public LCSLocationInfo getLcsLocationInfo() {
+    return lcsLocationInfo;
   }
 
-  public void setNetworkNodeNumber(ISDNAddressString networkNodeNumber) {
-    this.networkNodeNumber = networkNodeNumber;
-  }
-
-  public Boolean isGprsNodeIndicator() {
-    return gprsNodeIndicator;
-  }
-
-  public void setGprsNodeIndicator(Boolean gprsNodeIndicator) {
-    this.gprsNodeIndicator = gprsNodeIndicator;
-  }
-
-  public AdditionalNumber getAdditionalNumber() {
-    return additionalNumber;
-  }
-
-  public void setAdditionalNumber(AdditionalNumber additionalNumber) {
-    this.additionalNumber = additionalNumber;
-  }
-
-  public SupportedLCSCapabilitySets getSupportedLCSCapabilitySets() {
-    return supportedLCSCapabilitySets;
-  }
-
-  public void setSupportedLCSCapabilitySets(SupportedLCSCapabilitySets supportedLCSCapabilitySets) {
-    this.supportedLCSCapabilitySets = supportedLCSCapabilitySets;
-  }
-
-  public SupportedLCSCapabilitySets getAddSupportedLCSCapabilitySets() {
-    return addSupportedLCSCapabilitySets;
-  }
-
-  public void setAddSupportedLCSCapabilitySets(SupportedLCSCapabilitySets addSupportedLCSCapabilitySets) {
-    this.addSupportedLCSCapabilitySets = addSupportedLCSCapabilitySets;
-  }
-
-  public DiameterIdentity getMmeName() {
-    return mmeName;
-  }
-
-  public void setMmeName(DiameterIdentity mmeName) {
-    this.mmeName = mmeName;
-  }
-
-  public DiameterIdentity getSgsnName() {
-    return sgsnName;
-  }
-
-  public void setSgsnName(DiameterIdentity sgsnName) {
-    this.sgsnName = sgsnName;
-  }
-
-  public DiameterIdentity getSgsnRealm() {
-    return sgsnRealm;
-  }
-
-  public void setSgsnRealm(DiameterIdentity sgsnRealm) {
-    this.sgsnRealm = sgsnRealm;
-  }
-
-  public DiameterIdentity getAaaServerName() {
-    return aaaServerName;
-  }
-
-  public void setAaaServerName(DiameterIdentity aaaServerName) {
-    this.aaaServerName = aaaServerName;
+  public void setLcsLocationInfo(LCSLocationInfo lcsLocationInfo) {
+    this.lcsLocationInfo = lcsLocationInfo;
   }
 
   public GSNAddress getHGmlcAddress() {
@@ -214,23 +142,11 @@ public class SriLcsResponseParams implements Serializable {
         "msisdn=" + msisdn +
         ", imsi=" + imsi +
         ", lmsi=" + lmsi +
-        ", networkNodeNumber=" + networkNodeNumber +
-        ", gprsNodeIndicator=" + gprsNodeIndicator +
-        ", additionalNumber=" + additionalNumber +
-        ", supportedLCSCapabilitySets=" + supportedLCSCapabilitySets +
-        ", addSupportedLCSCapabilitySets=" + addSupportedLCSCapabilitySets +
-        ", mmeName=" + mmeName +
-        ", sgsnName=" + sgsnName +
-        ", sgsnRealm=" + sgsnRealm +
-        ", aaaServerName=" + aaaServerName +
+        ", lcsLocationInfo=" + lcsLocationInfo +
         ", hGmlcAddress=" + hGmlcAddress +
         ", vGmlcAddress=" + vGmlcAddress +
         ", pprAddress=" + pprAddress +
         ", addVGmlcAddress=" + addVGmlcAddress +
-        ", pslMsisdn='" + pslMsisdn + '\'' +
-        ", pslImsi='" + pslImsi + '\'' +
-        ", pslLcsReferenceNumber=" + pslLcsReferenceNumber +
-        ", pslReferenceNumber=" + pslReferenceNumber +
         '}';
   }
 }

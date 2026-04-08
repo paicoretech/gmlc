@@ -1,8 +1,11 @@
 package org.mobicents.gmlc.slee.diameter;
 
+import com.google.common.collect.Multimap;
 import org.mobicents.gmlc.slee.diameter.slg.SLgLrrAvpValues;
 import org.mobicents.gmlc.slee.diameter.slg.SLgPlaAvpValues;
 import org.mobicents.gmlc.slee.diameter.slh.SLhRiaAvpValues;
+import org.mobicents.gmlc.slee.primitives.EUTRANPositioningData;
+import org.mobicents.gmlc.slee.primitives.EUTRANPositioningDataImpl;
 import org.mobicents.gmlc.slee.primitives.EllipsoidPoint;
 import org.mobicents.gmlc.slee.primitives.Polygon;
 import org.mobicents.gmlc.slee.primitives.PolygonImpl;
@@ -11,6 +14,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaId
 import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranAdditionalPositioningData;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
 import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
@@ -18,11 +22,17 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mobicents.gmlc.slee.http.JsonWriter.bytesToHexString;
 import static org.mobicents.gmlc.slee.utils.ByteUtils.bytesToHex;
@@ -33,6 +43,7 @@ import static org.mobicents.gmlc.slee.utils.TBCDUtil.toTBCDString;
  */
 public class DiameterLcsResponseHelperForMLP {
 
+    protected final Logger logger = LoggerFactory.getLogger(DiameterLcsResponseHelperForMLP.class.getName());
     protected static final DecimalFormat coordinatesFormat = new DecimalFormat("#0.000000");
     protected static final DecimalFormat radiusFormat = new DecimalFormat("#0.00");
     protected static final DecimalFormat angleFormat = new DecimalFormat("#0.00");
@@ -59,8 +70,7 @@ public class DiameterLcsResponseHelperForMLP {
     private Boolean deferredMTLRresponseIndicator, molrShortCircuitIndicator, saiPresent = false;
     private Integer horizontalSpeed, bearing, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed;
     private Integer lcsQoSClassValue;
-    private String geranPositioningInfo, geranGanssPositioningData, geranPositioningData, utranPositioningData, utranGanssPositioningData,
-        utranAdditionalPositioningData, eUtranPositioningData;
+    private String positioningMethod;
     private String lcsEPSClientName, velocityType, civicAddress,
         mtlrMmeName, mtlrMmeRealm, mtlrSgsnName, mtlrSgsnRealm, mtlrSgsnNumber, mtlr3gppAAAServerName, mtlrMscNumber, mtlrGmlcAddress,
         dlrMmeName, dlrMmeRealm, dlrSgsnName, dlrSgsnRealm, dlrSgsnNumber, dlr3gppAAAServerName, dlrMscNumber, dlrGmlcAddress;
@@ -113,7 +123,7 @@ public class DiameterLcsResponseHelperForMLP {
                         InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.gmlcAddress));
                         this.gmlcAddress = address.getHostAddress();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -141,7 +151,7 @@ public class DiameterLcsResponseHelperForMLP {
                         InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.gmlcAddress));
                         this.gmlcAddress = address.getHostAddress();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -152,7 +162,7 @@ public class DiameterLcsResponseHelperForMLP {
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.gmlcAddress));
                     this.gmlcAddress = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
         }
@@ -190,7 +200,7 @@ public class DiameterLcsResponseHelperForMLP {
                     try {
                         ((PolygonImpl) polygon).setData(polygonEllipsoidPoints);
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -209,7 +219,7 @@ public class DiameterLcsResponseHelperForMLP {
                     this.lac = cellGlobalId.getLac();
                     this.ci = cellGlobalId.getCellIdOrServiceAreaCode();
                 } catch (MAPException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -221,7 +231,7 @@ public class DiameterLcsResponseHelperForMLP {
                     this.lac = serviceAreaId.getLac();
                     this.sac = serviceAreaId.getCellIdOrServiceAreaCode();
                 } catch (MAPException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -234,7 +244,7 @@ public class DiameterLcsResponseHelperForMLP {
                     this.eNBId = eUtranCgi.getENodeBId();
                     this.ci = eUtranCgi.getCi();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
             if (pla.getEsmlcCellInfoAvp() != null) {
@@ -247,7 +257,7 @@ public class DiameterLcsResponseHelperForMLP {
                         this.eNBId = eUtranCgi.getENodeBId();
                         this.ci = eUtranCgi.getCi();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
                 if (pla.getEsmlcCellInfoAvp().getCellPortionID() > -1)
@@ -277,38 +287,83 @@ public class DiameterLcsResponseHelperForMLP {
                         InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.gmlcAddress));
                         this.gmlcAddress = address.getHostAddress();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
 
             if (pla.getGeranPositioningInfoAvp() != null) {
-                if (pla.getGeranPositioningInfoAvp().getGERANPositioningData() != null) {
-                    PositioningDataInformation geranPositioningDataInformation = AVPHandler.lteGeranPosDataInfo2MapGeranPosDataInfo(pla.getGeranPositioningInfoAvp().getGERANPositioningData());
-                    this.geranPositioningInfo = bytesToHexString(geranPositioningDataInformation.getData());
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    if (pla.getGeranPositioningInfoAvp().getGERANPositioningData() != null) {
+                        PositioningDataInformation geranPositioningDataInformation = AVPHandler.lteGeranPosDataInfo2MapGeranPosDataInfo(pla.getGeranPositioningInfoAvp().getGERANPositioningData());
+                        ArrayList<String> methods = geranPositioningDataInformation.getLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                            if (logger.isDebugEnabled()) {
+                                // Needed to do this for previous this.positioningMethod not being grayed out ¿?
+                                logger.debug(method);
+                            }
+                        }
+                    } else if (pla.getGeranPositioningInfoAvp().getGERANGANSSPositioningData() != null) {
+                        GeranGANSSpositioningData geranGANSSpositioningData = AVPHandler.lteGeranGanssPosDataInfo2MapGeranGanssPosDataInfo(pla.getGeranPositioningInfoAvp().getGERANGANSSPositioningData());
+                        Multimap<String, String> methodsAndGanssIds = geranGANSSpositioningData.getGeranGANSSPositioningMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
                 }
-                if (pla.getGeranPositioningInfoAvp().getGERANGANSSPositioningData() != null) {
-                    GeranGANSSpositioningData geranGANSSpositioningData = AVPHandler.lteGeranGanssPosDataInfo2MapGeranGanssPosDataInfo(pla.getGeranPositioningInfoAvp().getGERANGANSSPositioningData());
-                    this.geranGanssPositioningData = bytesToHexString(geranGANSSpositioningData.getData());
+            } else if (pla.getUtranPositioningInfoAvp() != null) {
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    if (pla.getUtranPositioningInfoAvp().getUTRANPositioningData() != null) {
+                        UtranPositioningDataInfo utranPositioningDataInfo = AVPHandler.lteUtranPosData2MapUtranPosDataInfo(pla.getUtranPositioningInfoAvp().getUTRANPositioningData());
+                        ArrayList<String> methods = utranPositioningDataInfo.getUtranLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                        }
+                    } else if (pla.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData() != null) {
+                        UtranGANSSpositioningData utranGANSSpositioningData = AVPHandler.lteUtranGanssPosData2MapUtranGanssPosDataInfo(pla.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData());
+                        Multimap<String, String> methodsAndGanssIds = utranGANSSpositioningData.getLocationGeneratedMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    } else if (pla.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData() != null) {
+                        UtranAdditionalPositioningData utranAdditionalPositioningData = AVPHandler.lteUtranAddPosData2MapUtranAdditionalPositioningdata(pla.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData());
+                        Multimap<String, String> methodsAndPosId = utranAdditionalPositioningData.getLocationGeneratedMethodsAndAddPosIds();
+                        for (Map.Entry<String, String> entry : methodsAndPosId.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
+            } else if (pla.getEUtranPositioningData() != null) {
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    EUTRANPositioningData eutranPositioningData = new EUTRANPositioningDataImpl(pla.getEUtranPositioningData());
+                    if (eutranPositioningData.getPositioningDataSet() != null) {
+                        HashMap<String, Integer> methodsAndUsage = eutranPositioningData.getPositioningDataMethodsAndUsage(eutranPositioningData.getPositioningDataSet());
+                        for (HashMap.Entry<String, Integer> item : methodsAndUsage.entrySet()) {
+                            this.positioningMethod = item.getKey();
+                        }
+                    } else if (eutranPositioningData.getGNSSPositioningDataSet() != null) {
+                        Multimap<String, String> methodsAndGanssIds = eutranPositioningData.getGNSSPositioningMethodsAndGNSSIds(eutranPositioningData.getGNSSPositioningDataSet());
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    } else if (eutranPositioningData.getAdditionalPositioningDataSet() != null) {
+                        Multimap<String, String> methodsAndAddPosIds = eutranPositioningData.getEUtranAdditionalPositioningMethodsAndIds(eutranPositioningData.getAdditionalPositioningDataSet());
+                        for (Map.Entry<String, String> entry : methodsAndAddPosIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
                 }
             }
-
-            if (pla.getUtranPositioningInfoAvp() != null) {
-                if (pla.getUtranPositioningInfoAvp().getUTRANPositioningData() != null) {
-                    UtranPositioningDataInfo utranPositioningDataInfo = AVPHandler.lteUtranPosData2MapUtranPosDataInfo(pla.getUtranPositioningInfoAvp().getUTRANPositioningData());
-                    this.utranPositioningData = bytesToHexString(utranPositioningDataInfo.getData());
-                }
-                if (pla.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData() != null) {
-                    UtranGANSSpositioningData utranGANSSpositioningData = AVPHandler.lteUtranGanssPosData2MapUtranGanssPosDataInfo(pla.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData());
-                    this.utranGanssPositioningData = bytesToHexString(utranGANSSpositioningData.getData());
-                }
-                if (pla.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData() != null) {
-                    this.utranAdditionalPositioningData = bytesToHexString(pla.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData());
-                }
-            }
-
-            if (pla.getEUtranPositioningData() != null)
-                this.eUtranPositioningData = bytesToHexString(pla.getEUtranPositioningData());
 
             if (pla.getVelocityEstimate() != null) {
                 VelocityEstimate lteVelocityEstimate = AVPHandler.lteVelocityEstimate2MapVelocityEstimate(pla.getVelocityEstimate());
@@ -327,7 +382,7 @@ public class DiameterLcsResponseHelperForMLP {
             }
 
             if (pla.getCivicAddress() != null)
-                this.civicAddress = pla.getCivicAddress();
+                this.civicAddress = new String(pla.getCivicAddress().getBytes(), StandardCharsets.UTF_8);
 
             if (pla.getBarometricPressure() != null)
                 this.barometricPressure = pla.getBarometricPressure();
@@ -397,7 +452,7 @@ public class DiameterLcsResponseHelperForMLP {
                     try {
                         ((PolygonImpl) polygon).setData(polygonEllipsoidPoints);
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -435,7 +490,7 @@ public class DiameterLcsResponseHelperForMLP {
                         InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.gmlcAddress));
                         this.gmlcAddress = address.getHostAddress();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -449,7 +504,7 @@ public class DiameterLcsResponseHelperForMLP {
                     this.lac = cellGlobalId.getLac();
                     this.ci = cellGlobalId.getCellIdOrServiceAreaCode();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
             if (lrr.getServiceAreaIdentity() != null) {
@@ -460,7 +515,7 @@ public class DiameterLcsResponseHelperForMLP {
                     this.lac = serviceAreaId.getLac();
                     sac = serviceAreaId.getCellIdOrServiceAreaCode();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
             if (lrr.getEcgi() != null || lrr.getEsmlcCellInfoAvp() != null) {
@@ -481,36 +536,85 @@ public class DiameterLcsResponseHelperForMLP {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
-            /*** GERAN-Positioning-Info AVP ***/
-            if (lrr.getGeranPositioningInfoAvp() != null) {
-                if (lrr.getGeranPositioningInfoAvp().getGERANPositioningData() != null) {
-                    this.geranPositioningData = bytesToHexString(AVPHandler.lteGeranPosDataInfo2MapGeranPosDataInfo(lrr.getGeranPositioningInfoAvp().getGERANPositioningData()).getData());
-                }
-                if (lrr.getGeranPositioningInfoAvp().getGERANGANSSPositioningData() != null) {
-                    this.geranGanssPositioningData = bytesToHexString(AVPHandler.lteGeranGanssPosDataInfo2MapGeranGanssPosDataInfo(lrr.getGeranPositioningInfoAvp().getGERANGANSSPositioningData()).getData());
-                }
-            }
-
-            /*** UTRAN-Positioning-Info AVP ***/
-            if (lrr.getUtranPositioningInfoAvp() != null) {
-                if (lrr.getUtranPositioningInfoAvp().getUTRANPositioningData() != null) {
-                    this.utranPositioningData = bytesToHexString(AVPHandler.lteUtranPosData2MapUtranPosDataInfo(lrr.getUtranPositioningInfoAvp().getUTRANPositioningData()).getData());
-                }
-                if (lrr.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData() != null) {
-                    this.utranGanssPositioningData = bytesToHexString(AVPHandler.lteUtranGanssPosData2MapUtranGanssPosDataInfo(lrr.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData()).getData());
-                }
-                if (lrr.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData() != null) {
-                    this.utranAdditionalPositioningData = bytesToHexString(AVPHandler.byte2String(lrr.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData()).getBytes());
-                }
-            }
-
-            /*** UTRAN-Positioning-Info AVP ***/
+            /*** EUTRAN-Positioning-Info AVP ***/
             if (lrr.getEUtranPositioningData() != null) {
-                this.eUtranPositioningData = bytesToHexString(lrr.getEUtranPositioningData());
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    EUTRANPositioningData eutranPositioningData = new EUTRANPositioningDataImpl(lrr.getEUtranPositioningData());
+                    if (eutranPositioningData.getPositioningDataSet() != null) {
+                        HashMap<String, Integer> methodsAndUsage = eutranPositioningData.getPositioningDataMethodsAndUsage(eutranPositioningData.getPositioningDataSet());
+                        for (HashMap.Entry<String, Integer> item : methodsAndUsage.entrySet()) {
+                            this.positioningMethod = item.getKey();
+                        }
+                    } else if (eutranPositioningData.getGNSSPositioningDataSet() != null) {
+                        Multimap<String, String> methodsAndGanssIds = eutranPositioningData.getGNSSPositioningMethodsAndGNSSIds(eutranPositioningData.getGNSSPositioningDataSet());
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    } else if (eutranPositioningData.getAdditionalPositioningDataSet() != null) {
+                        Multimap<String, String> methodsAndAddPosIds = eutranPositioningData.getEUtranAdditionalPositioningMethodsAndIds(eutranPositioningData.getAdditionalPositioningDataSet());
+                        for (Map.Entry<String, String> entry : methodsAndAddPosIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
+            } /*** UTRAN-Positioning-Info AVP ***/
+            else if (lrr.getUtranPositioningInfoAvp() != null) {
+
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    if (lrr.getUtranPositioningInfoAvp().getUTRANPositioningData() != null) {
+                        UtranPositioningDataInfo utranPositioningDataInfo = AVPHandler.lteUtranPosData2MapUtranPosDataInfo(lrr.getUtranPositioningInfoAvp().getUTRANPositioningData());
+                        ArrayList<String> methods = utranPositioningDataInfo.getUtranLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                        }
+                    } else if (lrr.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData() != null) {
+                        UtranGANSSpositioningData utranGANSSpositioningData = AVPHandler.lteUtranGanssPosData2MapUtranGanssPosDataInfo(lrr.getUtranPositioningInfoAvp().getUTRANGANSSPositioningData());
+                        Multimap<String, String> methodsAndGanssIds = utranGANSSpositioningData.getLocationGeneratedMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    } else if (lrr.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData() != null) {
+                        UtranAdditionalPositioningData utranAdditionalPositioningData = AVPHandler.lteUtranAddPosData2MapUtranAdditionalPositioningdata(lrr.getUtranPositioningInfoAvp().getUTRANAdditionalPositioningData());
+                        Multimap<String, String> methodsAndPosId = utranAdditionalPositioningData.getLocationGeneratedMethodsAndAddPosIds();
+                        for (Map.Entry<String, String> entry : methodsAndPosId.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
+            } /*** GERAN-Positioning-Info AVP ***/
+            else if (lrr.getGeranPositioningInfoAvp() != null) {
+                // only taking one value as MLP admits only one for pos_method + it's the almost certain scenario
+                try {
+                    if (lrr.getGeranPositioningInfoAvp().getGERANPositioningData() != null) {
+                        PositioningDataInformation geranPositioningDataInformation = AVPHandler.lteGeranPosDataInfo2MapGeranPosDataInfo(lrr.getGeranPositioningInfoAvp().getGERANPositioningData());
+                        ArrayList<String> methods = geranPositioningDataInformation.getLocationGeneratedPositioningMethods();
+                        for (String method : methods) {
+                            this.positioningMethod = method;
+                            if (logger.isDebugEnabled()) {
+                                // Needed to do this for previous this.positioningMethod not being grayed out ¿?
+                                logger.debug(method);
+                            }
+                        }
+                    } else if (lrr.getGeranPositioningInfoAvp().getGERANGANSSPositioningData() != null) {
+                        GeranGANSSpositioningData geranGANSSpositioningData = AVPHandler.lteGeranGanssPosDataInfo2MapGeranGanssPosDataInfo(lrr.getGeranPositioningInfoAvp().getGERANGANSSPositioningData());
+                        Multimap<String, String> methodsAndGanssIds = geranGANSSpositioningData.getGeranGANSSPositioningMethodsAndGANSSIds();
+                        for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
+                            this.positioningMethod = entry.getValue();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
             }
 
             /*** Velocity Estimate AVP ***/
@@ -567,7 +671,7 @@ public class DiameterLcsResponseHelperForMLP {
                             InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.mtlrGmlcAddress));
                             this.mtlrGmlcAddress = address.getHostAddress();
                         } catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                 }
@@ -602,7 +706,7 @@ public class DiameterLcsResponseHelperForMLP {
                             InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(this.dlrGmlcAddress));
                             this.dlrGmlcAddress = address.getHostAddress();
                         } catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                 }
@@ -615,7 +719,7 @@ public class DiameterLcsResponseHelperForMLP {
 
             /*** Civic-Address AVP ***/
             if (lrr.getCivicAddress() != null) {
-                this.civicAddress = lrr.getCivicAddress();
+                this.civicAddress = new String(lrr.getCivicAddress().getBytes(), StandardCharsets.UTF_8);
             }
 
             /*** Barometric-Pressure AVP ***/
@@ -1034,11 +1138,19 @@ public class DiameterLcsResponseHelperForMLP {
     }
 
     public Long getAgeOfLocationEstimate() {
-        return ageOfLocationEstimate;
+        return this.ageOfLocationEstimate;
     }
 
     public void setAgeOfLocationEstimate(Long ageOfLocationEstimate) {
         this.ageOfLocationEstimate = ageOfLocationEstimate;
+    }
+
+    public String getPositioningMethod() {
+        return this.positioningMethod;
+    }
+
+    public void setPositioningMethod(String positioningMethod) {
+        this.positioningMethod = positioningMethod;
     }
 
     public Integer getAccuracyFulfilmentIndicator() {

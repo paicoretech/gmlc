@@ -10,10 +10,10 @@ import java.io.Serializable;
  */
 public class LocationRequestParams implements Serializable {
 
-    private final long serialVersionUID = -1L;
+    private static final long serialVersionUID = -1L;
 
-    public String operation, targetingMSISDN, targetingIMSI, domainType, locationInfoEps, activeLocation, atiExtraInfoRequested, locationInfo5gs, ratTypeRequested;
-    protected String pslMsisdn, pslImsi, pslImei, pslOccurrenceInfo, pslAreaType, pslAreaId, pslLocationEstimateType, pslDeferredLocationEventType,
+    public String operation, targetingMSISDN, targetingIMSI, targetingIMEI, domainType, locationInfoEps, activeLocation, atiExtraInfoRequested, locationInfo5gs, ratTypeRequested;
+    protected String pslOccurrenceInfo, pslAreaType, pslAreaId, pslLocationEstimateType, pslDeferredLocationEventType,
         pslLcsPriority, pslVerticalCoordinateRequest, pslResponseTimeCategory, slrCallbackUrl, psiServiceType, psiOnlyImsi, psiOnlyNnn;
     protected String pslClientExternalID, pslClientName, pslClientDialedByMS, pslRequestorIdString, pslLcsCodeword;
     protected Boolean pslVelocityRequest;
@@ -25,7 +25,7 @@ public class LocationRequestParams implements Serializable {
     public String httpRespType, curlUser, curlToken;
     protected Integer pslLcsReferenceNumber, translationType;
 
-    protected String plrUserName, plrMsisdn, plrImei, plrLcsNameString, plrLcsRequestorIdString, plrLcsCodeword, plrServiceSelection, plrAreaIdentification,
+    protected String plrLcsNameString, plrLcsRequestorIdString, plrLcsCodeword, plrServiceSelection, plrAreaIdentification,
         plrAdditionalAreaIdentification, plrVisitedPLMNIdList,
         udrMsisdn, udrImsPublicId;
     protected Long plrLcsPriority, plrHorizontalAccuracy, plrVerticalAccuracy, plrLcsSupportedGadShapes, plrLcsServiceTypeId, plrDeferredLocationType,
@@ -83,6 +83,14 @@ public class LocationRequestParams implements Serializable {
         this.targetingIMSI = targetingIMSI;
     }
 
+    public String getTargetingIMEI() {
+        return targetingIMEI;
+    }
+
+    public void setTargetingIMEI(String targetingIMEI) {
+        this.targetingIMEI = targetingIMEI;
+    }
+
     public Integer getTranslationType() {
         return translationType;
     }
@@ -137,30 +145,6 @@ public class LocationRequestParams implements Serializable {
 
     public void setRatTypeRequested(String ratTypeRequested) {
         this.ratTypeRequested = ratTypeRequested;
-    }
-
-    public String getPslMsisdn() {
-        return pslMsisdn;
-    }
-
-    public void setPslMsisdn(String pslMsisdn) {
-        this.pslMsisdn = pslMsisdn;
-    }
-
-    public String getPslImsi() {
-        return pslImsi;
-    }
-
-    public void setPslImsi(String pslImsi) {
-        this.pslImsi = pslImsi;
-    }
-
-    public String getPslImei() {
-        return pslImei;
-    }
-
-    public void setPslImei(String pslImei) {
-        this.pslImei = pslImei;
     }
 
     public String getPslOccurrenceInfo() {
@@ -457,30 +441,6 @@ public class LocationRequestParams implements Serializable {
 
     public void setPslLcsReferenceNumber(Integer pslLcsReferenceNumber) {
         this.pslLcsReferenceNumber = pslLcsReferenceNumber;
-    }
-
-    public String getPlrUserName() {
-        return plrUserName;
-    }
-
-    public void setPlrUserName(String plrUserName) {
-        this.plrUserName = plrUserName;
-    }
-
-    public String getPlrMsisdn() {
-        return plrMsisdn;
-    }
-
-    public void setPlrMsisdn(String plrMsisdn) {
-        this.plrMsisdn = plrMsisdn;
-    }
-
-    public String getPlrImei() {
-        return plrImei;
-    }
-
-    public void setPlrImei(String plrImei) {
-        this.plrImei = plrImei;
     }
 
     public String getPlrLcsNameString() {

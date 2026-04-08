@@ -14,19 +14,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}pos" maxOccurs="unbounded"/>
  *       &lt;/sequence>
@@ -41,12 +42,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "pos"
+    "pos",
+    "extensionParams"
 })
 @XmlRootElement(name = "slrep")
 public class Slrep {
@@ -55,6 +57,8 @@ public class Slrep {
     protected List<Pos> pos;
     @XmlAttribute(name = "ver")
     protected String ver;
+    @XmlElementRef(name = "extension_params", type = ExtensionParams.class, required = false)
+    protected ExtensionParams extensionParams;
 
     /**
      * Gets the value of the pos property.
@@ -80,7 +84,7 @@ public class Slrep {
      */
     public List<Pos> getPos() {
         if (pos == null) {
-            pos = new ArrayList<Pos>();
+            pos = new ArrayList<>();
         }
         return this.pos;
     }
@@ -113,4 +117,27 @@ public class Slrep {
         this.ver = value;
     }
 
+    /**
+     * Gets the value of the extensionParams property.
+     *
+     * @return
+     *     possible object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public ExtensionParams getExtensionParams() {
+        return extensionParams;
+    }
+
+    /**
+     * Sets the value of the extensionParams property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public void setExtensionParams(ExtensionParams value) {
+        this.extensionParams = value;
+    }
 }

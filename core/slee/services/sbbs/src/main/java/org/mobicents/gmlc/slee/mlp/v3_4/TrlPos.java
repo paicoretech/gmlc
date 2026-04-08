@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}msid"/>
  *         &lt;element ref="{}reference_object" maxOccurs="unbounded" minOccurs="0"/>
@@ -82,11 +82,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "referenceObject",
     "pd",
     "poserr",
-    "time",
-    "gsmNetParam",
-    "servingCell",
-    "routingAreaCode",
-    "trackingAreaCode"
+    "time"
 })
 @XmlRootElement(name = "trl_pos")
 public class TrlPos {
@@ -104,16 +100,6 @@ public class TrlPos {
     @XmlAttribute(name = "pos_method")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String posMethod;
-    // the following parameter is a customization for MAP PSL and Diameter SLg PLR
-    @XmlElement(name = "gsm_net_param")
-    protected GsmNetParam gsmNetParam;
-    // the following parameters are a customization for SS7 MAP operations and Diameter PLR/UDR commands
-    @XmlElement(name = "serving_cell")
-    protected ServingCell servingCell;
-    @XmlElement(name = "rac")
-    protected String routingAreaCode;
-    @XmlElement(name = "tac")
-    protected String trackingAreaCode;
 
     /**
      * Gets the value of the msid property.
@@ -163,7 +149,7 @@ public class TrlPos {
      */
     public List<ReferenceObject> getReferenceObject() {
         if (referenceObject == null) {
-            referenceObject = new ArrayList<ReferenceObject>();
+            referenceObject = new ArrayList<>();
         }
         return this.referenceObject;
     }
@@ -286,101 +272,5 @@ public class TrlPos {
      */
     public void setPosMethod(String value) {
         this.posMethod = value;
-    }
-
-    /**
-     * Gets the value of the gsmNetParam property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public GsmNetParam getGsmNetParam() {
-        return gsmNetParam;
-    }
-
-    /**
-     * Sets the value of the gsmNetParam property.
-     *
-     * @param gsmNetParam
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setGsmNetParam(GsmNetParam gsmNetParam) {
-        this.gsmNetParam = gsmNetParam;
-    }
-
-    /**
-     * Gets the value of the servingCell property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public ServingCell getServingCell() {
-        return servingCell;
-    }
-
-    /**
-     * Sets the value of the servingCell property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setServingCell(ServingCell value) {
-        this.servingCell = value;
-    }
-
-    /**
-     * Gets the value of the routingAreaCode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRoutingAreaCode() {
-        return routingAreaCode;
-    }
-
-    /**
-     * Sets the value of the routingAreaCode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRoutingAreaCode(String value) {
-        this.routingAreaCode = value;
-    }
-
-    /**
-     * Gets the value of the trackingAreaCode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getTrackingAreaCode() {
-        return trackingAreaCode;
-    }
-
-    /**
-     * Sets the value of the trackingAreaCode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setTrackingAreaCode(String value) {
-        this.trackingAreaCode = value;
     }
 }

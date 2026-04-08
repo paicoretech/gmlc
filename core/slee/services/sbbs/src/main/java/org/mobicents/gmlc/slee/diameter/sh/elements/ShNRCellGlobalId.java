@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.primitives.NRCellGlobalId;
 import org.mobicents.gmlc.slee.primitives.NRCellGlobalIdImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -8,6 +9,8 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShNRCellGlobalId {
+
+    private static final Logger logger = Logger.getLogger(ShNRCellGlobalId.class.getName());
 
     private static final String MCC = "mcc";
     private static final String MNC = "mnc";
@@ -62,7 +65,7 @@ public class ShNRCellGlobalId {
             this.nrCellGlobalId = decodeNRCGIBytes(nrCgiBytes);
             this.nrCellGlobalIdStr = getNRCellGlobalIdStr();
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -85,14 +88,14 @@ public class ShNRCellGlobalId {
                     sb.append(", "+MNC+"=");
                     sb.append(this.nrCellGlobalId.getMNC());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
 
                 sb.append(", "+NCI+"=");
                 sb.append(this.nrCellGlobalId.getNCI());
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
 

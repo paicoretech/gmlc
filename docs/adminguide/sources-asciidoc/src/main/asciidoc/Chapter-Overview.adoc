@@ -3,7 +3,7 @@
 
 == Control Plane Location
 GMLC stands for Gateway Mobile Location Centre and enables offering Location Based Services (LBS) to mobile subscribers roaming across several Mobile Network
-Operator's Radio Access Networks, regardless of the type of access (GERAN, UTRAN, E-UTRAN or 5GNR).
+Operator's Radio Access Networks, regardless of the type of access (GERAN, UTRAN, E-UTRAN or 5G NR).
 
 Existing Public Land Mobile Network (PLMN) elements are proprietary and run on own operating environments located in trusted operator zones which make it
 difficult to build and deploy new applications. Likewise, these network elements neither provide the tools nor the interfaces needed to access and retrieve
@@ -97,7 +97,7 @@ servers, third-party applications or the underlying database service.
 * {this-platform} {this-application} supports the whole SS7 stack layers over SIGTRAN (M3UA) such as SCCP, TCAP and MAP. SCCP can be configured to have virtually unlimited Global Title Translation rules and also supports wild characters for partial matching of Global Title digits. Technical specifications for these SS7 layers are:
 ** Signaling Connection Control Part (SCCP): International Telecommunication Union Telecommunication Standardization Sector (ITU-T) recommendations https://www.itu.int/rec/T-REC-Q.711/en/[Q.711], https://www.itu.int/rec/T-REC-Q.712/en/[Q.712], https://www.itu.int/rec/T-REC-Q.713/en/[Q.713], https://www.itu.int/rec/T-REC-Q.714/en/[Q.714], https://www.itu.int/rec/T-REC-Q.715/en/[Q.715], and https://www.itu.int/rec/T-REC-Q.715/en[Q.716]. The European Telecommunications Standards Institute (ETSI) documents its modifications to ITU-T SCCP recommendations in ETSI document number https://www.etsi.org/deliver/etsi_en/300001_300099/30000901/01.04.03_60/en_30000901v010403p.pdf[EN 300 009-1].
 ** Transaction Capabilities Application Part (TCAP): International Telecommunication Union Telecommunication Standardization Sector (ITU-T) recommendations https://www.itu.int/rec/T-REC-Q.771/en/[Q.771], https://www.itu.int/rec/T-REC-Q.772/en/[Q.772], https://www.itu.int/rec/T-REC-Q.773/en/[Q.773], https://www.itu.int/rec/T-REC-Q.774/en/[Q.774] and https://www.itu.int/rec/T-REC-Q.775/en/[Q.775]. Third Generation Partnership Project (3GPP) and ETSI documents its modifications to ITU-T TCAP recommendations in https://www.3gpp.org/ftp/Specs/archive/33_series/33.204/33204-i00.zip[3GPP TS 33.204] or ETSI https://www.etsi.org/deliver/etsi_ts/133200_133299/133204/18.00.00_60/ts_133204v180000p.pdf[TS 133 204].
-** Mobile Application Part (MAP): https://www.3gpp.org/ftp/Specs/archive/29_series/29.002/29002-i00.zip[3GPP TS 29.002] (version 18.0.0, latest released for MAP by 3GPP on 2023-09-20).
+** Mobile Application Part (MAP): https://www.3gpp.org/ftp/Specs/archive/29_series/29.002/29002-j00.zip[3GPP TS 29.002] (version 19.0.0, released by 3GPP on 2025-09-28).
 
 * {this-platform} {this-application} supports the Diameter base protocol as specified by https://datatracker.ietf.org/doc/html/rfc6733[IETF RFC 6733].
 * {this-platform} {this-application} supports Diameter-based SLh interface for Control Plane LCS as specified by https://www.3gpp.org/ftp/Specs/archive/29_series/29.173/29173-i00.zip[3GPP TS 29.173] (version 18.0.0, latest released for SLh by 3GPP on 2024-04-08).
@@ -122,7 +122,7 @@ The third-party application can be either of the following technologies on any O
 [[_restcomm_gmlc_overview_architecture_and_network_interfaces]]
 == Architecture and Network Interfaces
 
-Following figure illustrates {this-platform} {this-application} software architecture and network topology diagram interfaces for interconnection with GSM/UMTS/LTE core networks and GMLC clients and external APIs in the Internet.
+Following figure illustrates {this-platform} {this-application} software architecture and network topology diagram interfaces for interconnection with GSM/UMTS/LTE/5G core networks and GMLC clients and external APIs in the Internet.
 
 .{this-platform} {this-application} Architecture and Interfaces.
 image::images/GMLC_Arch_Interfaces.jpg[]
@@ -135,7 +135,7 @@ control plane:
 * *MAP SRILCS*: Send Routing Information for Location Services, to gather IMSI and core network entity address (MSC or SGSN) to which send further location request.
 * *MAP PSL*: Provide Subscriber Location, to gather location information from the UTRAN (UMTS Terrestrial Radio Access Network), which should include, besides Cell Global Identity, location estimates in geographic coordinates of the target User Equipment, depending on available positioning methods (e.g. E-OTD, OTDOA, U-TDOA, A-GPS, etc.).
 * *MAP SLR*: Subscriber Location Report, to gather location of a target User Equipment from the MSC or SGSN when a request for location is either implicitly administered or made at some earlier time in MAP PSL for event based deferred type of location.
-* Diameter Routing Information Request/Answer (*RIR/RIA*): analogous to MAP SRILCS but over Diameter based SLh interface between GMLC and HSS.
+* Diameter SLh Routing Information Request/Answer (*RIR/RIA*): analogous to MAP SRILCS but over Diameter based SLh interface between GMLC and HSS.
 * ELP Provide Location Request/Answer (*PLR/PLA*): analogous to MAP PSL but over Diameter-based Evolved Packet Core Location Protocol (ELP) SLg interface between GMLC and MME.
 * ELP Location Report Request/Answer (*LRR/LRA*): analogous to MAP SLR, but over Diameter-based Evolved Packet Core Location Protocol (ELP) SLg interface between GMLC and MME.
 * Sh User-Data-Request/Answer (*UDR/UDA*): similar to MAP ATI, but over Diameter-based IMS Sh interface between the GMLC (acting as a SIP-AS) and the HSS.
@@ -363,6 +363,7 @@ image::images/EllipsoidArc.png[EllipsoidArc, align="center"]
 == SS7 MAP Operations
 
 Specified by Both MAP ATI and MAP PSI could be conveyed to Visited-PLMN (offnet) rather than H-PLMN (on-net), but either would demand roaming agreements and allowed SS7 credentials.
+
 SS7 *MAP ATI* (`Any-Time-Interrogation`), is used to gather subscriber information from the HLR including Cell Global Identification, age of location information and potentially other location and subscriber information parameters such as the IMEI, IMSI, MNP information, location number, VLR/MSC/SGSN SCCP addresses, MME name, base station geographic/geodetic coordinates, E-UTRAN CGI (LTE Cell ID), LTE tracking area identity, subscriber's state, GPRS routeing area identity, LSA identity, 5GS Location Information including NR-CGI (5G Cell ID), NR tracking area identity, last Radio Access Technology (RAT) type, AMF address, etc.
 
 SS7 *MAP PSI* (`Provide Subscriber Information`), is used to gather subscriber information as with MAP ATI but from the MSC/VLR or SGSN is currently attached to. This MAP operation is preceded by MAP SRISM or SRI for routing it to the appropriate MSC/VLR or SGSN, thus the subscriber information gathered from PSI also contains the IMSI.

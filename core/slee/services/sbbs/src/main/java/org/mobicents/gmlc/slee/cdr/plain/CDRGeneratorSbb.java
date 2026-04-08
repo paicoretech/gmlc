@@ -653,7 +653,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             }
 
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                     if (locationInformation.getCellGlobalIdOrServiceAreaIdOrLAI() != null) {
@@ -675,7 +675,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 cgiCiorSac = locationInformation.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode();
                                 cdrModel.setCellGlobalIdServiceAreaIdCI(String.valueOf(cgiCiorSac));
                             } catch (MAPException e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         if (locationInformation.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength() != null) {
@@ -692,7 +692,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 // CGI CI
                                 cdrModel.setCellGlobalIdServiceAreaIdCI("");
                             } catch (MAPException e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                     }
@@ -856,7 +856,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 ecgiCi = eutrancgi.getCi();
                                 cdrModel.setEutranCellGlobalIdCI(String.valueOf(ecgiCi));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         if (cellPortionId != null) {
@@ -880,7 +880,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 taiTac = tai.getTAC();
                                 cdrModel.setTaiTAC(String.valueOf(taiTac));
                             } catch (MAPException e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         /**
@@ -942,7 +942,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 ecgiCi = eutrancgi.getCi();
                                 cdrModel.setEutranCellGlobalId5GsCI(String.valueOf(ecgiCi));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         if (cellPortionId != null) {
@@ -966,7 +966,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 taiTac = trackingAreaId.getTAC();
                                 cdrModel.setTai5GsTAC(String.valueOf(trackingAreaId.getTAC()));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         /**
@@ -1029,7 +1029,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 ecgiCi = eUtranCgi.getCi();
                                 cdrModel.setEutranCellGlobalId5GsCI(String.valueOf(ecgiCi));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         if (cellPortionId != null) {
@@ -1053,7 +1053,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                                 taiTac = taId.getTAC();
                                 cdrModel.setTai5GsTAC(String.valueOf(taId.getTAC()));
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.severe(e.getMessage());
                             }
                         }
                         /**
@@ -1244,7 +1244,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             cdrModel.setPsCellGlobalIdServiceAreaIdOrLAICI(String.valueOf(locationInformationGPRS.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode()));
                             cgiCiorSac = locationInformationGPRS.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                     if (locationInformationGPRS.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength() != null) {
@@ -1257,7 +1257,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             cgiLac = locationInformationGPRS.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getLac();
                             cdrModel.setPsCellGlobalIdServiceAreaIdOrLAICI("");
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                 }
@@ -1285,7 +1285,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                         raiRac = rai.getRAC();
                         cdrModel.setRaiRAC(String.valueOf(raiRac));
                     } catch (MAPException e) {
-                        e.printStackTrace();
+                        logger.severe(e.getMessage());
                     }
                 }
                 /**
@@ -1480,7 +1480,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             nci = shlocationInformation5GS.getNRCellGlobalIdentity().getNCI();
                             cdrModel.setNrCellGlobalId5GsNCI(String.valueOf(shlocationInformation5GS.getNRCellGlobalIdentity().getNCI()));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                     /*
@@ -1510,7 +1510,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             nci = locationInformation5GS.getNRCellGlobalId().getNCI();
                             cdrModel.setNrCellGlobalId5GsNCI(String.valueOf(locationInformation5GS.getNRCellGlobalId().getNCI()));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                     /*
@@ -1536,7 +1536,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                             nrTaiTac = locationInformation5GS.getNRTAId().getNrTAC();
                             cdrModel.setTai5GsTAC(String.valueOf(locationInformation5GS.getNRTAId().getNrTAC()));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.severe(e.getMessage());
                         }
                     }
                 }
@@ -1551,7 +1551,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     cdrModel.setVisitedPlmnIdMCC(String.valueOf(visitedPlmnId.getMcc()));
                     cdrModel.setVisitedPlmnIdMNC(String.valueOf(visitedPlmnId.getMnc()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
             }
             /*
@@ -1903,7 +1903,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     cgiCiorSac = lcsCGIorSAIorLAI.getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode();
                     cdrModel.setLcsCGIorSAIorLAICI(String.valueOf(lcsCGIorSAIorLAI.getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode()));
                 } catch (MAPException e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
             }
             if (lcsCGIorSAIorLAI.getLAIFixedLength() != null) {
@@ -1918,7 +1918,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     cgiLac = lcsCGIorSAIorLAI.getLAIFixedLength().getLac();
                     cdrModel.setLcsCGIorSAIorLAILAC(String.valueOf(lcsCGIorSAIorLAI.getLAIFixedLength().getLac()));
                 } catch (MAPException e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
             }
         }
@@ -1945,7 +1945,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                 ecgiCi = lcsEutranCgi.getCi();
                 cdrModel.setLcsEutranCgiCI(String.valueOf(ecgiCi));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
         if (cellPortionId != null) {
@@ -2353,7 +2353,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(hGmlcAddressData));
                     hGmlcAddressData = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
                 cdrModel.setHgmlcAddressData(hGmlcAddressData);
                 stringBuilder.append(cdrModel.getHgmlcAddressData()).append(SEPARATOR);
@@ -2383,7 +2383,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(vGmlcAddressData));
                     vGmlcAddressData = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
                 cdrModel.setVgmlcAddressData(vGmlcAddressData);
                 stringBuilder.append(cdrModel.getVgmlcAddressData()).append(SEPARATOR);
@@ -2413,7 +2413,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(pprAddressData));
                     pprAddressData = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.severe(e.getMessage());
                 }
                 cdrModel.setPprAddressData(pprAddressData);
                 stringBuilder.append(cdrModel.getPprAddressData()).append(SEPARATOR);
@@ -2535,7 +2535,7 @@ public abstract class CDRGeneratorSbb extends MobileCoreNetworkInterfaceSbb impl
                     stringBuilder.append(SEPARATOR);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         } else {
 

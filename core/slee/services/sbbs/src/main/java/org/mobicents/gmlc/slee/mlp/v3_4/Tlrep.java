@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -22,13 +23,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}req_id"/>
  *         &lt;element ref="{}lcs_ref" minOccurs="0"/>
@@ -54,15 +55,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "reqId",
     "lcsRef",
     "trlPos",
-    "timeRemaining"
+    "timeRemaining",
+    "extensionParams"
 })
 @XmlRootElement(name = "tlrep")
 public class Tlrep {
@@ -80,6 +82,8 @@ public class Tlrep {
     @XmlAttribute(name = "more")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String more;
+    @XmlElementRef(name = "extension_params", type = ExtensionParams.class, required = false)
+    protected ExtensionParams extensionParams;
 
     /**
      * Gets the value of the reqId property.
@@ -153,7 +157,7 @@ public class Tlrep {
      */
     public List<TrlPos> getTrlPos() {
         if (trlPos == null) {
-            trlPos = new ArrayList<TrlPos>();
+            trlPos = new ArrayList<>();
         }
         return this.trlPos;
     }
@@ -238,4 +242,27 @@ public class Tlrep {
         this.more = value;
     }
 
+    /**
+     * Gets the value of the extensionParams property.
+     *
+     * @return
+     *     possible object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public ExtensionParams getExtensionParams() {
+        return extensionParams;
+    }
+
+    /**
+     * Sets the value of the extensionParams property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public void setExtensionParams(ExtensionParams value) {
+        this.extensionParams = value;
+    }
 }

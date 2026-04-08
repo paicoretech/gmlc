@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
@@ -10,6 +11,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShCellGlobalId {
+
+  private static final Logger logger = Logger.getLogger(ShCellGlobalId.class.getName());
 
   private static final String MCC = "mcc";
   private static final String MNC = "mnc";
@@ -85,7 +88,7 @@ public class ShCellGlobalId {
         sb.append(this.cellGlobalIdOrServiceAreaIdFixedLength.getCellIdOrServiceAreaCode());
 
       } catch (MAPException e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
 
     }

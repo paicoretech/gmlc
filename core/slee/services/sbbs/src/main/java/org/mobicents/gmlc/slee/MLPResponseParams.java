@@ -14,8 +14,8 @@ class MLPResponseParams implements Serializable {
    /*******************/
    String mlpMsisdn;
    Integer mlpMcc, mlpMnc, mlpLac, mlpCi, mlpSac, mlpTac, mlpRac, mlpNrTac;
-   Long mlpEci, mlpNci;
-   String mlpVlrNo, mlpMscNo, mlpMmeName, mlpSgsnName;
+   Long mlpUci, mlpEci, mlpEnbId, mlpNci;
+   String mlpVlrNo, mlpMscNo, mlpMmeName, mlpMmeRealm, mlpSgsnName, mlpSgsnRealm, mlpSgsnNumber, mlpAmfAddress;
    String mlpState;
    Integer mlpAge;
    Double x;
@@ -28,7 +28,8 @@ class MLPResponseParams implements Serializable {
            mlpUncertaintyAltitude, mlpUncertaintyInnerRadius, mlpOffsetAngle, mlpIncludedAngle;
    Integer mlpConfidence, mlpAltitude, mlpInnerRadius, numberOfPoints;
    Integer mlpAgeOfLocationEstimate, mlpAccuracyFulfilmentIndicator;
-   Integer mlpTargetHorizontalSpeed, mlpTargetVerticalSpeed;
+   String mlpPositioningMethod;
+   Integer mlpTargetHorizontalSpeed, mlpTargetVerticalSpeed, mlpUncertaintyHorizontalSpeed, mlpUncertaintyVerticalSpeed, mlpBearing;
    String mlpVelocityType;
    String mlpImei, mlpImsi, mlpLmsi;
    String mlpCivicAddress;

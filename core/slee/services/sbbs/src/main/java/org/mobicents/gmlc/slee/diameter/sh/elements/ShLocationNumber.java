@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -10,6 +11,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShLocationNumber {
+
+  private static final Logger logger = Logger.getLogger(ShLocationNumber.class.getName());
 
   private static final String NUMBERING_PLAN_INDICATOR = "numberingPlanIndicator";
   private static final String INTERNAL_NETWORK_NUMBER_INDICATOR = "internalNetworkNumberIndicator";
@@ -76,7 +79,7 @@ public class ShLocationNumber {
     try {
       locationNumber = new LocationNumberImpl(lnBytes);
     } catch (ParameterException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
     return locationNumber;
   }

@@ -18,11 +18,15 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TimeZone;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class AtiResponseParams {
+
+    protected final Logger logger = LoggerFactory.getLogger(AtiResponseParams.class.getName());
 
     /**
      *
@@ -148,7 +152,7 @@ public class AtiResponseParams {
                 }
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -207,7 +211,7 @@ public class AtiResponseParams {
                 setUncertainty(locationInformationGPRS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -314,7 +318,7 @@ public class AtiResponseParams {
                 setUncertainty(locationInformationEPS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -375,7 +379,7 @@ public class AtiResponseParams {
                 setUncertainty(locationInformation5GS.getGeodeticInformation().getUncertainty());
             }
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

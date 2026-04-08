@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeClientReferenceNumber;
+import static org.mobicents.gmlc.slee.http.JsonWriter.writeImei;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeImsi;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeMsisdn;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeNetwork;
@@ -26,7 +27,7 @@ public class OnErrorResponseJsonBuilder {
     public OnErrorResponseJsonBuilder() {
     }
 
-    public static String buildJsonResponseOnError(String msisdn, String imsi, String operation, String errorMessage, Integer clientRefNum,
+    public static String buildJsonResponseOnError(String msisdn, String imsi, String imei, String operation, String errorMessage, Integer clientRefNum,
                                                   String networkNodeNumber, String addNetworkNodeNumber, String host, String realm) {
 
         String network, protocol;
@@ -68,6 +69,7 @@ public class OnErrorResponseJsonBuilder {
         writeOperation(operation, errorResponseJsonObject);
         writeMsisdn(msisdn, errorResponseJsonObject);
         writeImsi(imsi, errorResponseJsonObject);
+        writeImei(imei, errorResponseJsonObject);
         writeNetworkNodeNumber(networkNodeNumber, errorResponseJsonObject);
         writeAdditionalNetworkNodeNumber(addNetworkNodeNumber, errorResponseJsonObject);
         writeOriginHostName(host,errorResponseJsonObject);

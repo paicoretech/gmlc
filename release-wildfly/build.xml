@@ -20,7 +20,7 @@
     <property name="restcomm-smpp-ra.version" value="7.1.0-134" />
     <property name="checkout.permission-extension.dir" value="${checkout.dir}/Permission-Extension" />
     <property name="paic.url" value="http://45.79.17.57/PAIC_Extended" />
-    <property name="restcomm.gmlc.release.version" value="6.0.1-SNAPSHOT"/>
+    <property name="restcomm.gmlc.release.version" value="6.1.0-SNAPSHOT"/>
 
     <!-- Options for referring to release resource versions -->
     <!-- SLEE stuff -->
@@ -29,11 +29,11 @@
     <property name="permission.extension.version" value="1.0.0-15" />
 
     <!-- jss7 stack and MAP RA -->
-    <property name="restcomm-jss7.version" value="9.0.0-318" />
+    <property name="restcomm-jss7.version" value="9.0.0-328" />
     <property name="checkout.restcomm-jss7.dir" value="${checkout.dir}/Extended-jSS7-${restcomm-jss7.version}" />
 
     <!-- MAP RA -->
-    <property name="restcomm-map-ra.build-number" value="215" />
+    <property name="restcomm-map-ra.build-number" value="217" />
     <property name="restcomm-map-ra.version" value="9.0.0-${restcomm-map-ra.build-number}" />
     <property name="restcomm-map-ra.download.zip.url" value="${paic.url}/jain-slee.ss7/${restcomm-map-ra.version}/resources/map.zip" />
 
@@ -49,7 +49,7 @@
     <property name="restcomm-smpp-ra.distro.docs.path" value="${checkout.dir}/${restcomm-smpp-ra.download.docs.file}" />
 
     <!-- Diameter mux  -->
-    <property name="restcomm-diam.build-number" value="302" />
+    <property name="restcomm-diam.build-number" value="303" />
     <property name="restcomm-diam.version" value="2.0.0-${restcomm-diam.build-number}" />
     <property name="restcomm-diam.zip" value="restcomm-diameter-mux-wildfly-${restcomm-diam.version}.zip"/>
     <property name="restcomm-diam.download.url" value="${paic.url}/extended_jdiameter/${restcomm-diam.version}/${restcomm-diam.zip}" />

@@ -117,6 +117,8 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceMode
 import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeModificationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeModificationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
@@ -466,7 +468,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 
@@ -480,7 +482,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateMapAti method:" + e));
         }
       }
 
@@ -539,7 +541,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateSRILCS method:" + e));
         }
       }
 
@@ -584,7 +586,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
           Thread.sleep(3000);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
-          e.printStackTrace();
+          logger.error(String.format("Error on initiateMapPSL method:" + e));
         }
       }
 
@@ -901,6 +903,16 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
 
   @Override
   public void onAnyTimeSubscriptionInterrogationResponse(AnyTimeSubscriptionInterrogationResponse anyTimeSubscriptionInterrogationResponse) {
+
+  }
+
+  @Override
+  public void onAnyTimeModificationRequest(AnyTimeModificationRequest anyTimeModificationRequest) {
+
+  }
+
+  @Override
+  public void onAnyTimeModificationResponse(AnyTimeModificationResponse anyTimeModificationResponse) {
 
   }
 
@@ -1877,7 +1889,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
         long current = System.currentTimeMillis();
         float sec = (float) (current - prev) / 1000f;
         prev = current;
-        logger.warn("Completed 10000 Dialogs, dlg/sec: " + (float) (10000 / sec));
+        logger.warn("Completed 10000 Dialogs, dlg/sec: " + (10000 / sec));
       }
     } else {
       if (this.endCount == NDIALOGS) {
@@ -1887,7 +1899,7 @@ public class Client extends TestHarness implements MAPServiceMobilityListener, M
         float sec = (float) (current - start) / 1000f;
 
         logger.warn("Total time in sec = " + sec);
-        logger.warn("Throughput = " + (float) (NDIALOGS / sec));
+        logger.warn("Throughput = " + (NDIALOGS / sec));
       }
     }
   }

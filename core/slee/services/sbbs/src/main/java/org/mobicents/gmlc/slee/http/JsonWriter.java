@@ -142,7 +142,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("vlrNumber", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -264,7 +264,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("address", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -282,7 +282,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("mscNumber", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -316,7 +316,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("latitude", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -334,7 +334,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("longitude", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -350,7 +350,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertaintySemiMajorAxis", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -366,7 +366,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertaintySemiMinorAxis", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -398,7 +398,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertaintyAltitude", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -422,7 +422,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertaintyInnerRadius", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -454,7 +454,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertainty", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -470,7 +470,7 @@ public class JsonWriter {
             }
         }  catch (NumberFormatException nfe) {
             jsonObject.add("uncertainty", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -593,7 +593,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("sgsnNumber", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -667,7 +667,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("mnpImsi", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -685,7 +685,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("mnpMsisdn", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -719,7 +719,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("lmsi", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -737,7 +737,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("msisdn", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -755,7 +755,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("networkNodeNumber", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 
@@ -773,7 +773,7 @@ public class JsonWriter {
             }
         } catch (NumberFormatException nfe) {
             jsonObject.add("additionalNetworkNodeNumber", JsonNull.INSTANCE);
-            nfe.printStackTrace();
+            logger.error(nfe.getMessage());
         }
     }
 

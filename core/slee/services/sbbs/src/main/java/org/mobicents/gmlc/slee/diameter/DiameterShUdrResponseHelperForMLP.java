@@ -9,6 +9,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
@@ -17,11 +19,12 @@ import java.text.DecimalFormat;
  */
 public class DiameterShUdrResponseHelperForMLP {
 
+    protected final Logger logger = LoggerFactory.getLogger(DiameterShUdrResponseHelperForMLP.class.getName());
     protected static final DecimalFormat coordinatesFormat = new DecimalFormat("#0.000000");
     protected static final DecimalFormat radiusFormat = new DecimalFormat("#0.00");
 
     private Integer mcc, mnc, lac, ci, sac, tac, rac, ratType;
-    private Long eci, nci;
+    private Long eci, enbId, nci;
     private Integer ageOfLocationInfo;
     private String imsPublicId, msisdn, vlrNumber, mscNumber, sgsnNumber, nnn, mmeName, amfAddress, smsfAddress;
     private String subscriberState;
@@ -69,7 +72,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.lac = csCgi.getLac();
                             this.ci = csCgi.getCellIdOrServiceAreaCode();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getCsServiceAreaId() != null) {
@@ -80,7 +83,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.lac = csSai.getLac();
                             this.sac = csSai.getCellIdOrServiceAreaCode();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getCsLocationAreaId() != null) {
@@ -90,7 +93,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = csLai.getMNC();
                             this.lac = csLai.getLac();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getCsGeographicalInformation() != null) {
@@ -140,11 +143,11 @@ public class DiameterShUdrResponseHelperForMLP {
                         try {
                             this.mcc = eUtranCgi.getMCC();
                             this.mnc = eUtranCgi.getMNC();
-                            // eNBId = eUtranCgi.getENodeBId();
+                            this.enbId = eUtranCgi.getENodeBId();
                             this.eci = eUtranCgi.getEci();
                             this.ci = eUtranCgi.getCi();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getTrackingAreaId() != null) {
@@ -154,7 +157,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = trackingAreaId.getMNC();
                             this.tac = trackingAreaId.getTAC();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getCsLocalTimeZone() != null) {
@@ -173,7 +176,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.lac = psCgi.getLac();
                             this.ci = psCgi.getCellIdOrServiceAreaCode();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getPsServiceAreaId() != null) {
@@ -184,7 +187,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.lac = psSai.getLac();
                             this.sac = psSai.getCellIdOrServiceAreaCode();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getPsLocationAreaId() != null) {
@@ -194,7 +197,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = psLai.getMNC();
                             this.lac = psLai.getLac();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getRoutingAreaId() != null) {
@@ -205,7 +208,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.lac = raId.getLAC();
                             this.rac = raId.getRAC();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getPsGeographicalInformation() != null) {
@@ -273,7 +276,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             // eNBId = eUtranCgi.getENodeBId();
                             this.ci = eUtranCgi.getCi();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getTrackingAreaId() != null) {
@@ -283,7 +286,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = trackingAreaId.getMNC();
                             this.tac = trackingAreaId.getTAC();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getEpsGeographicalInformation() != null) {
@@ -349,7 +352,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = nrCellGlobalId.getMNC();
                             this.nci = nrCellGlobalId.getNCI();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getEutrancgi() != null) {
@@ -361,7 +364,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             //sh5gsENBid = eUtranCgi.getENodeBId();
                             this.ci = eUtranCgi.getCi();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getTrackingAreaId() != null) {
@@ -371,7 +374,7 @@ public class DiameterShUdrResponseHelperForMLP {
                             this.mnc = trackingAreaId.getMNC();
                             this.tac = trackingAreaId.getTAC();
                         } catch (MAPException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage());
                         }
                     }
                     if (uda.getSh5GSGeographicalInformation() != null) {
@@ -541,6 +544,14 @@ public class DiameterShUdrResponseHelperForMLP {
 
     public void setEci(Long eci) {
         this.eci = eci;
+    }
+
+    public Long getEnbId() {
+        return enbId;
+    }
+
+    public void setEnbId(Long enbId) {
+        this.enbId = enbId;
     }
 
     public Long getNci() {

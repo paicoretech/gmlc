@@ -17,7 +17,7 @@ The location information depicted in this document is mostly fictitious or mixed
 [underline]#HTTP POST request:#
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST Response:#
@@ -64,8 +64,7 @@ curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST
     "mnpMsisdn": 59899077937,
     "mnpImsi": 748026871012345,
     "mnpRouteingNumber": "598123"
-  },
-  "msClassmark": "393A52"
+  }
 }
 ----
 
@@ -166,7 +165,7 @@ An MLP SLIA including an unsuccessful location information retrieval due to "Unk
 The HTTP POST message could contain the domain type (`cs` for CS domain), i.e.:
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 The response example shown next includes EPS Location Information within the CS Location Information, i.e., the location information retrieved from the VLR which contains location information from the 4G LTE coverage at which the target subscriber is currently attached to (MSC/VLR gathers this information from the MME via the SGs interface, a GTPv2-C based interface which enables interoperability cross different network technologies):
@@ -205,8 +204,7 @@ The response example shown next includes EPS Location Information within the CS 
     "mnpMsisdn": 59899077937,
     "mnpImsi": 748026871012345,
     "mnpRouteingNumber": "598123"
-  },
-  "msClassmark": "393A52"
+  }
 }
 ----
 
@@ -215,7 +213,7 @@ NOTE: "EPSLocationInformation" might be obtained not as a child of "CSLocationIn
 MAP ATI could be conveyed to the SGSN in the PS domain (GPRS network). This should be reflected in the `domain` parameter in the HTTP POST. An example of the HTTP POST request and the corresponding response is shown next:
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST Response:#
@@ -258,11 +256,7 @@ curl -d "msisdn=59899077937&operation=ATI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=p
     "currentLocationRetrieved": true,
     "sgsnNumber": 5982133021
   },
-  "subscriberState": "psAttachedReachableForPaging",
-  "GPRSMSClass": {
-    "msNetworkCapability": "3130303032303331",
-    "msRadioAccessCapability": "31303030323033313730383134"
-  }
+  "subscriberState": "psAttachedReachableForPaging"
 }
 ----
 
@@ -353,7 +347,7 @@ HTTP POST request and the corresponding response are shown next for a MAP PSI re
 [underline]#HTTP POST request for CS domain# (not including the domain would result in identical result as CS is considered the default domain by the GMLC for MAP ATI requests):
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON response:#
@@ -474,7 +468,7 @@ As with MAP ATI, MAP PSI could be conveyed to the SGSN in the PS domain. This sh
 [underline]#HTTP POST request for PS domain:#
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&domain=ps" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response:#
@@ -640,7 +634,7 @@ Instead of SRISM, call handling SRI could be used instead, previous to sending P
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=useSri" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 Next figure depicts the network topology and message call flow needed for gathering more complete mobile subscriber's location information within a GSM/UMTS core network by the execution of call handling MAP SRI and PSI operations between the GMLC and the MNO's HLR and the serving MSC/VLR or SGSN.
@@ -652,7 +646,7 @@ image::images/Onnet_MAP-SRI-PSI.jpg[]
 
 [source,shell]
 ----
-curl -d "msisdn=59899077937&operation=PSI&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=543210987654321&psiNnn=97891000321" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59899077937&token=RmVybmFuZG9NZW5kaW9yb3o&psiServiceType=psiFirst&psiImsi=543210987654321&psiNnn=97891000321" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 If any of *psiServiceType*, *psiImsi* or *psiNnn* is missing, by default SRISM will be used prior to sending the PSI.
@@ -672,7 +666,7 @@ This can be done by adding `domain`, `activeLocation`, `locationInfoEps`, `locat
 [underline]#HTTP POST request:#
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=RmVybmFuZG9NZW5kaW9yb3o&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response#, fist example (only CS location information is retrieved from the core network):
@@ -709,7 +703,7 @@ curl -d "msisdn=573195897484&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&ratType
       "uncertainty": 18.7
     },
     "mscNumber": 578978934,
-    "vlrNumber": 578978935,
+    "vlrNumber": 578978934,
     "currentLocationRetrieved": true,
     "ageOfLocationInformation": 0
   }
@@ -790,7 +784,7 @@ An example of the corresponding answer to the MLP SLIR (after reception of Diame
 Following, an example of a request in which the PS domain is explicitly requested, while neither an active location retrieval nor EPS Location Information are requested:
 [source,shell]
 ----
-curl -d "token=n4ndO&msisdn=59898077939&operation=UDR&locationInfoEps=false&activeLocation=false" -X POST 192.168.87.100:8080/restcomm/gmlc/rest -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "token=n4ndO&msisdn=59898077939&locationInfoEps=false&activeLocation=false" -X POST 192.168.87.100:8080/restcomm/gmlc/rest -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response#, second example (only PS location information is retrieved from the core network):
@@ -843,7 +837,7 @@ curl -d "token=n4ndO&msisdn=59898077939&operation=UDR&locationInfoEps=false&acti
 Following, an HTTP POST example destined to the CS domain, while both an active location retrieval and EPS Location Information are requested, along with the RAT type:
 [source,shell]
 ----
-curl -d "msisdn=573017706052&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573017706052&token=RmVybmFuZG9NZW5kaW9yb3o&domain=cs&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response#, third example (only EPS location information extension is retrieved):
@@ -881,7 +875,7 @@ curl -d "msisdn=573017706052&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&domain=
 Following, an HTTP POST example destined to the PS domain, while both an active location retrieval and 5GS Location Information are requested, along with the RAT type:
 [source,shell]
 ----
-curl -d "msisdn=59897077938&operation=UDR&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfo5gs=true&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=59897077938&token=RmVybmFuZG9NZW5kaW9yb3o&locationInfo5gs=true&ratTypeRequested=true" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response# last example (only 5GS location information with its extensions is retrieved):
@@ -943,7 +937,7 @@ HTTP POST request and the corresponding response are shown next for a MAP SRILCS
 [underline]#HTTP POST Request for MAP SRILCS-PSL:#
 [source,shell]
 ----
-curl -d "msisdn=61909077937&operation=PSL&lcsClientType=0&lcsClientExternalID=6543210987&lcsLocationType=currentLocation&clientReferenceNumber=30000&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=61909077937&lcsClientType=0&lcsClientExternalID=6543210987&lcsLocationType=currentLocation&clientReferenceNumber=30000&token=RmVybmFuZG9NZW5kaW9yb3o" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON Response#
@@ -958,11 +952,14 @@ curl -d "msisdn=61909077937&operation=PSL&lcsClientType=0&lcsClientExternalID=65
   "SRILCS": {
     "msisdn": 61909077937,
     "imsi": 505036871012345,
-    "networkNodeNumber": 6100003451,
-    "gprsNodeIndicator": false,
-    "lmsi": "7202eb37",
-    "additionalNetworkNodeNumber": 61000030215,
-    "sgsnName": "mnc003.mcc505.gprs"
+    "LCSLocationInfo": {
+      "networkNodeNumber": 6100003451,
+      "gprsNodeIndicator": false,
+      "lmsi": "7202eb37",
+      "additionalNetworkNodeNumber": 61000030215,
+      "sgsnName": "sgsn19.mnc03.mcc505.gprs",
+      "sgsnRealm": "mnc03.mcc505.gprs"
+    }
   },
   "PSL": {
     "LocationEstimate": {
@@ -989,30 +986,6 @@ curl -d "msisdn=61909077937&operation=PSL&lcsClientType=0&lcsClientExternalID=65
       }
     },
     "ageOfLocationEstimate": 0,
-    "UtranPositioningData": {
-      "PositioningDataSet": {
-        "Item-0": {
-          "method": "Mobile Assisted GPS",
-          "usage": 0
-        },
-        "Item-1": {
-          "method": "Mobile Based GPS",
-          "usage": 0
-        },
-        "Item-2": {
-          "method": "U-TDOA",
-          "usage": 0
-        },
-        "Item-3": {
-          "method": "OTDOA",
-          "usage": 3
-        },
-        "Item-4": {
-          "method": "Conventional GPS",
-          "usage": 4
-        }
-      }
-    },
     "CGI": {
       "mcc": 505,
       "mnc": 3,
@@ -1041,25 +1014,6 @@ curl -d "msisdn=61909077937&operation=PSL&lcsClientType=0&lcsClientExternalID=65
     },
     "TargetServingNodeForHandover": {
       "mmeNumber": 61000040523
-    },
-    "BarometricPressure": {
-      "measuredPa": 83122
-    },
-    "CivicAddress": {
-      "country": "AU",
-      "A1": "NSW",
-      "A3": "Wollongong",
-      "A4": "North Wollongong",
-      "RD": "Flinders",
-      "STS": "Street",
-      "RDBR": "Campbell Street",
-      "LMK": "Gilligan's Island",
-      "LOC": "Corner",
-      "NAM": "Video Rental Store",
-      "PC": "2500",
-      "ROOM": "Westerns and Classics",
-      "PLC": "store",
-      "POBOX": "Private Box 15"
     }
   }
 }
@@ -1164,7 +1118,7 @@ A MAP PSL request may include parameters for triggering events from the RAN, for
 
 [source,shell]
 ----
-curl -d "msisdn=60192235906&operation=PSL&clientReferenceNumber=15817&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=entering&lcsAreaType=cellGlobalId&lcsAreaId=502-19-3081-33045&lcsAreaEventOccurrenceInfo=multipleTimeEvent&lcsAreaEventIntervalTime=60&lcsServiceTypeId=4" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=60192235906&clientReferenceNumber=15817&lcsClientType=0&lcsClientExternalID=6543210987654321&lcsLocationType=activateDeferredLocation&lcsDeferredLocationType=entering&lcsAreaType=cellGlobalId&lcsAreaId=502-19-3081-33045&lcsAreaEventOccurrenceInfo=multipleTimeEvent&lcsAreaEventIntervalTime=60&lcsServiceTypeId=4" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 Following, see an example of an HTTP POST message but including an OMA MLP payload for a *Triggered Location Reporting Service* (MLP TLRR) included in the HTTP POST request received by {this-platform} {this-application} for the exact same MAP SRILCS-PSL triggering area event reports as for the previous example using the JSON API.
@@ -1285,7 +1239,7 @@ The HTTP request sent to the HTTP server indicated in the `lcsCallbackUrl` param
   "DeferredMTLRData" : {
     "deferredLocationEventType" : "LEAVING_FROM_AREA",
     "terminationCause" : "MT_LR_RESTART",
-    "ServingNode" : {
+    "LCSLocationInfo" : {
       "gprsNodeIndicator" : true,
       "networkNodeNumber" : 6010009348,
       "lmsi" : "7202e98c",
@@ -1664,8 +1618,8 @@ Location reports might come from the UMTS radio access network without a previou
         "release6" : false,
         "release7" : false
     },
-    "sgsnName" : "sgsn1B34.mnc019.mcc502.gprs",
-    "sgsnRealm" : "mnc019.mcc502.gprs"
+    "sgsnName" : "sgsn1B34.mnc01.mcc748.gprs",
+    "sgsnRealm" : "mnc02.mcc748.gprs"
   },
   "msisdn" : 59898828111,
   "imsi" : 748017654390127,
@@ -1752,7 +1706,7 @@ HTTP POST and its corresponding response are shown next for a Diameter SLh RIR/R
 [underline]#HTTP POST request:#
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=103&lcsLocationType=5&lcsClientName=sip:+1-212-555-1212:1234@gateway.coml&lcsClientFormatIndicator=4&lcsClientType=3" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=103&lcsLocationType=5&lcsClientName=sip:+1-212-555-1212:1234@gateway.coml&lcsClientFormatIndicator=4&lcsClientType=3" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 [underline]#HTTP/JSON POST response:#
@@ -1927,7 +1881,7 @@ Analogous to MAP PSL, a Diameter SLg PLR command may include parameters for trig
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&token=n4ndO&clientReferenceNumber=1041&lcsLocationType=4&lcsClientName=sip:fer.bloggs@212.123.1.213&lcsClientFormatIndicator=4&lcsClientType=0&lcsDeferredLocationType=4&lcsAreaType=7&lcsAreaId=732-123-2829314&lcsAreaEventOccurrenceInfo=1&lcsAreaEventIntervalTime=600&lcsAreaEventMaxInterval=86400&lcsAreaEventSamplingInterval=3600&lcsAreaEventReportingDuration=8640000&lcsAreaEventReportLocationReqs=0&lcsServiceTypeId=4" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=n4ndO&clientReferenceNumber=1041&lcsLocationType=4&lcsClientName=sip:fer.bloggs@212.123.1.213&lcsClientFormatIndicator=4&lcsClientType=0&lcsDeferredLocationType=4&lcsAreaType=7&lcsAreaId=732-123-2829314&lcsAreaEventOccurrenceInfo=1&lcsAreaEventIntervalTime=600&lcsAreaEventMaxInterval=86400&lcsAreaEventSamplingInterval=3600&lcsAreaEventReportingDuration=8640000&lcsAreaEventReportLocationReqs=0&lcsServiceTypeId=4" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 Following, see an example of an HTTP POST message but including an OMA MLP payload for a *Triggered Location Reporting Service* (MLP TLRR) included in the HTTP POST request received by {this-platform} {this-application} for the exact same Diameter SLg PLR triggering area event reports as for the previous example using the JSON API.
@@ -2176,7 +2130,7 @@ A motion event report can be gathered by arming the corresponding triggers throu
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=1089&lcsLocationType=3&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://paicbd:8081/api/report&lcsDeferredLocationType=32&lcsMotionEventLinearDistance=10000&lcsMotionEventOccurrenceInfo=1&lcsMotionEventIntervalTime=32767&lcsMotionEventMaxInterval=86400&lcsMotionEventSamplingInterval=3600&lcsMotionEventReportingDuration=8640000&lcsMotionEventReportLocationReqs=2&&lcsServiceTypeId=2" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&token=RmVybmFuZG9NZW5kaW9yb3o&clientReferenceNumber=1089&lcsLocationType=3&lcsClientName=Fmcgmlc&lcsClientFormatIndicator=0&lcsClientType=0&lcsCallbackUrl=http://paicbd:8081/api/report&lcsDeferredLocationType=32&lcsMotionEventLinearDistance=10000&lcsMotionEventOccurrenceInfo=1&lcsMotionEventIntervalTime=32767&lcsMotionEventMaxInterval=86400&lcsMotionEventSamplingInterval=3600&lcsMotionEventReportingDuration=8640000&lcsMotionEventReportLocationReqs=2&&lcsServiceTypeId=2" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 Please notice that `lcsDeferredLocationType` argument value equals `32`, meaning that Deferred-Location-Type AVP indicates that the deferred location report is generated by a motion event, defined by a linear distance threshold of 10000 metres (`lcsMotionEventLinearDistance=10000`).
@@ -2191,7 +2145,7 @@ An example of an LRR response involving a motion event in JSON format is shown b
   "operation" : "LRR",
   "result" : "SUCCESS",
   "clientReferenceNumber" : 1089,
-  "locationEvent" : "MO_LR",
+  "locationEvent" : "DEFERRED_MT_LR_RESPONSE",
   "LcsEPSClientName" : {
     "lcsEPSClientNameString" : "Fmcgmlc",
     "lcsEPSClientDataFormatIndicator" : 0
@@ -2247,7 +2201,6 @@ An example of an LRR response involving a motion event in JSON format is shown b
         }
     }
   },
-  "lrrFlags" : 0,
   "lcsReferenceNumber" : 26981,
   "DeferredMTLRData" : {
     "deferredLocationType" : "MOTION_EVENT"
@@ -2270,7 +2223,7 @@ If properly set, location reports will be generated whenever a defined periodic 
 
 [source,shell]
 ----
-curl -d "msisdn=573195897484&operation=PLR&clientReferenceNumber=1094&lcsLocationType=3&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=16&lcsPeriodicReportingAmount=600&lcsPeriodicReportingInterval=1200&token=n4ndO&lcsServiceTypeId=9" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
+curl -d "msisdn=573195897484&clientReferenceNumber=1094&lcsLocationType=3&lcsClientName=fernando.mendioroz@gmail.com&lcsClientFormatIndicator=1&lcsClientType=0&lcsDeferredLocationType=16&lcsPeriodicReportingAmount=600&lcsPeriodicReportingInterval=1200&token=n4ndO&lcsServiceTypeId=9" -X POST 127.0.0.1:8080/restcomm/gmlc/rest
 ----
 
 Please notice that `lcsDeferredLocationType` argument value equals `16`, meaning that Deferred-Location-Type AVP indicates that the deferred location request is generated by a periodic LDR (Location Deferred Request). The other arguments are detailed next:
@@ -2334,7 +2287,6 @@ An example of an LRR response involving a periodic LDR in JSON format is shown b
   "lcsServiceTypeID" : 0,
   "pseudonymIndicator" : "PSEUDONYM_NOT_REQUESTED",
   "lcsQoSClass" : "BEST_EFFORT",
-  "lrrFlags" : 0,
   "lcsReferenceNumber" : 28,
   "gmlcAddress" : "200.123.44.108",
   "PeriodicLDRInfo" : {
@@ -2354,66 +2306,54 @@ An example of an LRR response involving a delayed location report in JSON format
 [source,json]
 ----
 {
-  "network" : "LTE",
-  "protocol" : "Diameter SLg (ELP)",
-  "operation" : "LRR",
-  "result" : "SUCCESS",
-  "locationEvent" : "DELAYED_LOCATION_REPORTING",
-  "LcsEPSClientName" : {
-    "lcsEPSClientNameString" : "gmlc.client@domain.com",
-    "lcsEPSClientDataFormatIndicator" : 1
+  "network": "LTE",
+  "protocol": "Diameter SLg (ELP)",
+  "operation": "LRR",
+  "result": "SUCCESS",
+  "locationEvent": "DELAYED_LOCATION_REPORTING",
+  "LcsEPSClientName": {
+    "lcsEPSClientNameString": "gmlc.client@domain.com",
+    "lcsEPSClientDataFormatIndicator": 1
   },
-  "imsi" : 748026871012345,
-  "msisdn" : 59899077937,
-  "imei" : "01171400466105",
-  "LocationEstimate" : {
-    "typeOfShape" : "EllipsoidArc",
-    "latitude" : -34.909734,
-    "longitude" : -56.146317,
-    "innerRadius" : 32,
-    "uncertaintyInnerRadius" : 3.31,
-    "offsetAngle" : 12.0,
-    "includedAngle" : 21.0,
-    "confidence" : 20
+  "imsi": 748026871012345,
+  "msisdn": 59899077937,
+  "imei": "01171400466105",
+  "LocationEstimate": {
+    "typeOfShape": "EllipsoidArc",
+    "latitude": -34.909734,
+    "longitude": -56.146317,
+    "innerRadius": 32,
+    "uncertaintyInnerRadius": 3.31,
+    "offsetAngle": 12.0,
+    "includedAngle": 21.0,
+    "confidence": 20
   },
-  "accuracyFulfilmentIndicator" : "REQUESTED_ACCURACY_NOT_FULFILLED",
-  "ageOfLocationEstimate" : 0,
-  "EUtranPositioningData" : {
-    "PositioningDataSet" : {
-      "Item-0" : {
-        "method" : "Cell ID",
-        "usage" : 1
-      },
-      "Item-1" : {
-        "method" : "E-CID",
-        "usage" : 2
-      },
-      "Item-2" : {
-        "method" : "OTDOA",
-        "usage" : 3
-      },
-      "Item-3" : {
-        "method" : "U-TDOA",
-        "usage" : 4
+  "accuracyFulfilmentIndicator": "REQUESTED_ACCURACY_FULFILLED",
+  "ageOfLocationEstimate": 0,
+  "EUtranPositioningData": {
+    "PositioningDataSet": {
+      "Item-0": {
+        "method": "OTDOA",
+        "usage": 3
       }
     }
   },
-  "ECGI" : {
-    "mcc" : 748,
-    "mnc" : 1,
-    "eci" : 518658,
-    "eNBId" : 2026,
-    "ci" : 2
-      },
-  "lcsServiceTypeID" : 0,
-  "pseudonymIndicator" : "PSEUDONYM_NOT_REQUESTED",
-  "lcsQoSClass" : "BEST_EFFORT",
-  "lrrFlags" : 0,
-  "lcsReferenceNumber" : 26718,
-  "gmlcAddress" : "200.123.44.108",
-  "BarometricPressure" : {
-    "measuredPa" : 1013
+  "ECGI": {
+    "mcc": 748,
+    "mnc": 1,
+    "eci": 518658,
+    "eNBId": 2026,
+    "ci": 2
+  },
+  "DelayedLocationReportingData": {
+    "terminationCause": "MT_LR_RESTART",
+    "ServingNode": {
+      "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc748.3gppnetwork.org",
+      "mmeRealm": "epc.mnc01.mcc748.3gppnetwork.org",
+      "mscNumber": 5989900008,
+      "lcsCapabilitySets": "release7"
     }
+  }
 }
 ----
 
@@ -2729,7 +2669,6 @@ The next example shows a location report example generated out of an emergency c
     "ci" : 2
   },
   "lcsServiceTypeID" : 0,
-  "lrrFlags" : 0,
   "gmlcAddress" : "200.123.44.108"
 }
 ----
@@ -2812,15 +2751,6 @@ As per the latest release of 3GPP TS 29.172, a handover to 5G core is contemplat
 	        }
     	}
   	},
-    "ECGI" : {
-      "mcc" : 748,
-      "mnc" : 1,
-      "eci" : 518658,
-      "eNBId" : 2026,
-      "ci" : 2
-    },
-    "lcsServiceTypeID" : 0,
-    "lrrFlags" : 0,
     "amfInstanceId" : "amf301-c0-a1"
 }
 ----

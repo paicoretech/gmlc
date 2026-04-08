@@ -21,9 +21,10 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TimeZone;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
-import java.util.logging.Logger;
 
 /**
  * Helper class to handle a MAP ATI response value and populate an MLP SLIA
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class MapAtiResponseHelperForMLP {
 
-    private final Logger logger = Logger.getLogger(MapAtiResponseHelperForMLP.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(MapAtiResponseHelperForMLP.class.getName());
     protected static final DecimalFormat coordinatesFormat = new DecimalFormat("#0.000000");
     protected static final DecimalFormat radiusFormat = new DecimalFormat("#0.00");
 
@@ -334,9 +335,9 @@ public class MapAtiResponseHelperForMLP {
             }
 
         } catch (MAPException e) {
-            logger.severe("MAP exception while processing ATI response values: " + e);
+            logger.error("MAP exception while processing ATI response values: {}", String.valueOf(e));
         } catch (Exception e) {
-            logger.severe("Exception while processing ATI response values: " + e);
+            logger.error("Exception while processing ATI response values: {}", String.valueOf(e));
         }
     }
 
@@ -744,7 +745,7 @@ public class MapAtiResponseHelperForMLP {
         try {
             setNrTac(nrTrackingAreaIdentity.getNrTAC());
         } catch (MAPException e) {
-            logger.severe("Map exception while setting NR-TAC: " + e);
+            logger.error("Map exception while setting NR-TAC: {}", String.valueOf(e));
         }
     }
 

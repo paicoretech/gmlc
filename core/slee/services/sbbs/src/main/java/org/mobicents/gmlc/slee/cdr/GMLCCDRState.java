@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import net.java.slee.resource.diameter.slg.events.avp.LCSFormatIndicator;
 import net.java.slee.resource.diameter.slg.events.avp.LCSQoSClass;
 import net.java.slee.resource.diameter.slg.events.avp.LocationEvent;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.mobicents.gmlc.slee.diameter.sh.LocalTimeZone;
 import org.mobicents.gmlc.slee.primitives.EUTRANCGI;
@@ -82,6 +83,8 @@ import java.util.UUID;
 public class GMLCCDRState implements Serializable {
 
   private static final long serialVersionUID = -1L;
+
+  private static final Logger logger = Logger.getLogger(GMLCCDRState.class.getName());
 
   //public static final String GMLC_STRING_SEPARATOR = "|";
 
@@ -1597,7 +1600,7 @@ public class GMLCCDRState implements Serializable {
         try {
           ((PolygonImpl) this.additionalPolygon).setData(this.additionalPolygonEllipsoidPoints);
         } catch (MAPException e) {
-          e.printStackTrace();
+          logger.error(e.getMessage());
         }
       }
     }
@@ -3178,7 +3181,7 @@ public class GMLCCDRState implements Serializable {
             eUTRANPositioningDataStr = String.valueOf(eutranAddPositioningData);
           }
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.error(e.getMessage());
         }
       }
 
@@ -3201,7 +3204,7 @@ public class GMLCCDRState implements Serializable {
       }
 
     } catch (MAPException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
 
     return "GMLCCDRState [initiated=" + initiated +

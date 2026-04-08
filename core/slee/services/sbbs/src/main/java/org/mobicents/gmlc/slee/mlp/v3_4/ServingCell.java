@@ -10,7 +10,6 @@ package org.mobicents.gmlc.slee.mlp.v3_4;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -24,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;choice>
  *         &lt;element ref="{}cgi"/>
  *         &lt;element ref="{}sai"/>
@@ -47,9 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "sai",
     "mcc",
     "mnc",
-    "lteCi",
-    "utranCi",
-    "nrCi"
+    "lteCi"
 })
 @XmlRootElement(name = "serving_cell")
 public class ServingCell {
@@ -60,12 +57,6 @@ public class ServingCell {
     protected String mnc;
     @XmlElement(name = "lte_ci")
     protected String lteCi;
-    // the following parameter is a customization for MAP PSL and Diameter SLg PLR
-    @XmlElement(name = "uci")
-    protected String utranCi;
-    // the following parameter is a customization for Diameter Sh UDR
-    @XmlElement(name = "nci")
-    protected String nrCi;
 
     /**
      * Gets the value of the cgi property.
@@ -187,51 +178,4 @@ public class ServingCell {
         this.lteCi = value;
     }
 
-    /**
-     * Gets the value of the utranCi property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getUtranCi() {
-        return utranCi;
-    }
-
-    /**
-     * Sets the value of the utranCi property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setUtranCi(String value) {
-        this.utranCi = value;
-    }
-
-    /**
-     * Gets the value of the nrCi property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getNrCi() {
-        return nrCi;
-    }
-
-    /**
-     * Sets the value of the nrCi property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setNrCi(String value) {
-        this.nrCi = value;
-    }
 }

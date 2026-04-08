@@ -1,13 +1,9 @@
 package org.mobicents.gmlc.slee.diameter.slg;
 
 import net.java.slee.resource.diameter.base.events.avp.Address;
-import net.java.slee.resource.diameter.base.events.avp.DiameterAvp;
-import net.java.slee.resource.diameter.base.events.avp.DiameterIdentity;
-import net.java.slee.resource.diameter.slg.SLgAVPFactory;
 import net.java.slee.resource.diameter.slg.events.avp.AccuracyFulfilmentIndicator;
 import net.java.slee.resource.diameter.slg.events.avp.DeferredMTLRDataAvp;
 import net.java.slee.resource.diameter.slg.events.avp.DelayedLocationReportingDataAvp;
-import net.java.slee.resource.diameter.slg.events.avp.ELPAVPCodes;
 import net.java.slee.resource.diameter.slg.events.avp.ESMLCCellInfoAvp;
 import net.java.slee.resource.diameter.slg.events.avp.GERANPositioningInfoAvp;
 import net.java.slee.resource.diameter.slg.events.avp.LCSEPSClientNameAvp;

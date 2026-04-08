@@ -1,5 +1,7 @@
 package org.mobicents.gmlc.slee.utils;
 
+import org.apache.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -9,8 +11,10 @@ import java.math.RoundingMode;
  */
 public class GADShapesUtils {
 
+    private static final Logger logger = Logger.getLogger(GADShapesUtils.class.getName());
+
     /**
-     * @param encodedLatitude
+     * @param encodedLatitude Latitude encoded as Integer
      * @return decoded Latitude in degrees
      */
     public static double decodeLatitude(Integer encodedLatitude) {
@@ -19,7 +23,7 @@ public class GADShapesUtils {
     }
 
     /**
-     * @param encodedLongitude
+     * @param encodedLongitude Longitude encoded as Integer
      * @return decoded Longitude in degrees
      */
     public static double decodeLongitude(Integer encodedLongitude) {
@@ -28,25 +32,23 @@ public class GADShapesUtils {
     }
 
     /**
-     * @param latitude
+     * @param latitude Latitude value as double
      * @return encoded latitude (to be converted to ASN1 Integer)
      */
     public static int encodeLatitude(double latitude) {
-        int encodedLatitude = (int) (((Math.pow(2, 23)/90) * latitude));
-        return encodedLatitude;
+      return (int) (((Math.pow(2, 23)/90) * latitude));
     }
 
     /**
-     * @param longitude
+     * @param longitude Longitude value as double
      * @return encoded longitude (to be converted to ASN1 Integer)
      */
     public static int encodeLongitude(double longitude) {
-        int encodedLatitude = (int) (((Math.pow(2, 24)/360) * longitude));
-        return encodedLatitude;
+      return (int) (((Math.pow(2, 24)/360) * longitude));
     }
 
     /**
-     * @param encodedUncertaintySemiMajor
+     * @param encodedUncertaintySemiMajor Semi-major axis uncertainty (in meters) of the location estimate shape
      * @return decoded uncertainty SemiMajor in meters (m)
      */
     public static double decodeUncertaintySemiMajor(Integer encodedUncertaintySemiMajor) {
@@ -54,7 +56,7 @@ public class GADShapesUtils {
     }
 
     /**
-     * @param encodedUncertaintySemiMinor
+     * @param encodedUncertaintySemiMinor Semi-minor axis uncertainty (in meters) of the location estimate shape
      * @return decoded uncertainty SemiMinor in meters (m)
      */
     public static double decodeUncertaintySemiMinor(Integer encodedUncertaintySemiMinor) {
@@ -114,7 +116,7 @@ public class GADShapesUtils {
     }
 
     /**
-     * @param encodedUncertaintyAltitude
+     * @param encodedUncertaintyAltitude Altitude uncertainty (in meters) of the location estimate shape
      * @return decoded uncertainty altitude in meters (m)
      */
     public static double decodeUncertaintyAltitude(Integer encodedUncertaintyAltitude) {
@@ -122,26 +124,26 @@ public class GADShapesUtils {
     }
 
     /**
-     * @param constant_C
-     * @param constant_x
-     * @param number
+     * @param constant_C    Constant C used to calculate location estimate uncertainty by the equation C((1+x)^k -1)
+     * @param constant_x    Constant x used to calculate location estimate uncertainty by the equation C((1+x)^k -1)
+     * @param exponent      Power k used to calculate location estimate uncertainty by the equation C((1+x)^k -1)
      * @return decoded uncertainty value in Kilometers or Meters according to scale value
      */
-    private static double decodeUncertainty(int constant_C, double constant_x, int number, int distanceScale) {
-        BigDecimal decimal = new BigDecimal((constant_C * (Math.pow((1 + constant_x), number) - 1))/distanceScale);
+    private static double decodeUncertainty(int constant_C, double constant_x, int exponent, int distanceScale) {
+        BigDecimal decimal = new BigDecimal((constant_C * (Math.pow((1 + constant_x), exponent) - 1))/distanceScale);
         return decimal.setScale(6, RoundingMode.DOWN).doubleValue();
     }
 
     public static void main(String[] args) {
-        System.out.println("Decode latitude in ASN1 (3487983) to degrees of latitude = " + decodeLatitude(3487983));
-        System.out.println("Decode longitude ASN1 (-5689535) to degrees of longitude = " + decodeLongitude(3487983));
-        System.out.println("37.422002 degrees of latitude encoded = " + encodeLatitude(37.422002));
-        System.out.println("-122.084177 degrees of longitude encoded = " + encodeLongitude(-122.084177));
-        System.out.println("Decode uncertainty semi major in ASN1 (40) to Km  = " + decodeUncertaintySemiMajor(40));
-        System.out.println("Decode uncertainty semi minor in ASN1 (40) to Km = " + decodeUncertaintySemiMinor(40));
-        System.out.println("Encode uncertainty in metres to ASN1 integer = " + encodeUncertainty(57.3));
-        System.out.println("Encode high accuracy uncertainty in metres to ASN1 integer = " + encodeHighAccuracyUncertainty(1.16263));
-        System.out.println("Decode uncertainty altitude in ASN1 (127) to metres = " + decodeUncertaintyAltitude(127));
-        System.out.println("Encode uncertainty altitude in metres to ASN1 integer = " + encodeUncertaintyAltitude(826.1));
+        logger.info("Decode latitude in ASN1 (3487983) to degrees of latitude = " + decodeLatitude(3487983));
+        logger.info("Decode longitude ASN1 (-5689535) to degrees of longitude = " + decodeLongitude(3487983));
+        logger.info("37.422002 degrees of latitude encoded = " + encodeLatitude(37.422002));
+        logger.info("-122.084177 degrees of longitude encoded = " + encodeLongitude(-122.084177));
+        logger.info("Decode uncertainty semi major in ASN1 (40) to Km  = " + decodeUncertaintySemiMajor(40));
+        logger.info("Decode uncertainty semi minor in ASN1 (40) to Km = " + decodeUncertaintySemiMinor(40));
+        logger.info("Encode uncertainty in metres to ASN1 integer = " + encodeUncertainty(57.3));
+        logger.info("Encode high accuracy uncertainty in metres to ASN1 integer = " + encodeHighAccuracyUncertainty(1.16263));
+        logger.info("Decode uncertainty altitude in ASN1 (127) to metres = " + decodeUncertaintyAltitude(127));
+        logger.info("Encode uncertainty altitude in metres to ASN1 integer = " + encodeUncertaintyAltitude(826.1));
     }
 }

@@ -6,6 +6,7 @@ import net.java.slee.resource.diameter.sh.events.UserDataAnswer;
 import net.java.slee.resource.diameter.slg.events.LocationReportRequest;
 import net.java.slee.resource.diameter.slg.events.ProvideLocationAnswer;
 import net.java.slee.resource.diameter.slh.events.LCSRoutingInfoAnswer;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.mobicents.gmlc.slee.LocationRequestParams;
 import org.mobicents.gmlc.slee.supl.NetworkInitiatedSuplLocation;
@@ -36,7 +37,6 @@ import javax.slee.SbbLocalObject;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
@@ -56,7 +56,7 @@ public class CDRCreationHelper {
         GmlcCdrStateString gmlcCdrStateString = new GmlcCdrStateString(gmlcCdrState, nnn);
 
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonAnyTimeInterrogationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonAnyTimeInterrogationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
 
             if (subscriberInfo.getLocationInformation() != null) {
                 if (subscriberInfo.getLocationInformation().getVlrNumber() != null) {
@@ -107,7 +107,7 @@ public class CDRCreationHelper {
         LocationInfoWithLMSI locationInfoWithLMSI = sriSmEvent.getLocationInfoWithLMSI();
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonSendRoutingInfoForSmResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonSendRoutingInfoForSmResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(mapDialogSriForSM.getLocalDialogId(), mapDialogSriForSM.getReceivedDestReference(), mapDialogSriForSM.getReceivedOrigReference(),
                 locationInfoWithLMSI.getNetworkNodeNumber(), mapDialogSriForSM.getLocalAddress(), mapDialogSriForSM.getRemoteAddress());
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -124,7 +124,7 @@ public class CDRCreationHelper {
         MAPDialogCallHandling mapDialogSri = sriEvent.getMAPDialog();
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonSendRoutingInformationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonSendRoutingInformationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(mapDialogSri.getLocalDialogId(), mapDialogSri.getReceivedDestReference(), mapDialogSri.getReceivedOrigReference(),
                 sriEvent.getVmscAddress(), mapDialogSri.getLocalAddress(), mapDialogSri.getRemoteAddress());
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -144,7 +144,7 @@ public class CDRCreationHelper {
         MAPDialogMobility mapDialogMobility = psiEvent.getMAPDialog();
         SubscriberInfo subscriberInfo = psiEvent.getSubscriberInfo();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonProvideSubscriberInformationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonProvideSubscriberInformationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             if (subscriberInfo.getLocationInformation() != null) {
                 if (subscriberInfo.getLocationInformation().getVlrNumber() != null) {
                     gmlcCdrState.init(mapDialogMobility.getLocalDialogId(), mapDialogMobility.getReceivedDestReference(), mapDialogMobility.getReceivedOrigReference(),
@@ -197,7 +197,7 @@ public class CDRCreationHelper {
         MAPDialogLsm mapDialogLsmSriLcs = sriLcsEvent.getMAPDialog();
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonSendRoutingInfoForLCSResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonSendRoutingInfoForLCSResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(mapDialogLsmSriLcs.getLocalDialogId(), mapDialogLsmSriLcs.getReceivedDestReference(), mapDialogLsmSriLcs.getReceivedOrigReference(),
                 null, mapDialogLsmSriLcs.getLocalAddress(), mapDialogLsmSriLcs.getRemoteAddress());
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -214,7 +214,7 @@ public class CDRCreationHelper {
         MAPDialogLsm mapDialogLsmPsl = pslEvent.getMAPDialog();
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonProvideSubscriberLocationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonProvideSubscriberLocationResponse: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(mapDialogLsmPsl.getLocalDialogId(), mapDialogLsmPsl.getReceivedDestReference(), mapDialogLsmPsl.getReceivedOrigReference(),
                 null, mapDialogLsmPsl.getLocalAddress(), mapDialogLsmPsl.getRemoteAddress());
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -237,7 +237,7 @@ public class CDRCreationHelper {
         MAPDialogLsm mapDialogLsmSlr = slrEvent.getMAPDialog();
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-                logger.fine("\nonSubscriberLocationReportRequest: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+                logger.debug("\nonSubscriberLocationReportRequest: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(mapDialogLsmSlr.getLocalDialogId(), mapDialogLsmSlr.getReceivedDestReference(), mapDialogLsmSlr.getReceivedOrigReference(),
                 msisdn, mapDialogLsmSlr.getLocalAddress(), mapDialogLsmSlr.getRemoteAddress());
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -275,11 +275,11 @@ public class CDRCreationHelper {
                 gmlcCdrState.init(riaEvent.getSessionId(), originHost, originRealm, gmlcHost, gmlcRealm);
             }
             else if (plaEvent != null) {
-                logger.fine("\nonProvideLocationAnswer: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+                logger.debug("\nonProvideLocationAnswer: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
                 gmlcCdrState.init(plaEvent.getSessionId(), originHost, originRealm, gmlcHost, gmlcRealm);
             }
             else if (lrrEvent != null) {
-                logger.fine("\nonLocationReportRequest: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+                logger.debug("\nonLocationReportRequest: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
                 gmlcCdrState.init(lrrEvent.getSessionId(), originHost, originRealm, gmlcHost, gmlcRealm);
             }
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -295,7 +295,7 @@ public class CDRCreationHelper {
                                                    DiameterIdentity gmlcHost, DiameterIdentity gmlcRealm) {
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonUserDataAnswer: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonUserDataAnswer: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(udaEvent != null ? udaEvent.getSessionId() : null,
                 udaEvent != null ? udaEvent.getOriginHost() : null, udaEvent != null ? udaEvent.getOriginRealm() : null, gmlcHost, gmlcRealm);
             gmlcCdrState.setDialogEndTime(DateTime.now());
@@ -311,7 +311,7 @@ public class CDRCreationHelper {
                                                            DiameterIdentity gmlcHost, DiameterIdentity gmlcRealm) {
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-            logger.fine("\nonUserDataAnswer: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\nonErrorAnswer (Diameter): CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(diameterErrorAnswerEvent != null ? diameterErrorAnswerEvent.getSessionId() : null,
                 diameterErrorAnswerEvent != null ? diameterErrorAnswerEvent.getOriginHost() : null,
                 diameterErrorAnswerEvent != null ? diameterErrorAnswerEvent.getOriginRealm() : null, gmlcHost, gmlcRealm);
@@ -329,7 +329,7 @@ public class CDRCreationHelper {
                                                   int remoteSocketPort) {
         GMLCCDRState gmlcCdrState = cdrInterface.getState();
         if (!gmlcCdrState.isInitialized()) {
-                logger.fine("\ngetLocationViaSUPL: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
+            logger.debug("\ngetLocationViaSUPL: CDR state is NOT initialized: " + gmlcCdrState + ", initiating\n");
             gmlcCdrState.init(localSocketAddress, localSocketPort, remoteSocketAddress, remoteSocketPort);
             DateTime dialogStart = DateTime.now();
             gmlcCdrState.setDialogStartTime(dialogStart);
@@ -484,8 +484,7 @@ public class CDRCreationHelper {
                 }
             }
         } catch (Exception e) {
-            logger.warning("Exception in updateCdrState class: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Exception in updateCdrState class: " + e.getMessage());
         }
     }
 

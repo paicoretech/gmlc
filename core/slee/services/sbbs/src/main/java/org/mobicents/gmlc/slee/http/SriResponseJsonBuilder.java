@@ -7,6 +7,8 @@ import org.mobicents.gmlc.slee.map.SriLcsResponseParams;
 import org.mobicents.gmlc.slee.map.SriResponseValues;
 import org.mobicents.gmlc.slee.map.SriSmResponseParams;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.net.InetAddress;
@@ -55,6 +57,7 @@ public class SriResponseJsonBuilder {
                                                  SriResponseValues sri, SriSmResponseParams sriSm,
                                                  SriLcsResponseParams sriLcs) throws MAPException {
 
+        final Logger logger = LoggerFactory.getLogger(SriResponseJsonBuilder.class.getName());
         int numberPortabilityStatusType = -1;
         boolean gprsNodeIndicator = false;
         String networkNodeNumber, additionalNumber, lmsi, mmeName, sgsnName, sgsnRealm, tgppAAAServerName, hGmlcAddress, vGmlcAddress, pprAddress, addVGmlcAddress;
@@ -74,9 +77,7 @@ public class SriResponseJsonBuilder {
                 networkNodeNumber = sri.getVmscAddress().getAddress();
 
             if (sri.getNumberPortabilityStatus() != null) {
-                if (sri.getNumberPortabilityStatus() != null) {
-                    numberPortabilityStatusType = sri.getNumberPortabilityStatus().getType();
-                }
+                numberPortabilityStatusType = sri.getNumberPortabilityStatus().getType();
             }
         }
 
@@ -87,11 +88,20 @@ public class SriResponseJsonBuilder {
             if (sriSm.getImsi() != null)
                 imsi = new String(sriSm.getImsi().getData().getBytes());
 
-            if (sriSm.getNetworkNodeNumber() != null)
-                networkNodeNumber = sriSm.getNetworkNodeNumber().getAddress();
+            if (sriSm.getLocationInfoWithLMSI() != null) {
+                if (sriSm.getLocationInfoWithLMSI().getNetworkNodeNumber() != null)
+                    networkNodeNumber = sriSm.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
 
-            if (sriSm.getLmsi() != null)
-                lmsi = bytesToHex(sriSm.getLmsi().getData());
+                if (sriSm.getLocationInfoWithLMSI().getAdditionalNumber() != null) {
+                    if (sriSm.getLocationInfoWithLMSI().getAdditionalNumber().getMSCNumber() != null)
+                        additionalNumber = sriSm.getLocationInfoWithLMSI().getAdditionalNumber().getMSCNumber().getAddress();
+                    else
+                        additionalNumber = sriSm.getLocationInfoWithLMSI().getAdditionalNumber().getSGSNNumber().getAddress();
+                }
+
+                if (sriSm.getLocationInfoWithLMSI().getLMSI() != null)
+                    lmsi = bytesToHex(sriSm.getLocationInfoWithLMSI().getLMSI().getData());
+            }
         }
 
         /******************************/
@@ -107,31 +117,33 @@ public class SriResponseJsonBuilder {
             if (sriLcs.getLmsi() != null)
                 lmsi = bytesToHex(sriLcs.getLmsi().getData());
 
-            if (sriLcs.getNetworkNodeNumber() != null)
-                networkNodeNumber = sriLcs.getNetworkNodeNumber().getAddress();
+            if (sriLcs.getLcsLocationInfo() != null) {
+                if (sriLcs.getLcsLocationInfo().getNetworkNodeNumber() != null)
+                    networkNodeNumber = sriLcs.getLcsLocationInfo().getNetworkNodeNumber().getAddress();
 
-            if (sriLcs.isGprsNodeIndicator() != null)
-                gprsNodeIndicator = sriLcs.isGprsNodeIndicator();
+                if (sriLcs.getLcsLocationInfo().getGprsNodeIndicator())
+                    gprsNodeIndicator = sriLcs.getLcsLocationInfo().getGprsNodeIndicator();
 
-            if (sriLcs.getAdditionalNumber() != null) {
-                if (sriLcs.getAdditionalNumber().getMSCNumber() != null)
-                    additionalNumber = sriLcs.getAdditionalNumber().getMSCNumber().getAddress();
-                else if (sriLcs.getAdditionalNumber().getSGSNNumber() != null)
-                    additionalNumber = sriLcs.getAdditionalNumber().getSGSNNumber().getAddress();
+                if (sriLcs.getLcsLocationInfo().getAdditionalNumber() != null) {
+                    if (sriLcs.getLcsLocationInfo().getAdditionalNumber().getMSCNumber() != null)
+                        additionalNumber = sriLcs.getLcsLocationInfo().getAdditionalNumber().getMSCNumber().getAddress();
+                    else if (sriLcs.getLcsLocationInfo().getAdditionalNumber().getSGSNNumber() != null)
+                        additionalNumber = sriLcs.getLcsLocationInfo().getAdditionalNumber().getSGSNNumber().getAddress();
+                }
+
+                if (sriLcs.getLcsLocationInfo().getMmeName() != null)
+                    mmeName = new String(sriLcs.getLcsLocationInfo().getMmeName().getData());
+
+                if (sriLcs.getLcsLocationInfo().getAaaServerName() != null) {
+                    tgppAAAServerName = new String(sriLcs.getLcsLocationInfo().getAaaServerName().getData());
+                }
+
+                if (sriLcs.getLcsLocationInfo().getSgsnName() != null)
+                    sgsnName = new String(sriLcs.getLcsLocationInfo().getSgsnName().getData());
+
+                if (sriLcs.getLcsLocationInfo().getSgsnRealm() != null)
+                    sgsnRealm = new String(sriLcs.getLcsLocationInfo().getSgsnRealm().getData());
             }
-
-            if (sriLcs.getMmeName() != null)
-                mmeName = new String(sriLcs.getMmeName().getData());
-
-            if (sriLcs.getAaaServerName() != null) {
-                tgppAAAServerName = new String(sriLcs.getAaaServerName().getData());
-            }
-
-            if (sriLcs.getSgsnName() != null)
-                sgsnName = new String(sriLcs.getSgsnName().getData());
-
-            if (sriLcs.getSgsnRealm() != null)
-                sgsnRealm = new String(sriLcs.getSgsnRealm().getData());
 
             if (sriLcs.getVGmlcAddress() != null) {
                 vGmlcAddress = bytesToHexString(sriLcs.getVGmlcAddress().getGSNAddressData());
@@ -139,7 +151,7 @@ public class SriResponseJsonBuilder {
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(vGmlcAddress));
                     vGmlcAddress = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -149,7 +161,7 @@ public class SriResponseJsonBuilder {
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(hGmlcAddress));
                     hGmlcAddress = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -159,7 +171,7 @@ public class SriResponseJsonBuilder {
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(pprAddress));
                     pprAddress = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -169,7 +181,7 @@ public class SriResponseJsonBuilder {
                     InetAddress address = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(addVGmlcAddress));
                     addVGmlcAddress = address.getHostAddress();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
         }

@@ -134,7 +134,7 @@ public class SlrRequestJsonBuilder {
     public static String buildJsonReportForSlrFromStringList(List<String> slrReportParameters) {
         String reportParameterString = "";
 
-        if (slrReportParameters != null && slrReportParameters.size() > 0) {
+        if (slrReportParameters != null && !slrReportParameters.isEmpty()) {
             StringBuilder reportParameterStringBuilder = new StringBuilder();
 
             for (String slrReportParameter : slrReportParameters) {
@@ -556,38 +556,38 @@ public class SlrRequestJsonBuilder {
                 }
                 // LCS Location Info (Serving Node)
                 if (slrReq.getDeferredmtlrData().getLCSLocationInfo() != null) {
-                    JsonObject deferredMTLRDataServingNodeJsonObject = new JsonObject();
+                    JsonObject deferredMTLRDataLCSLocationInfoJsonObject = new JsonObject();
                     // GPRS Node Indicator
-                    writeGprsNodeIndicator(slrReq.isGprsNodeIndicator(), deferredMTLRDataServingNodeJsonObject);
+                    writeGprsNodeIndicator(slrReq.isGprsNodeIndicator(), deferredMTLRDataLCSLocationInfoJsonObject);
                     // Network Node Number
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getNetworkNodeNumber() != null) {
                         String networkNodeNumber = slrReq.getDeferredmtlrData().getLCSLocationInfo().getNetworkNodeNumber().getAddress();
-                        writeNetworkNodeNumber(networkNodeNumber, deferredMTLRDataServingNodeJsonObject);
+                        writeNetworkNodeNumber(networkNodeNumber, deferredMTLRDataLCSLocationInfoJsonObject);
                     }
                     // LMSI
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getLMSI() != null) {
                         String lmsi = bytesToHex(slrReq.getDeferredmtlrData().getLCSLocationInfo().getLMSI().getData());
-                        writeLmsi(lmsi, deferredMTLRDataServingNodeJsonObject);
+                        writeLmsi(lmsi, deferredMTLRDataLCSLocationInfoJsonObject);
                     }
                     // MME Name
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getMmeName() != null) {
                         String mmeName = new String(slrReq.getDeferredmtlrData().getLCSLocationInfo().getMmeName().getData());
-                        writeMmeName(mmeName, deferredMTLRDataServingNodeJsonObject);
+                        writeMmeName(mmeName, deferredMTLRDataLCSLocationInfoJsonObject);
                     }
                     // AAA Server Name
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getAaaServerName() != null) {
                         String aaaServerName = new String(slrReq.getDeferredmtlrData().getLCSLocationInfo().getAaaServerName().getData());
-                        writeAaaServerName(aaaServerName, deferredMTLRDataServingNodeJsonObject);
+                        writeAaaServerName(aaaServerName, deferredMTLRDataLCSLocationInfoJsonObject);
                     }
                     // Additional Number
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalNumber() != null) {
                         if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalNumber().getMSCNumber() != null) {
                             String mscNumber = slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalNumber().getMSCNumber().getAddress();
-                            writeMscNumber(mscNumber, deferredMTLRDataServingNodeJsonObject);
+                            writeMscNumber(mscNumber, deferredMTLRDataLCSLocationInfoJsonObject);
                         }
                         if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalNumber().getSGSNNumber() != null) {
                             String sgsnNumber = slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalNumber().getSGSNNumber().getAddress();
-                            writeSgsnNumber(sgsnNumber, deferredMTLRDataServingNodeJsonObject);
+                            writeSgsnNumber(sgsnNumber, deferredMTLRDataLCSLocationInfoJsonObject);
                         }
                     }
                     // Supported LCS Capability Sets
@@ -600,7 +600,7 @@ public class SlrRequestJsonBuilder {
                         boolean supportedLCSCapabilitySetRelease7 = slrReq.getDeferredmtlrData().getLCSLocationInfo().getSupportedLCSCapabilitySets().getCapabilitySetRelease7();
                         writeSupportedLCSCapabilitySets(true, supportedLCSCapabilitySetRelease98_99, supportedLCSCapabilitySetRelease4, supportedLCSCapabilitySetRelease5,
                                 supportedLCSCapabilitySetRelease6, supportedLCSCapabilitySetRelease7, deferredSupportedLCSCapSetsJsonObject);
-                        deferredMTLRDataServingNodeJsonObject.add("SupportedLCSCapabilitySets", deferredSupportedLCSCapSetsJsonObject);
+                        deferredMTLRDataLCSLocationInfoJsonObject.add("SupportedLCSCapabilitySets", deferredSupportedLCSCapSetsJsonObject);
                     }
                     // Additional Supported LCS Capability Sets
                     if (slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalLCSCapabilitySets() != null) {
@@ -612,9 +612,9 @@ public class SlrRequestJsonBuilder {
                         boolean addSupportedLCSCapabilitySetRelease7 = slrReq.getDeferredmtlrData().getLCSLocationInfo().getAdditionalLCSCapabilitySets().getCapabilitySetRelease7();
                         writeAdditionalLCSCapabilitySets(true, addSupportedLCSCapabilitySetRelease98_99, addSupportedLCSCapabilitySetRelease4, addSupportedLCSCapabilitySetRelease5,
                                 addSupportedLCSCapabilitySetRelease6, addSupportedLCSCapabilitySetRelease7, deferredAddSupportedLCSCapSetsJsonObject);
-                        deferredMTLRDataServingNodeJsonObject.add("AdditionalLCSCapabilitySets", deferredAddSupportedLCSCapSetsJsonObject);
+                        deferredMTLRDataLCSLocationInfoJsonObject.add("AdditionalLCSCapabilitySets", deferredAddSupportedLCSCapSetsJsonObject);
                     }
-                    deferredMTLRDataJsonObject.add("ServingNode", deferredMTLRDataServingNodeJsonObject);
+                    deferredMTLRDataJsonObject.add("LCSLocationInfo", deferredMTLRDataLCSLocationInfoJsonObject);
                 }
                 slrJsonObject.add("DeferredMTLRData", deferredMTLRDataJsonObject);
             }

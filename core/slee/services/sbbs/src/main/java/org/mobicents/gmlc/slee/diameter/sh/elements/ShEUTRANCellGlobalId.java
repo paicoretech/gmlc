@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.primitives.EUTRANCGI;
 import org.mobicents.gmlc.slee.primitives.EUTRANCGIImpl;
 
@@ -9,6 +10,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShEUTRANCellGlobalId {
+
+  private static final Logger logger = Logger.getLogger(ShEUTRANCellGlobalId.class.getName());
 
   private static final String MCC = "mcc";
   private static final String MNC = "mnc";
@@ -81,7 +84,7 @@ public class ShEUTRANCellGlobalId {
           sb.append(", "+MNC+"=");
           sb.append(this.eUtranCgi.getMNC());
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.error(e.getMessage());
         }
 
         sb.append(", "+ENB+"=");
@@ -91,7 +94,7 @@ public class ShEUTRANCellGlobalId {
         sb.append(this.eUtranCgi.getCi());
 
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
 
     }

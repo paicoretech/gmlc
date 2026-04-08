@@ -37,17 +37,23 @@ public class HttpServletRequestParams {
     public HttpServletRequestParams() {
     }
 
-    public LocationRequestParams createGlobalLocationRequestParamsFromHttpRequest(HttpServletRequest httpServletRequest, LocationRequestParams locationRequestParams,
-                                                                                  MongoGmlc mongoGmlc) throws IllegalArgumentException {
+    public LocationRequestParams createGlobalLocationRequestParamsFromHttpRequest(HttpServletRequest httpServletRequest, LocationRequestParams locationRequestParams) throws IllegalArgumentException {
 
-        String numberFormatException;
+        String numberFormatException, requestUriOperation;
 
         locationRequestParams.httpRespType = httpServletRequest.getParameter("httpRespType");
         if (locationRequestParams.httpRespType != null && locationRequestParams.httpRespType.equalsIgnoreCase("json")) {
             locationRequestParams.httpRespType = "json";
         }
 
-        locationRequestParams.operation = httpServletRequest.getParameter("operation");
+        String requestURI = httpServletRequest.getRequestURI(); // (e.g., /restcomm/gmlc/rest/plr)
+        if (requestURI != null && !requestURI.isEmpty()) {
+            String[] pathSegments = requestURI.split("/");
+            if (pathSegments.length > 3) {
+                requestUriOperation = pathSegments[4]; // (e.g., plr)
+                locationRequestParams.operation = requestUriOperation;
+            }
+        }
         if (locationRequestParams.operation == null) {
             throw new IllegalArgumentException("Invalid operation parameter, can not be null");
         } else if (!locationRequestParams.operation.equalsIgnoreCase("ATI")
@@ -70,7 +76,7 @@ public class HttpServletRequestParams {
         } else {
             // if token does not equal the one defined in gmlcPropertiesManagement configuration, then query MongoDB
             try {
-                mongoGmlc = new MongoGmlc(gmlcPropertiesManagement.getMongoHost(), gmlcPropertiesManagement.getMongoPort(), gmlcPropertiesManagement.getMongoDatabase());
+                MongoGmlc mongoGmlc = new MongoGmlc(gmlcPropertiesManagement.getMongoHost(), gmlcPropertiesManagement.getMongoPort(), gmlcPropertiesManagement.getMongoDatabase());
                 String user = mongoGmlc.queryCurlUser(locationRequestParams.curlToken);
                 mongoGmlc.closeMongo();
                 if (user != null) {
@@ -108,6 +114,12 @@ public class HttpServletRequestParams {
         throws IllegalArgumentException {
 
         String numberFormatException;
+
+        if (locationRequestParams.getOperation().equalsIgnoreCase("ATI")) {
+            if (locationRequestParams.targetingMSISDN == null && locationRequestParams.targetingIMSI == null) {
+                throw new IllegalArgumentException("One of MSISDN or IMSI is mandatory in MAP ATI, parameters msisdn and imsi can not be both null)");
+            }
+        }
 
         locationRequestParams.domainType = httpServletRequest.getParameter("domain");
         if (locationRequestParams.domainType == null) {
@@ -219,7 +231,7 @@ public class HttpServletRequestParams {
 
         String numberFormatException;
 
-        if (locationRequestParams.pslMsisdn == null && locationRequestParams.pslImsi == null) {
+        if (locationRequestParams.targetingMSISDN == null && locationRequestParams.targetingIMSI == null) {
             throw new IllegalArgumentException("One of MSISDN or IMSI is mandatory in SRILCS/PSL, parameters msisdn and imsi can not be both null)");
         }
 
@@ -411,7 +423,7 @@ public class HttpServletRequestParams {
         if (httpServletRequest.getParameter("clientReferenceNumber") != null) {
             try {
                 locationRequestParams.pslLcsReferenceNumber = Integer.parseInt(httpServletRequest.getParameter("clientReferenceNumber"));
-                if (locationRequestParams.pslLcsReferenceNumber < 0 || locationRequestParams.pslLcsReferenceNumber > Integer.MAX_VALUE) {
+                if (locationRequestParams.pslLcsReferenceNumber < 0) {
                     throw new IllegalArgumentException("clientReferenceNumber argument must be a valid integer value");
                 }
             } catch (NumberFormatException nfe) {
@@ -795,8 +807,8 @@ public class HttpServletRequestParams {
 
         /*** IMEI for PSL ***/
         if (httpServletRequest.getParameter("imei") != null) {
-            locationRequestParams.pslImei = httpServletRequest.getParameter("imei");
-            if (locationRequestParams.pslImei.length() > 15 || locationRequestParams.pslImei.length() < 14) {
+            locationRequestParams.targetingIMEI = httpServletRequest.getParameter("imei");
+            if (locationRequestParams.targetingIMEI.length() > 15 || locationRequestParams.targetingIMEI.length() < 14) {
                 throw new IllegalArgumentException("Incorrect imei length");
             }
         }
@@ -835,7 +847,7 @@ public class HttpServletRequestParams {
 
         /**** Mandatory parameters for SLh/SLg RIR/PLR ****/
 
-        if (locationRequestParams.plrMsisdn == null && locationRequestParams.plrUserName == null) {
+        if (locationRequestParams.targetingMSISDN == null && locationRequestParams.targetingIMSI == null) {
             throw new IllegalArgumentException("One of MSISDN or User-Name AVPs is mandatory in PLR, parameters msisdn and imsi can not be both null)");
         }
 
@@ -941,7 +953,7 @@ public class HttpServletRequestParams {
         if (httpServletRequest.getParameter("clientReferenceNumber") != null) {
             try {
                 locationRequestParams.plrLcsReferenceNumber = Integer.valueOf(httpServletRequest.getParameter("clientReferenceNumber"));
-                if (locationRequestParams.plrLcsReferenceNumber < 0 || locationRequestParams.plrLcsReferenceNumber > Integer.MAX_VALUE) {
+                if (locationRequestParams.plrLcsReferenceNumber < 0) {
                     throw new IllegalArgumentException("clientReferenceNumber argument must be a valid integer value");
                 }
             } catch (NumberFormatException nfe) {
@@ -1214,20 +1226,20 @@ public class HttpServletRequestParams {
                Each bit indicates a type of event, until when the location estimation is deferred.
                For details, please refer to 3GPP TS 23.271 [3] clause 4.4.2.
                The meaning of the bits shall be as defined in table 7.4.36/1:
-            Table 7.4.36/1: Deferred-Location-Type
-            Bit	    Event Type	            Description
-            0	    UE-Available	        Any event in which the SGSN has established a contact with the UE.
-            1	    Entering-Into-Area	    An event where the UE enters a pre-defined geographical area.
-            2	    Leaving-From-Area	    An event where the UE leaves a pre-defined geographical area.
-            3	    Being-Inside-Area	    An event where the UE is currently within the pre-defined geographical area.
-            4	    Periodic-LDR	        An event where a defined periodic timer expires in the UE and activates a location report
-                                            or a location request.
-            5	    Motion-Event	        An event where the UE moves by more than a minimum linear distance.
-                                            This event is applicable to a deferred EPC-MT-LR only.
-            6	    LDR-Activated	        An event where deferred location reporting has been activated in the UE.
-                                            This event is applicable to a deferred EPC-MT-LR only.
-            7	    Maximum-Interval-Expiration	    An event where the maximum reporting interval has expired.
-                                                    This event is applicable to a deferred EPC-MT-LR only.
+                Table 7.4.36/1: Deferred-Location-Type
+                Bit	    Event Type	            Description
+                0	    UE-Available	        Any event in which the SGSN has established a contact with the UE.
+                1	    Entering-Into-Area	    An event where the UE enters a pre-defined geographical area.
+                2	    Leaving-From-Area	    An event where the UE leaves a pre-defined geographical area.
+                3	    Being-Inside-Area	    An event where the UE is currently within the pre-defined geographical area.
+                4	    Periodic-LDR	        An event where a defined periodic timer expires in the UE and activates a location report
+                                                or a location request.
+                5	    Motion-Event	        An event where the UE moves by more than a minimum linear distance.
+                                                This event is applicable to a deferred EPC-MT-LR only.
+                6	    LDR-Activated	        An event where deferred location reporting has been activated in the UE.
+                                                This event is applicable to a deferred EPC-MT-LR only.
+                7	    Maximum-Interval-Expiration	    An event where the maximum reporting interval has expired.
+                                                        This event is applicable to a deferred EPC-MT-LR only.
              */
         if (httpServletRequest.getParameter("lcsDeferredLocationType") != null) {
             if (locationRequestParams.plrSlgLocationType == 3 || locationRequestParams.plrSlgLocationType == 4) {
@@ -2148,8 +2160,8 @@ public class HttpServletRequestParams {
 
         /*** PLR conditional AVP: [ IMEI ] ***/
         if (httpServletRequest.getParameter("imei") != null) {
-            locationRequestParams.plrImei = httpServletRequest.getParameter("imei");
-            if (locationRequestParams.plrImei.length() > 15 || locationRequestParams.plrImei.length() < 14) {
+            locationRequestParams.targetingIMEI = httpServletRequest.getParameter("imei");
+            if (locationRequestParams.targetingIMEI.length() > 15 || locationRequestParams.targetingIMEI.length() < 14) {
                 throw new IllegalArgumentException("Incorrect imei length");
             }
         }
@@ -2189,6 +2201,8 @@ public class HttpServletRequestParams {
         locationRequestParams.targetingMSISDN = mlpLocationRequest.getMsisdn();
 
         locationRequestParams.targetingIMSI = mlpLocationRequest.getImsi();
+
+        locationRequestParams.targetingIMEI = mlpLocationRequest.getImei();
 
         locationRequestParams.operation = mlpLocationRequest.getOperation();
         if (locationRequestParams.operation == null) {
@@ -2283,16 +2297,12 @@ public class HttpServletRequestParams {
 
         // targeting MSISDN or IMSI for MAP PSL or Diameter PLR or Diameter UDR
         if (locationRequestParams.operation.equalsIgnoreCase("PSL")) {
-            locationRequestParams.pslMsisdn = locationRequestParams.targetingMSISDN;
-            locationRequestParams.pslImsi = locationRequestParams.targetingIMSI;
-            if (locationRequestParams.pslMsisdn == null && locationRequestParams.pslImsi == null) {
+            if (locationRequestParams.targetingMSISDN == null && locationRequestParams.targetingIMSI == null) {
                 throw new IllegalArgumentException("One of MSISDN or IMSI is mandatory in msid type value for MAP SRILCS-PSL");
             }
         } // targeting MSISDN or IMSI for Diameter PLR or Diameter UDR
         else if (locationRequestParams.operation.equalsIgnoreCase("PLR")) {
-            locationRequestParams.plrMsisdn = locationRequestParams.targetingMSISDN;
-            locationRequestParams.plrUserName = locationRequestParams.targetingIMSI;
-            if (locationRequestParams.plrMsisdn == null && locationRequestParams.plrUserName == null) {
+            if (locationRequestParams.targetingMSISDN == null && locationRequestParams.targetingIMSI == null) {
                 throw new IllegalArgumentException("One of MSISDN or IMSI is mandatory in msid type value for Diameter RIR-PLR");
             }
         } // targeting MSISDN Diameter UDR
@@ -2408,7 +2418,7 @@ public class HttpServletRequestParams {
             if (locationRequestParams.pslLcsReferenceNumber != null) {
                 try {
                     int clientReferenceNumber = locationRequestParams.pslLcsReferenceNumber;
-                    if (clientReferenceNumber < 0 || clientReferenceNumber > Integer.MAX_VALUE) {
+                    if (clientReferenceNumber < 0) {
                         throw new IllegalArgumentException("trans_id value, must be a valid integer value");
                     }
                 } catch (NumberFormatException nfe) {
@@ -2425,7 +2435,7 @@ public class HttpServletRequestParams {
             if (locationRequestParams.plrLcsReferenceNumber != null) {
                 try {
                     int clientReferenceNumber = locationRequestParams.plrLcsReferenceNumber;
-                    if (clientReferenceNumber < 0 || clientReferenceNumber > Integer.MAX_VALUE) {
+                    if (clientReferenceNumber < 0) {
                         throw new IllegalArgumentException("trans_id value must be a valid integer value");
                     }
                 } catch (NumberFormatException nfe) {
@@ -2442,7 +2452,7 @@ public class HttpServletRequestParams {
             if (locationRequestParams.suplTransactionId != null) {
                 try {
                     int transactionId = locationRequestParams.suplTransactionId;
-                    if (transactionId < 0 || transactionId > Integer.MAX_VALUE) {
+                    if (transactionId < 0) {
                         throw new IllegalArgumentException("trans_id value must be a valid integer value");
                     }
                 } catch (NumberFormatException nfe) {
@@ -2622,9 +2632,7 @@ public class HttpServletRequestParams {
                         return locationRequestParams;
                     }
                 } else {
-                    if (locationRequestParams.plrLcsRequestorIdString != null) {
-                        throw new IllegalArgumentException("requestor type cannot be null when a valid requestor argument is provided");
-                    }
+                    throw new IllegalArgumentException("requestor type cannot be null when a valid requestor argument is provided");
                 }
             }
         }
@@ -2640,17 +2648,15 @@ public class HttpServletRequestParams {
             } // LCS Priority for Diameter PLR
             else if (locationRequestParams.operation.equalsIgnoreCase("PLR")) {
                 locationRequestParams.plrLcsPriority = (long) mlpLocationRequest.getLcsPriority().getCode();
-                if (locationRequestParams.plrLcsPriority != null) {
-                    try {
-                        long plrLcsPriority = locationRequestParams.plrLcsPriority;
-                        if (plrLcsPriority != 0 && plrLcsPriority != 1) {
-                            throw new IllegalArgumentException("Incorrect prio type, must be NORMAL or HIGH");
-                        }
-                    } catch (NumberFormatException nfe) {
-                        numberFormatException = "Incorrect prio type, must be NORMAL or HIGH";
-                        locationRequestParams.numberFormatException = numberFormatException;
-                        return locationRequestParams;
+                try {
+                    long plrLcsPriority = locationRequestParams.plrLcsPriority;
+                    if (plrLcsPriority != 0 && plrLcsPriority != 1) {
+                        throw new IllegalArgumentException("Incorrect prio type, must be NORMAL or HIGH");
                     }
+                } catch (NumberFormatException nfe) {
+                    numberFormatException = "Incorrect prio type, must be NORMAL or HIGH";
+                    locationRequestParams.numberFormatException = numberFormatException;
+                    return locationRequestParams;
                 }
             }
         }
@@ -2786,9 +2792,6 @@ public class HttpServletRequestParams {
                             "corresponding to the desired horizontal accuracy in metres");
                     } else {
                         locationRequestParams.suplHorizontalAccuracy = (long) GADShapesUtils.encodeUncertainty(horizontalAccuracy);
-                    }
-                    if (locationRequestParams.suplHorizontalAccuracy == null) {
-                        throw new IllegalArgumentException("hor_acc argument must not be null when qop values are provided");
                     }
                 } catch (NumberFormatException nfe) {
                     numberFormatException = "Incorrect hor_acc value, must be a positive number " +

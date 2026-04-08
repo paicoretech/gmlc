@@ -1,6 +1,7 @@
 package org.mobicents.gmlc.slee.primitives;
 
 import com.google.common.collect.Multimap;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Map;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class EUTRANPositioningDataTester {
+
+    private static final Logger logger = Logger.getLogger(EUTRANPositioningDataTester.class.getName());
 
     public static void main(String[] args) throws Exception {
         /* Positioning Data Set examples */
@@ -22,11 +25,11 @@ public class EUTRANPositioningDataTester {
 
         HashMap<String, Integer> methodsAndUsage = eutranPositioningData.getPositioningDataMethodsAndUsage(eutranPositioningData.getPositioningDataSet());
 
-        System.out.println("Positioning Data Set");
+        logger.info("Positioning Data Set");
         for (HashMap.Entry<String, Integer> entry : methodsAndUsage.entrySet()) {
             String key = entry.getKey();
             Integer value = entry.getValue();
-            System.out.println("Method=" + key + ", Usage=" + value + ": " + eutranPositioningData.getPositioningDataSetUsage(value));
+            logger.info("Method=" + key + ", Usage=" + value + ": " + eutranPositioningData.getPositioningDataSetUsage(value));
         }
 
         /* GNSS Positioning Data Set examples */
@@ -43,12 +46,12 @@ public class EUTRANPositioningDataTester {
 
         Multimap<String, String> methodsAndGanssIds = eutranPositioningData.getGNSSPositioningMethodsAndGNSSIds(eutranPositioningData.getGNSSPositioningDataSet());
 
-        System.out.println("\nGNSS Positioning Data Set");
+        logger.info("\nGNSS Positioning Data Set");
         int i = 0;
         for (Map.Entry<String, String> entry : methodsAndGanssIds.entries()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            System.out.println("Method=" + key + ", gNSSId=" + value + ": "
+            logger.info("Method=" + key + ", gNSSId=" + value + ": "
                     + eutranPositioningData.getUsage(eutranPositioningData.getGNSSPositioningDataSet(), i));
             i++;
         }
@@ -64,12 +67,12 @@ public class EUTRANPositioningDataTester {
 
         Multimap<String, String> methodsAndAddPosIds = eutranPositioningData.getEUtranAdditionalPositioningMethodsAndIds(eutranPositioningData.getAdditionalPositioningDataSet());
 
-        System.out.println("\nAdditional Positioning Data Set");
+        logger.info("\nAdditional Positioning Data Set");
         i = 0;
         for (Map.Entry<String, String> entry : methodsAndAddPosIds.entries()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            System.out.println("Method=" + key + ", AddPosId=" + value + ": "
+            logger.info("Method=" + key + ", AddPosId=" + value + ": "
                     + eutranPositioningData.getUsage(eutranPositioningData.getAdditionalPositioningDataSet(), i));
             i++;
         }

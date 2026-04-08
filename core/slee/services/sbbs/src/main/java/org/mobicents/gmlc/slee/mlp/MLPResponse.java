@@ -3,31 +3,45 @@ package org.mobicents.gmlc.slee.mlp;
 import org.mobicents.gmlc.slee.mlp.v3_4.Cgi;
 import org.mobicents.gmlc.slee.mlp.v3_4.CircularArcArea;
 import org.mobicents.gmlc.slee.mlp.v3_4.CircularArea;
+import org.mobicents.gmlc.slee.mlp.v3_4.Civicloc;
+import org.mobicents.gmlc.slee.mlp.v3_4.CiviclocElement;
 import org.mobicents.gmlc.slee.mlp.v3_4.Coord;
+import org.mobicents.gmlc.slee.mlp.v3_4.DiameterIdentity;
+import org.mobicents.gmlc.slee.mlp.v3_4.ECgi;
 import org.mobicents.gmlc.slee.mlp.v3_4.EllipticalArea;
+import org.mobicents.gmlc.slee.mlp.v3_4.ExtensionParams;
 import org.mobicents.gmlc.slee.mlp.v3_4.GsmNetParam;
 import org.mobicents.gmlc.slee.mlp.v3_4.LinearRing;
 import org.mobicents.gmlc.slee.mlp.v3_4.Msid;
+import org.mobicents.gmlc.slee.mlp.v3_4.MsisdsExt;
 import org.mobicents.gmlc.slee.mlp.v3_4.Neid;
+import org.mobicents.gmlc.slee.mlp.v3_4.NrCgi;
+import org.mobicents.gmlc.slee.mlp.v3_4.NrTai;
 import org.mobicents.gmlc.slee.mlp.v3_4.OuterBoundaryIs;
 import org.mobicents.gmlc.slee.mlp.v3_4.Pd;
 import org.mobicents.gmlc.slee.mlp.v3_4.Point;
 import org.mobicents.gmlc.slee.mlp.v3_4.Polygon;
 import org.mobicents.gmlc.slee.mlp.v3_4.Pos;
-import org.mobicents.gmlc.slee.mlp.v3_4.Poserr;
+import org.mobicents.gmlc.slee.mlp.v3_4.Rai;
 import org.mobicents.gmlc.slee.mlp.v3_4.Result;
 import org.mobicents.gmlc.slee.mlp.v3_4.Sai;
-import org.mobicents.gmlc.slee.mlp.v3_4.ServingCell;
+import org.mobicents.gmlc.slee.mlp.v3_4.ServingNode;
+import org.mobicents.gmlc.slee.mlp.v3_4.Sgsnid;
 import org.mobicents.gmlc.slee.mlp.v3_4.Shape;
 import org.mobicents.gmlc.slee.mlp.v3_4.Slia;
 import org.mobicents.gmlc.slee.mlp.v3_4.Slrep;
 import org.mobicents.gmlc.slee.mlp.v3_4.SvcResult;
+import org.mobicents.gmlc.slee.mlp.v3_4.Tai;
 import org.mobicents.gmlc.slee.mlp.v3_4.Time;
 import org.mobicents.gmlc.slee.mlp.v3_4.Tlra;
 import org.mobicents.gmlc.slee.mlp.v3_4.Tlrep;
 import org.mobicents.gmlc.slee.mlp.v3_4.TrlPos;
+import org.mobicents.gmlc.slee.mlp.v3_4.UtranCgi;
+import org.mobicents.gmlc.slee.mlp.v3_4.VelocityEstimate;
 import org.mobicents.gmlc.slee.mlp.v3_4.Vlrid;
 import org.mobicents.gmlc.slee.mlp.v3_4.Vmscid;
+import org.mobicents.gmlc.slee.primitives.CivicAddressElements;
+import org.mobicents.gmlc.slee.primitives.CivicAddressXmlReader;
 
 import javax.slee.facilities.Tracer;
 import javax.xml.bind.JAXBContext;
@@ -366,23 +380,6 @@ public class MLPResponse {
   /*
    * Use JAXB marshalling to generate the MLP XML result data for a single successful position look-up
    *
-   * @param x         X coordinate in WGS84 DMS format
-   * @param y         Y coordinate in WGS84 DMS format
-   * @param radius    Position radius in meters (e.g. 5000 for 5km of accuracy)
-   * @param msid      Location for MSISDN
-   * @param mcc       Mobile Country Code
-   * @param mnc       Mobile Network Code
-   * @param lac       Location Area Code
-   * @param ci        Cell Id
-   * @param eci       LTE Cell Id
-   * @param tac       Tracking Area Code
-   * @param mmeName   Mobility Management Entity name
-   * @param sgsnName  Serving GPRS Support Node name
-   * @param mscNumber Mobile Switching Center number (E.164 digits, Global Title)
-   * @param vlrNumber Visitor Location Register number (E.164 digits, Global Title)
-   * @param imei      International Mobile Equipment Identity
-   * @param imsi      International Mobile Subscriber Identity
-   * @param age       Age of Location
    *
    * @return String XML result to return to client
    * Example usage:
@@ -438,13 +435,16 @@ public class MLPResponse {
    * </svc_result>
    */
   public String getCoreNetworkSinglePositionXML(String operation, String typeOfShape, Double x, Double y, Double radius, Double semiMajor,
-                                                Double semMinor, Double angle, Double arcStartAngle, Double arcStopAngle, Integer altitude,
-                                                org.mobicents.gmlc.slee.primitives.Polygon polygon, Integer polygonPointsAmount,
-                                                Integer mcc, Integer mnc, Integer lac, Integer ci, Integer sac,
-                                                Long eci, Integer rac, Integer tac, Long nci, Integer nrTac, String mmeName, String sgsnName, String mscNumber,
-                                                String vlrNumber, String msid, String imei, String imsi, Integer age, String lmsi,
-                                                Integer clientTransId, Integer lcsRefNumber, Integer ratType, MLPResultType mlpResultType,
-                                                Boolean mlpTriggeredReportingService, Boolean isReport) {
+                                                Double semMinor, Double angle, Double arcStartAngle, Double arcStopAngle, Integer altitude, Double uncertaintyAltitude,
+                                                org.mobicents.gmlc.slee.primitives.Polygon polygon, Integer polygonPointsAmount, String posMethod,
+                                                Integer horizontalSpeed, Integer bearing, Integer verticalSpeed,
+                                                Integer uncertaintyHorizontalSpeed, Integer uncertaintyVerticalSpeed, String velocityType,
+                                                Integer mcc, Integer mnc, Integer lac, Integer ci, Integer sac, Long uci,
+                                                Long eci, Long enbId, Integer rac, Integer tac, Long nci, Integer nrTac,
+                                                String mmeName, String mmeRealm, String sgsnName, String sgsnRealm, String sgsnNumber, String amfAddress,
+                                                String mscNumber, String vlrNumber, String msid, String imei, String imsi, Integer age, String lmsi,
+                                                Integer clientTransId, Integer lcsRefNumber, Integer ratType, String civicAddress,
+                                                MLPResultType mlpResultType, Boolean mlpTriggeredReportingService, Boolean isReport) {
 
     // Generate XML response
     String svcResultXml;
@@ -456,9 +456,15 @@ public class MLPResponse {
       String utcOffset = new SimpleDateFormat("Z").format(requestTime);
 
       // Generate the response XML
-      svcResultXml = this.generateSinglePositionSuccessXML(operation, typeOfShape, x, y, radius, semiMajor, semMinor, angle, arcStartAngle, arcStopAngle,
-          altitude, polygon, polygonPointsAmount, utcOffset, date, msid, mcc, mnc, lac, ci, sac, eci, rac, tac, nci, nrTac, mmeName, sgsnName, mscNumber, vlrNumber,
-          imei, imsi, age, lmsi, clientTransId, lcsRefNumber, ratType, mlpResultType, mlpTriggeredReportingService, isReport);
+      svcResultXml = this.generateSinglePositionSuccessXML(operation, typeOfShape,
+          x, y, radius, semiMajor, semMinor, angle, arcStartAngle, arcStopAngle, altitude, uncertaintyAltitude,
+          polygon, polygonPointsAmount, posMethod,
+          horizontalSpeed, bearing, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, velocityType,
+          utcOffset, date, msid,
+          mcc, mnc, lac, ci, sac, uci, eci, enbId, rac, tac, nci, nrTac,
+          mmeName, mmeRealm, sgsnName, sgsnRealm, sgsnNumber, amfAddress, mscNumber, vlrNumber,
+          imei, imsi, age, lmsi, clientTransId, lcsRefNumber, ratType, civicAddress,
+          mlpResultType, mlpTriggeredReportingService, isReport);
 
     } catch (IllegalArgumentException e) {
       // Generate the error XML
@@ -487,95 +493,120 @@ public class MLPResponse {
    * @param arcStartAngle       Angle (in angularUnit) between North and the first defined radius
    * @param arcStopAngle        Angle (in angularUnit) between the first and second defined radius
    * @param altitude            Altitude of the location estimate
+   * @param uncertaintyAltitude Uncertainty of the altitude of the location estimate
    * @param polygon             Array containing location estimate coordinates for each point of the polygon
    * @param polygonPointsAmount Amount of points of the polygon
+   * @param positioningMethod   The positioning method used to obtain the Position
+   * @param horizontalSpeed     The estimated horizontal speed
+   * @param bearing             The bearing of the velocity estimate
+   * @param verticalSpeed       The estimated vertical speed
+   * @param uncertaintyHorSpeed The uncertainty of the estimated horizontal speed
+   * @param uncertaintyVerSpeed The uncertainty of the estimated vertical speed
+   * @param velocityType        The velocity estimate type
    * @param utcOffSet           UTC offset for location timestamp in "[+/-]HHmm" format
    * @param date                Location timestamp at above UTC offset in "yyyyMMddHHmmss" format
-   * @param msid                MSISDN
+   * @param msisdn              MSISDN
    * @param mcc                 Mobile Country Code
    * @param mnc                 Mobile Network Code
    * @param lac                 Location Area Code
    * @param ci                  Cell Id
    * @param sac                 Service Area Code
+   * @param uci                 UTRAN Cell Id
    * @param eci                 LTE Cell Id
    * @param tac                 LTE Tracking Area Code
    * @param nci                 5GS NR Cell Id
    * @param nrTac               5GS NR Tracking Area Code
-   * @param mmeName             Mobility Management Entity name
-   * @param sgsnName            Serving GPRS Support Node name
-   * @param mscNumber           Mobile Switching Center number (E.164 digits, Global Title)
-   * @param vlrNumber           Visitor Location Register number (E.164 digits, Global Title)
+   * @param mmeName             Mobility Management Entity (MME) Diameter host name
+   * @param mmeRealm            Mobility Management Entity (MME) Diameter realm
+   * @param sgsnName            Serving GPRS Support Node (SGSN) Diameter host name
+   * @param sgsnRealm           Serving GPRS Support Node (SGSN) Diameter realm
+   * @param sgsnNumber          Serving GPRS Support Node (SGSN) number (E.164/E.214 digits, Global Title)
+   * @param amfAddress          Access and Mobility Management Function (AMF) fully qualified domain name
+   * @param mscNumber           Mobile Switching Center number (E.164/E.214 digits, Global Title)
+   * @param vlrNumber           Visitor Location Register number (E.164/E.214 digits, Global Title)
    * @param imei                International Mobile Equipment Identity
    * @param imsi                International Mobile Subscriber Identity
    * @param age                 Age of Location
    * @param lmsi                Location Mobile Subscriber Identity
    * @param clientTransId       Transaction Identity of the GMLC client
    * @param lcsReferenceNumber  LCS Reference Number parameter of the PSL invoke
+   * @param civicAddress        The civic address gathered by the location request
    * @param mlpResultType       MLPResultType internal enum value for use in the MLP classes
    * @return                    String XML result to return to client
    * @throws IOException        IO error occurred while generating the XML result
    * @throws JAXBException      JAXB error occurred while generating the XML result
    */
   private String generateSinglePositionSuccessXML(String operation, String typeOfShape , Double x, Double y, Double radius, Double semiMajor,
-                                                  Double semiMinor, Double angle, Double arcStartAngle, Double arcStopAngle, Integer altitude,
-                                                  org.mobicents.gmlc.slee.primitives.Polygon polygon, Integer polygonPointsAmount,
-                                                  String utcOffSet, String date, String msid, Integer mcc, Integer mnc, Integer lac,
-                                                  Integer ci, Integer sac, Long eci, Integer rac, Integer tac, Long nci, Integer nrTac, String mmeName, String sgsnName,
+                                                  Double semiMinor, Double angle, Double arcStartAngle, Double arcStopAngle, Integer altitude, Double uncertaintyAltitude,
+                                                  org.mobicents.gmlc.slee.primitives.Polygon polygon, Integer polygonPointsAmount, String positioningMethod,
+                                                  Integer horizontalSpeed, Integer bearing, Integer verticalSpeed,
+                                                  Integer uncertaintyHorSpeed, Integer uncertaintyVerSpeed, String velocityType,
+                                                  String utcOffSet, String date, String msisdn, Integer mcc, Integer mnc, Integer lac,
+                                                  Integer ci, Integer sac, Long uci, Long eci, Long enbId, Integer rac, Integer tac, Long nci, Integer nrTac,
+                                                  String mmeName, String mmeRealm, String sgsnName, String sgsnRealm, String sgsnNumber, String amfAddress,
                                                   String mscNumber, String vlrNumber, String imei, String imsi, Integer age, String lmsi,
-                                                  Integer clientTransId, Integer lcsReferenceNumber, Integer ratType,
+                                                  Integer clientTransId, Integer lcsReferenceNumber, Integer ratType, String civicAddress,
                                                   MLPResultType mlpResultType, Boolean mlpTriggeredReportingService, Boolean isReport) throws  IOException, JAXBException {
 
     String lXml;
     String ver = "3.4.0";
 
-    // Create all the objects we'll use to generate our svc_result XML
+    // Create the objects we'll surely use to generate our svc_result XML
     SvcResult mlpSvcResult = new SvcResult();
     Slia mlpSlia = new Slia();
     Tlra mlpTlra = new Tlra();
     Tlrep mlpTlrep = new Tlrep();
     Slrep mlpSlrep = new Slrep();
     Pos mlpPos = new Pos();
-    TrlPos mlpTrlPos = new TrlPos();
-    Msid mlpMsid = new Msid();
+    Msid mlpMsisdn = new Msid();
+    Msid mlpImsi = new Msid();
+    Msid mlpImei = new Msid();
     Pd mlpPd = new Pd();
-    Time mlpTime = new Time();
-    Shape mlpShape = new Shape();
-    Point mlpPoint = new Point();
-    CircularArea mlpCircularArea = new CircularArea();
-    EllipticalArea mlpEllipticalArea = new EllipticalArea();
-    CircularArcArea mlpCircularArcArea = new CircularArcArea();
-    Polygon mlpPolygon = new Polygon();
-    Coord mlpCoord = new Coord();
     List<Pos> posList = new ArrayList<>();
-    List<TrlPos> trlPosList = new ArrayList<>();
     GsmNetParam mlpGsmNetParam = new GsmNetParam();
     Cgi mlpCgi = new Cgi();
-    Sai mlpSai = new Sai();
-    ServingCell mlpServingCell = new ServingCell();
     Neid mlpNeid = new Neid();
     Vmscid mlpVmscId = new Vmscid();
     Vlrid mlpVlrId = new Vlrid();
+    ExtensionParams mlpExtensionParams = new ExtensionParams();
     Result mlpResult = new Result();
 
     try {
-      // Setup all the objects for this single position (Pos object)
-      // Msid object for Pos
-      // MSISDN
-      mlpMsid.setContent(msid);
-      mlpPos.setMsid(mlpMsid);
-      // Pd object for Pos
+      // Setup all objects for this single position
+      /** Msid object for Pos **/
+      if (msisdn != null) {
+        mlpMsisdn.setType("MSISDN");
+        mlpMsisdn.setContent(msisdn);
+        mlpPos.setMsid(mlpMsisdn);
+      } else if (imsi != null) {
+        mlpImsi.setType("IMSI");
+        mlpImsi.setContent(imsi);
+        mlpPos.setMsid(mlpImsi);
+      } else if (imei != null) {
+        mlpImei.setType("IMEI");
+        mlpImei.setContent(imei);
+        mlpPos.setMsid(mlpImei);
+      }
+      /** Pd object for Pos **/
       // Time object for Pd
-      mlpTime.setUtcOff(utcOffSet);
-      mlpTime.setContent(date);
-      mlpPd.setTime(mlpTime);
-      // Shape object for Pd
+      if (utcOffSet != null || date != null) {
+        Time mlpTime = new Time();
+        mlpTime.setUtcOff(utcOffSet);
+        mlpTime.setContent(date);
+        mlpPd.setTime(mlpTime);
+      }
+      /** Shape object for Pd **/
       if (typeOfShape != null) {
+        Shape mlpShape = new Shape();
+        Coord mlpCoord = new Coord();
         if (typeOfShape.equalsIgnoreCase("EllipsoidPoint")) {
+          Point mlpPoint = new Point();
           mlpCoord.setX(String.valueOf(x));
           mlpCoord.setY(String.valueOf(y));
           mlpPoint.setCoord(mlpCoord);
           mlpShape.setPoint(mlpPoint);
         } else if (typeOfShape.equalsIgnoreCase("EllipsoidPointWithUncertaintyCircle")) {
+          CircularArea mlpCircularArea = new CircularArea();
           mlpCoord.setX(String.valueOf(x));
           mlpCoord.setY(String.valueOf(y));
           mlpCircularArea.setCoord(mlpCoord);
@@ -596,6 +627,7 @@ public class MLPResponse {
             }
           }
         } else if (typeOfShape.equalsIgnoreCase("EllipsoidPointWithUncertaintyEllipse")) {
+          EllipticalArea mlpEllipticalArea = new EllipticalArea();
           mlpCoord.setX(String.valueOf(x));
           mlpCoord.setY(String.valueOf(y));
           mlpEllipticalArea.setCoord(mlpCoord);
@@ -605,6 +637,7 @@ public class MLPResponse {
           mlpShape.setEllipticalArea(mlpEllipticalArea);
           // confidence not contemplated in MLP 3.4 EllipticalArea
         } else if (typeOfShape.equalsIgnoreCase("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid")) {
+          EllipticalArea mlpEllipticalArea = new EllipticalArea();
           mlpCoord.setX(String.valueOf(x));
           mlpCoord.setY(String.valueOf(y));
           mlpEllipticalArea.setCoord(mlpCoord);
@@ -614,6 +647,7 @@ public class MLPResponse {
           mlpShape.setEllipticalArea(mlpEllipticalArea);
           // altitude and confidence not contemplated in MLP 3.4 EllipticalArea
         } else if (typeOfShape.equalsIgnoreCase("EllipsoidArc")) {
+          CircularArcArea mlpCircularArcArea = new CircularArcArea();
           mlpCoord.setX(String.valueOf(x));
           mlpCoord.setY(String.valueOf(y));
           mlpCircularArcArea.setCoord(mlpCoord);
@@ -623,6 +657,7 @@ public class MLPResponse {
           mlpShape.setCircularArcArea(mlpCircularArcArea);
           // confidence not contemplated in MLP 3.4 EllipticalArea
         } else if (typeOfShape.equalsIgnoreCase("Polygon")) {
+          Polygon mlpPolygon = new Polygon();
           LinearRing linearRing = new LinearRing();
           OuterBoundaryIs outerBoundaryIs = new OuterBoundaryIs();
           double lat, pointLatitude, lon, pointLongitude;
@@ -651,101 +686,467 @@ public class MLPResponse {
           mlpShape.setPolygon(mlpPolygon);
         }
         mlpPd.setShape(mlpShape);
-      }
-      // GsmNetParam and ServingCell setting for object Pos
-      if (mcc != null || mnc != null) {
-        if (mcc != null) {
-          mlpCgi.setMcc(String.valueOf(mcc));
-        }
-        if (mnc != null) {
-          mlpCgi.setMnc(String.valueOf(mnc));
-        }
-        if (lac != null && sac == null) {
-          mlpCgi.setLac(String.valueOf(lac));
-          if (ci != null) {
-            mlpCgi.setCellid(String.valueOf(ci));
+        if (altitude != null) {
+          mlpPd.setAlt(String.valueOf(altitude));
+          if (uncertaintyAltitude != null) {
+            mlpPd.setAltUnc(String.valueOf(uncertaintyAltitude));
           }
-          mlpGsmNetParam.setCgi(mlpCgi);
         }
-        if (sac != null) {
-          mlpSai.setMcc(String.valueOf(mcc));
-          mlpSai.setMnc(String.valueOf(mnc));
-          mlpSai.setLac(String.valueOf(lac));
-          mlpSai.setSac(String.valueOf(sac));
-          mlpServingCell.setSai(mlpSai);
+        if (horizontalSpeed != null) {
+          mlpPd.setSpeed(String.valueOf(horizontalSpeed));
+          if (uncertaintyHorSpeed != null) {
+            mlpPd.setAltUnc(String.valueOf(uncertaintyHorSpeed));
+          }
         }
-        if (eci != null) {
-          mlpServingCell.setMcc(String.valueOf(mcc));
-          mlpServingCell.setMnc(String.valueOf(mnc));
-          mlpServingCell.setLteCi(String.valueOf(eci));
+      }
+      /** CivicLoc for Pd **/
+      if (civicAddress != null) {
+        Civicloc mlpCivicloc = new Civicloc();
+        CiviclocElement mlpCiviclocElement;
+        CivicAddressXmlReader reader = new CivicAddressXmlReader();
+        reader.civicAddressXMLReader(civicAddress);
+        CivicAddressElements civicAddressElements = reader.getCivicAddressElements();
+        if (civicAddressElements != null) {
+          if (civicAddressElements.getCountry() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getCountry());
+            mlpCiviclocElement.setElementType("COUNTRY");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA1() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA1());
+            mlpCiviclocElement.setElementType("A1");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA2() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA2());
+            mlpCiviclocElement.setElementType("A2");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA3() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA3());
+            mlpCiviclocElement.setElementType("A3");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA4() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA4());
+            mlpCiviclocElement.setElementType("A4");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA5() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA5());
+            mlpCiviclocElement.setElementType("A5");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getA6() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getA6());
+            mlpCiviclocElement.setElementType("A6");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPrm() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPrm());
+            mlpCiviclocElement.setElementType("PRM");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPrd() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPrd());
+            mlpCiviclocElement.setElementType("PRD");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getRd() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getRd());
+            mlpCiviclocElement.setElementType("RD");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getSts() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getSts());
+            mlpCiviclocElement.setElementType("STS");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPrd() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPrd());
+            mlpCiviclocElement.setElementType("PRD");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPom() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPom());
+            mlpCiviclocElement.setElementType("POM");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getRdsec() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getRdsec());
+            mlpCiviclocElement.setElementType("RDSEC");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getRdbr() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getRdbr());
+            mlpCiviclocElement.setElementType("RDBR");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getRdsubbr() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getRdsubbr());
+            mlpCiviclocElement.setElementType("RDSUBBR");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getHno() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getHno());
+            mlpCiviclocElement.setElementType("HNO");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getHns() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getHns());
+            mlpCiviclocElement.setElementType("HNS");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getLmk() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getLmk());
+            mlpCiviclocElement.setElementType("LMK");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getLoc() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getLoc());
+            mlpCiviclocElement.setElementType("LOC");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getFlr() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getFlr());
+            mlpCiviclocElement.setElementType("FLR");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getNam() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getNam());
+            mlpCiviclocElement.setElementType("NAM");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPc() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPc());
+            mlpCiviclocElement.setElementType("PC");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getBld() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getBld());
+            mlpCiviclocElement.setElementType("BLD");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getUnit() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getUnit());
+            mlpCiviclocElement.setElementType("UNIT");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getRoom() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getRoom());
+            mlpCiviclocElement.setElementType("ROOM");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getSeat() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getSeat());
+            mlpCiviclocElement.setElementType("SEAT");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPlc() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPlc());
+            mlpCiviclocElement.setElementType("PLC");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPcn() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPcn());
+            mlpCiviclocElement.setElementType("PCN");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPobox() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPobox());
+            mlpCiviclocElement.setElementType("POBOX");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getPn() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getPn());
+            mlpCiviclocElement.setElementType("PN");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getMp() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getMp());
+            mlpCiviclocElement.setElementType("MP");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getStp() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getStp());
+            mlpCiviclocElement.setElementType("STP");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
+          if (civicAddressElements.getHnp() != null) {
+            mlpCiviclocElement = new CiviclocElement();
+            mlpCiviclocElement.setContent(civicAddressElements.getHnp());
+            mlpCiviclocElement.setElementType("HNP");
+            mlpCivicloc.getCiviclocElement().add(mlpCiviclocElement);
+          }
         }
-        if (nci != null) {
-          mlpServingCell.setMcc(String.valueOf(mcc));
-          mlpServingCell.setMnc(String.valueOf(mnc));
-          mlpServingCell.setNrCi(String.valueOf(nci));
+        mlpPd.setCivicloc(mlpCivicloc);
+      }
+
+      /** GsmNetParam setting for object Pos and Cgi **/
+      if (lac != null && sac == null) {
+        mlpCgi.setMcc(String.valueOf(mcc));
+        mlpCgi.setMnc(String.valueOf(mnc));
+        mlpCgi.setLac(String.valueOf(lac));
+        if (ci != null) {
+          mlpCgi.setCellid(String.valueOf(ci));
         }
-        if (rac != null) {
-          mlpPos.setRoutingAreaCode(String.valueOf(rac));
-        }
-        if (tac != null) {
-          mlpPos.setTrackingAreaCode(String.valueOf(tac));
-        }
-        if (nrTac != null) {
-          mlpPos.setNrTrackingAreaCode(String.valueOf(nrTac));
-        }
+        mlpGsmNetParam.setCgi(mlpCgi);
       }
       if (mscNumber != null || vlrNumber != null) {
         if (mscNumber != null) {
           mlpVmscId.setVmscno(mscNumber);
           mlpNeid.getContent().add(mlpVmscId);
-          mlpGsmNetParam.setNeid(mlpNeid);
         }
         if (vlrNumber != null) {
           mlpVlrId.setVlrno(vlrNumber);
           mlpNeid.getContent().add(mlpVlrId);
-          mlpGsmNetParam.setNeid(mlpNeid);
         }
+        mlpGsmNetParam.setNeid(mlpNeid);
       }
       if (imsi != null) {
-        if (!imsi.equals("")) {
+        if (!imsi.isEmpty()) {
           mlpGsmNetParam.setImsi(imsi);
         }
       }
       if (lmsi != null) {
-        if (!lmsi.equals("")) {
+        if (!lmsi.isEmpty()) {
           mlpGsmNetParam.setLmsi(lmsi);
         }
       }
       if (!isReport) {
-        if (mlpServingCell.getSai() != null || mlpServingCell.getLteCi() != null || mlpServingCell.getNrCi() != null) {
-          // Add the ServingCell to Pos for SLIA
-          mlpPos.setServingCell(mlpServingCell);
-        }
         if (mlpCgi.getLac() != null || mscNumber != null || vlrNumber != null || imsi != null || lmsi != null) {
           // Add the gsmNetParams to Pos for SLIA
           mlpPos.setGsmNetParam(mlpGsmNetParam);
         }
       } else {
         if (mlpTriggeredReportingService) {
-            if (mlpServingCell.getSai() != null || mlpServingCell.getLteCi() != null || mlpServingCell.getNrCi() != null) {
-              // Add the ServingCell to TrlPos for TLRA
-              mlpTrlPos.setServingCell(mlpServingCell);
+          if (mlpCgi.getLac() != null || mscNumber != null || vlrNumber != null) {
+            // Add the Neid to ExtensionParams for TLREP and to GsmNetParams for Pos in SLREP
+            mlpExtensionParams.setCgi(mlpCgi);
+            if (mscNumber != null || vlrNumber != null) {
+              if (mscNumber != null) {
+                mlpVmscId.setVmscno(mscNumber);
+                mlpNeid.getContent().add(mlpVmscId);
+              }
+              if (vlrNumber != null) {
+                mlpVlrId.setVlrno(vlrNumber);
+                mlpNeid.getContent().add(mlpVlrId);
+              }
+              mlpGsmNetParam.setNeid(mlpNeid);
+              mlpPos.setGsmNetParam(mlpGsmNetParam);
             }
-            if (mlpCgi.getLac() != null || mscNumber != null || vlrNumber != null || imsi != null || lmsi != null) {
-              // Add the gsmNetParams to TrlPos for TLRA
-              mlpTrlPos.setGsmNetParam(mlpGsmNetParam);
-            }
-        } else {
-          if (mlpServingCell.getSai() != null || mlpServingCell.getLteCi() != null || mlpServingCell.getNrCi() != null) {
-            // Add the ServingCell to Pos for SLREP
-            mlpPos.setServingCell(mlpServingCell);
           }
+        } else {
           if (mlpCgi.getLac() != null || mscNumber != null || vlrNumber != null || imsi != null || lmsi != null) {
             // Add the gsmNetParams to Pos for SLREP
             mlpPos.setGsmNetParam(mlpGsmNetParam);
           }
         }
       }
+
+      // Extension params
+      if (msisdn != null || imsi != null || imei != null) {
+        MsisdsExt msids = new MsisdsExt();
+        List<Msid> msidList = new ArrayList<>();
+        if (msisdn != null) {
+          mlpMsisdn.setType("MSISDN");
+          mlpMsisdn.setContent(msisdn);
+          msidList.add(mlpMsisdn);
+        }
+        if (imsi != null) {
+          mlpImsi.setType("IMSI");
+          mlpImsi.setContent(imsi);
+          msidList.add(mlpImsi);
+        }
+        if (imei != null) {
+          mlpImei.setType("IMEI");
+          mlpImei.setContent(imei);
+          msidList.add(mlpImei);
+        }
+        msids.setMsidList(msidList);
+        mlpExtensionParams.setMsidsExt(msids);
+      }
+      if (horizontalSpeed != null || verticalSpeed != null) {
+        VelocityEstimate velocityEstimate = new VelocityEstimate();
+        if (horizontalSpeed != null) {
+          velocityEstimate.setHorizontalSpeed(String.valueOf(horizontalSpeed));
+          if (uncertaintyHorSpeed != null) {
+            velocityEstimate.setUncertaintyHorizontalSpeed(String.valueOf(uncertaintyHorSpeed));
+          }
+          if (verticalSpeed != null) {
+            velocityEstimate.setVerticalSpeed(String.valueOf(verticalSpeed));
+            if (uncertaintyVerSpeed != null) {
+              velocityEstimate.setUncertaintyVerticalSpeed(String.valueOf(uncertaintyVerSpeed));
+            }
+          }
+        }
+        if (velocityType != null) {
+          velocityEstimate.setVelocityType(String.valueOf(velocityType));
+        }
+        if (bearing != null) {
+          velocityEstimate.setBearing(String.valueOf(bearing));
+        }
+        mlpExtensionParams.setVelocityEstimate(velocityEstimate);
+      }
+      if (lac != null && sac == null) {
+        if (mlpGsmNetParam.getCgi() != null) {
+          if (mlpGsmNetParam.getCgi().getLac().isEmpty()) {
+            mlpCgi.setMcc(String.valueOf(mcc));
+            mlpCgi.setMnc(String.valueOf(mnc));
+            mlpCgi.setLac(String.valueOf(lac));
+            if (ci != null) {
+              mlpCgi.setCellid(String.valueOf(ci));
+            }
+            mlpExtensionParams.setCgi(mlpCgi);
+          }
+        }
+      } else if (sac != null) {
+        Sai mlpSai = new Sai();
+        mlpSai.setMcc(String.valueOf(mcc));
+        mlpSai.setMnc(String.valueOf(mnc));
+        mlpSai.setLac(String.valueOf(lac));
+        mlpSai.setSac(String.valueOf(sac));
+        mlpExtensionParams.setSai(mlpSai);
+      }
+      if (rac != null) {
+        Rai rai = new Rai();
+        rai.setMcc(String.valueOf(mcc));
+        rai.setMnc(String.valueOf(mnc));
+        rai.setRac(String.valueOf(rac));
+        mlpExtensionParams.setRai(rai);
+      }
+      // Cgi and Sai already set before for ExtensionParams in this method
+      if (uci != null){
+        UtranCgi ucgi = new UtranCgi();
+        ucgi.setMcc(String.valueOf(mcc));
+        ucgi.setMnc(String.valueOf(mnc));
+        ucgi.setUci(String.valueOf(uci));
+        mlpExtensionParams.setUcgi(ucgi);
+      }
+      if (tac != null) {
+        Tai tai = new Tai();
+        tai.setMcc(String.valueOf(mcc));
+        tai.setMnc(String.valueOf(mnc));
+        tai.setTac(String.valueOf(tac));
+        mlpExtensionParams.setTai(tai);
+      }
+      if (eci != null) {
+        ECgi ecgi = new ECgi();
+        ecgi.setMcc(String.valueOf(mcc));
+        ecgi.setMnc(String.valueOf(mnc));
+        ecgi.setEci(String.valueOf(eci));
+        ecgi.setEnbid(String.valueOf(enbId));
+        ecgi.setCi(String.valueOf(ci));
+        mlpExtensionParams.setEcgi(ecgi);
+      }
+      if (nrTac != null) {
+        NrTai nrTai = new NrTai();
+        nrTai.setMcc(String.valueOf(mcc));
+        nrTai.setMnc(String.valueOf(mnc));
+        nrTai.setNrTac(String.valueOf(nrTac));
+        mlpExtensionParams.setNrTai(nrTai);
+      }
+      if (nci != null) {
+        NrCgi nrCgi = new NrCgi();
+        nrCgi.setMcc(String.valueOf(mcc));
+        nrCgi.setMnc(String.valueOf(mnc));
+        nrCgi.setNci(String.valueOf(nci));
+        mlpExtensionParams.setNrCgi(nrCgi);
+      }
+      if (sgsnName != null || sgsnRealm != null || sgsnNumber != null || mmeName != null || mmeRealm != null || amfAddress != null
+          || mscNumber != null || vlrNumber != null) {
+        ServingNode mlpServingNode = new ServingNode();
+        if (mlpGsmNetParam.getNeid() == null) {
+          if (mscNumber != null || vlrNumber != null) {
+            if (mscNumber != null) {
+              mlpVmscId.setVmscno(mscNumber);
+              mlpNeid.getContent().add(mlpVmscId);
+            }
+            if (vlrNumber != null) {
+              mlpVlrId.setVlrno(vlrNumber);
+              mlpNeid.getContent().add(mlpVlrId);
+            }
+            mlpServingNode.setNeid(mlpNeid);
+          }
+        }
+        if (mmeName != null) {
+          DiameterIdentity mlpDiameterIdentity = new DiameterIdentity();
+          if (!mmeName.isEmpty()) {
+            mlpDiameterIdentity.setMmeName(mmeName);
+          }
+          if (mmeRealm != null) {
+            if (!mmeRealm.isEmpty()) {
+              mlpDiameterIdentity.setMmeRealm(mmeRealm);
+            }
+          }
+          mlpServingNode.setDiameterIdentity(mlpDiameterIdentity);
+        } else if (sgsnName != null) {
+          DiameterIdentity mlpDiameterIdentity = new DiameterIdentity();
+          if (!sgsnName.isEmpty()) {
+            mlpDiameterIdentity.setSgsnName(sgsnName);
+          }
+          if (sgsnRealm != null) {
+            if (!sgsnRealm.isEmpty()) {
+              mlpDiameterIdentity.setSgsnRealm(sgsnRealm);
+            }
+          }
+          mlpServingNode.setDiameterIdentity(mlpDiameterIdentity);
+        }
+        if (sgsnNumber != null) {
+          if (!sgsnNumber.isEmpty()) {
+            Sgsnid mlpSgsnid = new Sgsnid();
+            mlpSgsnid.setSgsnno(sgsnNumber);
+            mlpServingNode.setSgsnId(mlpSgsnid);
+          }
+        }
+        if (amfAddress != null) {
+          if (!amfAddress.isEmpty()) {
+            mlpServingNode.setAmfAddress(amfAddress);
+          }
+        }
+        if (mlpServingNode.getNeid() != null || mlpServingNode.getDiameterIdentity() != null
+            || mlpServingNode.getSgsnId() != null || mlpServingNode.getAmfAddress() != null) {
+          mlpExtensionParams.setServingNode(mlpServingNode);
+        }
+      }
+      mlpSlia.setExtensionParams(mlpExtensionParams);
+      mlpTlra.setExtensionParams(mlpExtensionParams);
+      mlpSlrep.setExtensionParams(mlpExtensionParams);
+      mlpTlrep.setExtensionParams(mlpExtensionParams);
+
       // Set transId in Pos (LCS Reference Number)
       if (operation.equalsIgnoreCase("PSL") || operation.equalsIgnoreCase("PLR")) {
         mlpTlra.setLcsRef(String.valueOf(lcsReferenceNumber));
@@ -754,7 +1155,9 @@ public class MLPResponse {
         mlpTlrep.setLcsRef(String.valueOf(lcsReferenceNumber));
       }
       // addInfo ?
-      // posMethod ?
+      // posMethod
+      if (positioningMethod != null)
+        mlpPos.setPosMethod(positioningMethod.toUpperCase());
       // resultType
       mlpPos.setResultType("FINAL");
       if (!isReport) {
@@ -764,21 +1167,40 @@ public class MLPResponse {
         posList.add(mlpPos);
         for (Pos pos : posList) {
           if (mlpTriggeredReportingService) {
-              mlpTlra.getPos().add(pos);
+              mlpTlra.setExtensionParams(mlpExtensionParams);
+              mlpTlra.getExtensionParams().getPos().add(pos);
           } else {
             mlpSlia.getPos().add(pos);
           }
         }
       } else {
         if (mlpTriggeredReportingService) {
+          TrlPos mlpTrlPos = new TrlPos();
+          // Add the position list to the TLREP
+          List<TrlPos> trlPosList = new ArrayList<>();
+          trlPosList.add(mlpTrlPos);
+          for (TrlPos tlrPos : trlPosList) {
             // Set the Msid in TrlPos for TLREP
-            mlpTrlPos.setMsid(mlpMsid);
+            Msid tlrPosMsid = new Msid();
+            if (imsi != null) {
+              tlrPosMsid.setType("IMSI");
+              tlrPosMsid.setContent(imsi);
+              tlrPos.setMsid(tlrPosMsid);
+            } else if (msisdn != null) {
+              tlrPosMsid.setType("MSISDN");
+              tlrPosMsid.setContent(msisdn);
+              tlrPos.setMsid(tlrPosMsid);
+            } else if (imei != null) {
+              tlrPosMsid.setType("IMEI");
+              tlrPosMsid.setContent(imei);
+              tlrPos.setMsid(tlrPosMsid);
+            }
             // Set Pd object in TrlPos for TLREP
-            mlpTrlPos.setPd(mlpPd);
-            // Add the position list to the TLREP
-            trlPosList.add(mlpTrlPos);
-            for (TrlPos tlrPos : trlPosList) {
-              mlpTlrep.getTrlPos().add(tlrPos);
+            tlrPos.setPd(mlpPd);
+            // Set the pos_method
+            if (positioningMethod != null)
+              tlrPos.setPosMethod(positioningMethod.toUpperCase());
+            mlpTlrep.getTrlPos().add(tlrPos);
           }
         } else {
           // Set Pd object in Pos
@@ -841,36 +1263,32 @@ public class MLPResponse {
 
     } catch (IllegalArgumentException illegalArgumentException) {
       // Return generic XML error response because we couldn't generate the correct response
-      illegalArgumentException.printStackTrace();
-      this.logger.warning("Exception while creating timestamp: " + illegalArgumentException.getMessage());
       this.exceptionError = "IllegalArgumentException while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + illegalArgumentException);
       if (mlpTriggeredReportingService)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (IOException ioException) {
       // Return generic XML error response because we couldn't generate the correct response
-      ioException.printStackTrace();
-      this.logger.warning("Exception while creating XML response data: " + ioException.getMessage());
       this.exceptionError = "IOException while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + ioException);
       if (mlpTriggeredReportingService)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     }   catch (JAXBException jaxbException) {
       // Return generic XML error response because we couldn't generate the correct response
-      jaxbException.printStackTrace();
-      this.logger.warning("Exception while marshalling XML response data: " + jaxbException.getMessage());
       this.exceptionError = "JAXBException while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + jaxbException);
       if (mlpTriggeredReportingService)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (Exception e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.warning("Exception while marshalling XML response data: " + e.getMessage());
       this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + e);
       if (mlpTriggeredReportingService)
         return genericTriggeredLocationRequestErrorXML;
       else
@@ -890,22 +1308,20 @@ public class MLPResponse {
     String svcResultXml;
     try {
       // Generate the error XML
-      svcResultXml = this.generateSystemErrorXML(mlpClientErrorType, mlpClientErrorMessage, false);
+      svcResultXml = this.generateSystemErrorXML(mlpClientErrorType, mlpClientErrorMessage, isTriggered);
       return svcResultXml;
     } catch (IOException e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.info("Exception while creating XML response data: " + e.getMessage());
       this.exceptionError = "IOException while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (JAXBException e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + e.getMessage());
       this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.severe(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
@@ -918,6 +1334,7 @@ public class MLPResponse {
    *
    * @param mlpClientErrorType                Error type to return to client
    * @param mlpClientErrorMessage             Error message to send to client
+   * @param isTriggered                       Indication if the the failed operation is of type triggered
    * @return                                  String XML result to return to client
    * @throws IOException                      IO error occurred while generating the XML result
    * @throws JAXBException                    JAXB error occurred while generating the XML result
@@ -972,27 +1389,24 @@ public class MLPResponse {
 
     } catch (IllegalArgumentException illegalArgumentException) {
       // Return generic XML error response because we couldn't generate the correct response
-      illegalArgumentException.printStackTrace();
-      this.logger.info("Exception while creating timestamp: " + illegalArgumentException.getMessage());
       this.exceptionError = "IllegalArgumentException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + illegalArgumentException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (JAXBException jaxbException) {
       // Return generic XML error response because we couldn't generate the correct response
-      jaxbException.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + jaxbException.getMessage());
       this.exceptionError = "JAXBException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + jaxbException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (Exception e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + e.getMessage());
       this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
@@ -1003,58 +1417,55 @@ public class MLPResponse {
   /**
    * Generate a MLP error response for a position
    *
-   * @param msid                  Device MSISDN
+   * @param msisdn                Device MSISDN
+   * @param imsi                  Device IMSI
+   * @param imei                  Device IMEI
    * @param mlpClientErrorType    Error type to return to client
    * @param mlpClientErrorMessage Error message to send to client
+   * @param isTriggered           Indication if the the failed operation is of type triggered
+   * @param clientTransId         The client's transaction id
+   * @param lcsRefNumber          The LCS Reference Number generated for MAP PSL/SLR or Diameter SLg PLR/LRR
    * @return String XML result to return to client
    */
-  public String getPositionErrorResponseXML(String msid, String imsi, String mscNumber, String vlrNumber, MLPResultType mlpClientErrorType,
-                                            String mlpClientErrorMessage, boolean isTriggered) {
+  public String getPositionErrorResponseXML(String msisdn, String imsi, String imei, MLPResultType mlpClientErrorType, String mlpClientErrorMessage,
+                                            boolean isTriggered, Integer clientTransId, Integer lcsRefNumber) {
     // Generate XML response
     String svcResultXml;
 
     try {
-      // Eventually this timestamp should be replaced by the actual network position time
-      Date requestTime = new Date();
-      String date = new SimpleDateFormat("yyyyMMddHHmmss").format(requestTime);
-      String utcOffset = new SimpleDateFormat("Z").format(requestTime);
-
       // Generate the error XML
       this.logger.info("Creating error XML response for type: " + MLPResponse.getResultCodeForType(mlpClientErrorType) + " message: " + mlpClientErrorMessage);
-      svcResultXml = this.generatePositionErrorXML(utcOffset, date, msid, imsi, mscNumber, vlrNumber, mlpClientErrorType, mlpClientErrorMessage, isTriggered);
+      svcResultXml = this.generatePositionErrorXML(msisdn, imsi, imei, mlpClientErrorType, mlpClientErrorMessage,
+          isTriggered, clientTransId, lcsRefNumber);
       return svcResultXml;
     } catch (IllegalArgumentException illegalArgumentException) {
       // Return generic XML error response because we couldn't generate the correct response
-      illegalArgumentException.printStackTrace();
-      this.logger.info("Exception while creating timestamp: " + illegalArgumentException.getMessage());
       this.exceptionError = "IllegalArgumentException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + illegalArgumentException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (IOException ioException) {
       // Return generic XML error response because we couldn't generate the correct response
-      ioException.printStackTrace();
-      this.logger.info("Exception while creating XML response data: " + ioException.getMessage());
       this.exceptionError = "IOException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + ioException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     }   catch (JAXBException jaxbException) {
       // Return generic XML error response because we couldn't generate the correct response
-      jaxbException.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + jaxbException.getMessage());
       this.exceptionError = "JAXBException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + jaxbException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (Exception e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + e.getMessage());
       this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
@@ -1065,17 +1476,21 @@ public class MLPResponse {
   /**
    * Internal XML generation support function for above getSystemErrorResponseXML()
    *
-   * @param utcOffSet             Utc offset for location timestamp in "[+/-]HHmm" format
-   * @param time                  Location timestamp at above UTC offset in "yyyyMMddHHmmss" format
-   * @param msid                  Device MSISDN
+   * @param msisdn                Device MSISDN
+   * @param imsi                  Device IMSI
+   * @param imei                  Device IMEI
    * @param mlpClientErrorType    Error type to return to client
    * @param mlpClientErrorMessage Error message to send to client
+   * @param isTriggered           Indication if the the failed operation is of type triggered
+   * @param clientTransId         The client's transaction id
+   * @param lcsRefNumber          The LCS Reference Number generated for MAP PSL/SLR or Diameter SLg PLR/LRR
    * @return                      String XML result to return to client
    * @throws IOException          IO error occurred while generating the XML result
    * @throws JAXBException        JAXB error occurred while generating the XML result
    */
-  private String generatePositionErrorXML(String utcOffSet, String time, String msid, String imsi, String mscNumber, String vlrNumber,
-                                          MLPResultType mlpClientErrorType, String mlpClientErrorMessage, boolean isTriggered)
+  private String generatePositionErrorXML(String msisdn, String imsi, String imei,
+                                          MLPResultType mlpClientErrorType, String mlpClientErrorMessage,
+                                          boolean isTriggered, Integer clientTransId, Integer lcsRefNumber)
       throws  IOException, JAXBException {
 
     String lXml;
@@ -1086,70 +1501,57 @@ public class MLPResponse {
       SvcResult mlpSvcResult = new SvcResult();
       Slia mlpSlia = new Slia();
       Tlra mlpTlra = new Tlra();
-      Poserr mlpPosErr = new Poserr();
-      Pos mlpPos = new Pos();
-      Msid mlpMsid = new Msid();
-      Time mlpTime = new Time();
-      List<Pos> posList = new ArrayList<>();
-      GsmNetParam mlpGsmNetParam = new GsmNetParam();
-      Neid mlpNeid = new Neid();
-      Vmscid mlpVmscId = new Vmscid();
-      Vlrid mlpVlrId = new Vlrid();
+      Msid mlpMsisdn = new Msid();
+      Msid mlpImsi = new Msid();
+      Msid mlpImei = new Msid();
+      ExtensionParams mlpExtensionParams = new ExtensionParams();
       Result mlpResult = new Result();
 
       // Set the data
-      mlpTime.setUtcOff(utcOffSet);
-      mlpTime.setContent(time);
-      mlpMsid.setContent(msid);
-
-      // Set the additional data error message if one is available
-      if (mlpClientErrorMessage != null) {
-        mlpPosErr.setAddInfo(mlpClientErrorMessage);
-      }
-
       mlpResult.setContent(MLPResponse.getResultStringForType(mlpClientErrorType));
       mlpResult.setResid(MLPResponse.getResultCodeForType(mlpClientErrorType));
-      mlpPosErr.setResult(mlpResult);
-      mlpPosErr.setTime(mlpTime);
-      mlpPos.setMsid(mlpMsid);
-      mlpPos.setPoserr(mlpPosErr);
-      // MSISDN
-      mlpPos.setMsid(mlpMsid);
-      // IMSI
+      // Extension params
+      MsisdsExt msids = new MsisdsExt();
+      List<Msid> msidList = new ArrayList<>();
+      if (msisdn != null) {
+        mlpMsisdn.setType("MSISDN");
+        mlpMsisdn.setContent(msisdn);
+        msidList.add(mlpMsisdn);
+      }
       if (imsi != null) {
-        if (!imsi.equals("")) {
-          mlpGsmNetParam.setImsi(imsi);
-        }
-        mlpPos.setGsmNetParam(mlpGsmNetParam);
+        mlpImsi.setType("IMSI");
+        mlpImsi.setContent(imsi);
+        msidList.add(mlpImsi);
       }
-      if (mscNumber != null || vlrNumber != null) {
-        if (mscNumber != null) {
-          mlpVmscId.setVmscno(mscNumber);
-          mlpNeid.getContent().add(mlpVmscId);
-          mlpGsmNetParam.setNeid(mlpNeid);
-        }
-        if (vlrNumber != null) {
-          mlpVlrId.setVlrno(vlrNumber);
-          mlpNeid.getContent().add(mlpVlrId);
-        }
-        mlpGsmNetParam.setNeid(mlpNeid);
+      if (imei != null) {
+        mlpImei.setType("IMEI");
+        mlpImei.setContent(imei);
+        msidList.add(mlpImei);
       }
-      posList.add(mlpPos);
-      for (Pos pos : posList) {
-        if (isTriggered)
-          mlpTlra.getPos().add(pos);
-        else
-          mlpSlia.getPos().add(pos);
-      }
+      msids.setMsidList(msidList);
+      mlpExtensionParams.setMsidsExt(msids);
 
       if (isTriggered) {
+        if (clientTransId != null) {
+          mlpTlra.setReqId(String.valueOf(clientTransId));
+        }
+        if  (lcsRefNumber != null) {
+          mlpTlra.setLcsRef(String.valueOf(lcsRefNumber));
+        }
         mlpTlra.setVer(ver);
         mlpTlra.setResult(mlpResult);
+        mlpTlra.setAddInfo(mlpClientErrorMessage);
+        mlpTlra.setExtensionParams(mlpExtensionParams);
         mlpSvcResult.setTlra(mlpTlra);
         mlpSvcResult.setVer(ver);
       } else {
+        if (clientTransId != null) {
+          mlpSlia.setReqId(String.valueOf(clientTransId));
+        }
         mlpSlia.setVer(ver);
         mlpSlia.setResult(mlpResult);
+        mlpSlia.setAddInfo(mlpClientErrorMessage);
+        mlpSlia.setExtensionParams(mlpExtensionParams);
         mlpSvcResult.setSlia(mlpSlia);
         mlpSvcResult.setVer(ver);
       }
@@ -1160,36 +1562,32 @@ public class MLPResponse {
       return lXml;
     } catch (IllegalArgumentException illegalArgumentException) {
       // Return generic XML error response because we couldn't generate the correct response
-      illegalArgumentException.printStackTrace();
-      this.logger.info("Exception while creating timestamp: " + illegalArgumentException.getMessage());
       this.exceptionError = "IllegalArgumentException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + illegalArgumentException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (IOException ioException) {
       // Return generic XML error response because we couldn't generate the correct response
-      ioException.printStackTrace();
-      this.logger.info("Exception while creating XML response data: " + ioException.getMessage());
       this.exceptionError = "IOException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + ioException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (JAXBException jaxbException) {
       // Return generic XML error response because we couldn't generate the correct response
-      jaxbException.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + jaxbException.getMessage());
       this.exceptionError = "JAXBException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + jaxbException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (Exception e) {
       // Return generic XML error response because we couldn't generate the correct response
-      e.printStackTrace();
-      this.logger.info("Exception while marshalling XML response data: " + e.getMessage());
       this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
@@ -1226,25 +1624,22 @@ public class MLPResponse {
       transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
       transformer.transform(new DOMSource(domResult.getNode()), new StreamResult(outputStream));
     } catch (TransformerConfigurationException transformerConfigurationException) {
-      transformerConfigurationException.printStackTrace();
-      this.logger.info("Exception while creating XML response data: " + transformerConfigurationException.getMessage());
       this.exceptionError = "TransformerConfigurationException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + transformerConfigurationException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (TransformerException transformerException) {
-      transformerException.printStackTrace();
-      this.logger.info("TransformerException while creating XML response data: " + transformerException.getMessage());
-      this.exceptionError = "TransformerConfigurationException while marshalling XML response data";
+      this.exceptionError = "TransformerException while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + transformerException);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else
         return genericStandardLocationRequestErrorXML;
     } catch (Exception e) {
-      e.printStackTrace();
-      this.logger.info("Exception while creating XML response data: " + e.getMessage());
-      this.exceptionError = "TransformerConfigurationException while marshalling XML response data";
+      this.exceptionError = "Exception while marshalling XML response data";
+      this.logger.info(this.exceptionError + " : " + e);
       if (isTriggered)
         return genericTriggeredLocationRequestErrorXML;
       else

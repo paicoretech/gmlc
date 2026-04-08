@@ -133,17 +133,14 @@ public class MLPRequest {
                 if (retrieveLocationRequestQuality(mlpLocationRequest, svcInit) != null)
                     mlpLocationRequest = retrieveLocationRequestQuality(mlpLocationRequest, svcInit);
 
-                if (retrieveDeferredLocationEventType(mlpLocationRequest, svcInit) != null) {
+                if (retrieveDeferredLocationEventType(mlpLocationRequest, svcInit) != null)
                     mlpLocationRequest = retrieveDeferredLocationEventType(mlpLocationRequest, svcInit);
-                }
 
-                if (retrieveEventParams(mlpLocationRequest, svcInit) != null) {
+                if (retrieveEventParams(mlpLocationRequest, svcInit) != null)
                     mlpLocationRequest = retrieveEventParams(mlpLocationRequest, svcInit);
-                }
 
-                if (retrieveSuplPeriodicParams(mlpLocationRequest, svcInit) != null) {
+                if (retrieveSuplPeriodicParams(mlpLocationRequest, svcInit) != null)
                     mlpLocationRequest = retrieveSuplPeriodicParams(mlpLocationRequest, svcInit);
-                }
 
                 if (tlrr.getPushaddr() != null) {
                     assert mlpLocationRequest != null;
@@ -155,19 +152,20 @@ public class MLPRequest {
             EmeLir elir = svcInit.getEmeLir();
             if (elir != null) {
                 // TODO ?
+                logger.warning("EmeLir is not null: " + elir);
             }
 
             // Triggered Location Reporting Stop Request
             Tlrsr tlrsr = svcInit.getTlrsr();
             if (tlrsr != null) {
                 // TODO ?
+                logger.warning("Tlrsr is not null");
             }
 
             return mlpLocationRequest;
 
         } catch (JAXBException e) {
-            e.printStackTrace();
-            this.logger.info("Exception while unmarshalling XML request data: " + e.getMessage());
+            this.logger.severe("Exception while unmarshalling XML request data: " + e.getMessage());
 
             // Set a custom error message for delivering directly to the client
             // and throw a new exception
@@ -357,6 +355,8 @@ public class MLPRequest {
                 } else if (msid.getType().equalsIgnoreCase("IMSI")) {
                     mlpLocationRequest.setImsi(((Msid) msidAndCodewordAndSessionObject).getContent());
                 }
+                if (msid.getType().equalsIgnoreCase("IMEI"))
+                    mlpLocationRequest.setImei(((Msid) msidAndCodewordAndSessionObject).getContent());
             }
             if (msidAndCodewordAndSessionObject.getClass() == JAXBElement.class) {
                 try {
@@ -366,6 +366,7 @@ public class MLPRequest {
                     }
                     if (((JAXBElement<?>) msidAndCodewordAndSessionObject).getName().toString().equalsIgnoreCase("codeword")) {
                         String codeword = ((JAXBElement<?>) msidAndCodewordAndSessionObject).getValue().toString();
+                        logger.info("codeword: " + codeword);
                         // TODO define what to do with this value
                         //mlpLocationRequest.set?;
                     }
@@ -640,20 +641,18 @@ public class MLPRequest {
                                 mcc = targetArea.getServingCell().getMcc();
                                 mnc = targetArea.getServingCell().getMnc();
                                 if (targetArea.getServingCell().getCgi() != null) {
-                                    if (targetArea.getServingCell().getCgi() != null) {
-                                        mcc = targetArea.getServingCell().getCgi().getMcc();
-                                        mnc = targetArea.getServingCell().getCgi().getMnc();
-                                        String lac = targetArea.getServingCell().getCgi().getLac();
-                                        String ci = targetArea.getServingCell().getCgi().getCellid();
-                                        mlpLocationRequest.setAreaType("cellGlobalId");
-                                        areaId = mcc + "-" + mnc + "-" + lac + "-" + ci;
-                                        mlpLocationRequest.setAreaId(areaId);
-                                    }
-                                } else if (targetArea.getServingCell().getUtranCi() != null) {
+                                    mcc = targetArea.getServingCell().getCgi().getMcc();
+                                    mnc = targetArea.getServingCell().getCgi().getMnc();
+                                    String lac = targetArea.getServingCell().getCgi().getLac();
+                                    String ci = targetArea.getServingCell().getCgi().getCellid();
+                                    mlpLocationRequest.setAreaType("cellGlobalId");
+                                    areaId = mcc + "-" + mnc + "-" + lac + "-" + ci;
+                                    mlpLocationRequest.setAreaId(areaId);
+                                } /*else if (targetArea.getServingCell().getUtranCi() != null) { FIXME
                                     mlpLocationRequest.setAreaType("utranCellId");
                                     areaId = mcc + "-" + mnc + "-"  + targetArea.getServingCell().getUtranCi();
                                     mlpLocationRequest.setAreaId(areaId);
-                                } else if (targetArea.getServingCell().getLteCi() != null) {
+                                }*/ else if (targetArea.getServingCell().getLteCi() != null) {
                                     mlpLocationRequest.setAreaType("eUtranCellId");
                                     areaId = mcc + "-" + mnc + "-"  + targetArea.getServingCell().getLteCi();
                                     mlpLocationRequest.setAreaId(areaId);
@@ -742,8 +741,9 @@ public class MLPRequest {
                     }
                 }
             }
+        } else {
+            return null;
         }
-
         return mlpLocationRequest;
     }
 
@@ -767,6 +767,8 @@ public class MLPRequest {
                     mlpLocationRequest.setReportingAmount(Integer.parseInt(duration) / Integer.parseInt(interval));
                 }
             }
+        } else {
+            return null;
         }
         return mlpLocationRequest;
     }

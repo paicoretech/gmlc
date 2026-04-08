@@ -8,8 +8,8 @@
 # 3. In any directory within your PATH
 #
 Product: ASN1C
-Version: 7.5-7.6
-Expiration: Wed Aug 17 00:45:01 2022
+Version: 7.9-7.9
+Expiration: Wed Feb 18 02:45:01 2026
 Key:
-dd326d74b3a387b571102124680c122045140bc7081d9ae8825f5dd023b17d50
-e417c4863c68ffb497dc732db16193697ee504fbc13e327f78b66b3ab08ec922
+dd326d74b3a387b5444a9dbd1fbea73f45140bc7081d9ae84149e7fc60e1a9ca
+e2bcf2736674004297dc732db16193697ee504fbc13e327f78b66b3ab08ec922

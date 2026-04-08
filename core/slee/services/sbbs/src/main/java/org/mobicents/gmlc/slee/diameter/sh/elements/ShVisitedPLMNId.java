@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
 
@@ -9,6 +10,8 @@ import static org.mobicents.gmlc.slee.utils.ByteUtils.decodeHexString;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class ShVisitedPLMNId {
+
+    private static final Logger logger = Logger.getLogger(ShVisitedPLMNId.class.getName());
 
     private static final String MCC = "mcc";
     private static final String MNC = "mnc";
@@ -70,7 +73,7 @@ public class ShVisitedPLMNId {
                 sb.append(", "+MNC+"=");
                 sb.append(this.visitedPlmnId.getMnc());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
         sb.append("]");

@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}msid"/>
  *         &lt;choice>
@@ -68,8 +68,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -77,12 +77,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "pd",
     "poserr",
     "gsmNetParam",
-    "servingCell",
-    "routingAreaCode",
-    "trackingAreaCode",
-    "nrTrackingAreaCode",
     "transId",
-    "addInfo"
+    "addInfo",
+    "posMethod",
+    "resultType"
 })
 @XmlRootElement(name = "pos")
 public class Pos {
@@ -103,15 +101,6 @@ public class Pos {
     @XmlAttribute(name = "result_type")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String resultType;
-    // the following parameters are a customization for SS7 MAP operations and Diameter PLR/UDR commands
-    @XmlElement(name = "serving_cell")
-    protected ServingCell servingCell;
-    @XmlElement(name = "rac")
-    protected String routingAreaCode;
-    @XmlElement(name = "tac")
-    protected String trackingAreaCode;
-    @XmlElement(name = "nr_tac")
-    protected String nrTrackingAreaCode;
 
     /**
      * Gets the value of the msid property.
@@ -309,99 +298,4 @@ public class Pos {
         this.resultType = value;
     }
 
-    /**
-     * Gets the value of the servingCell property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public ServingCell getServingCell() {
-        return servingCell;
-    }
-
-    /**
-     * Sets the value of the servingCell property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setServingCell(ServingCell value) {
-        this.servingCell = value;
-    }
-
-    /**
-     * Gets the value of the routingAreaCode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getRoutingAreaCode() {
-        return routingAreaCode;
-    }
-
-    /**
-     * Sets the value of the routingAreaCode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setRoutingAreaCode(String value) {
-        this.routingAreaCode = value;
-    }
-
-    /**
-     * Gets the value of the trackingAreaCode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getTrackingAreaCode() {
-        return trackingAreaCode;
-    }
-
-    /**
-     * Sets the value of the trackingAreaCode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setTrackingAreaCode(String value) {
-        this.trackingAreaCode = value;
-    }
-
-    /**
-     * Gets the value of the nrTrackingAreaCode property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getNrTrackingAreaCode() {
-        return nrTrackingAreaCode;
-    }
-
-    /**
-     * Sets the value of the nrTrackingAreaCode property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setNrTrackingAreaCode(String value) {
-        this.nrTrackingAreaCode = value;
-    }
 }

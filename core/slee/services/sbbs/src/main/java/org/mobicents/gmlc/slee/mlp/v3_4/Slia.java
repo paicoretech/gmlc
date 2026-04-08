@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -54,7 +55,8 @@ import javax.xml.bind.annotation.XmlType;
     "pos",
     "reqId",
     "result",
-    "addInfo"
+    "addInfo",
+    "extensionParams"
 })
 @XmlRootElement(name = "slia")
 public class Slia {
@@ -67,6 +69,8 @@ public class Slia {
     protected String addInfo;
     @XmlAttribute(name = "ver")
     protected String ver;
+    @XmlElementRef(name = "extension_params", type = ExtensionParams.class, required = false)
+    protected ExtensionParams extensionParams;
 
     /**
      * Gets the value of the pos property.
@@ -92,7 +96,7 @@ public class Slia {
      */
     public List<Pos> getPos() {
         if (pos == null) {
-            pos = new ArrayList<Pos>();
+            pos = new ArrayList<>();
         }
         return this.pos;
     }
@@ -197,4 +201,27 @@ public class Slia {
         this.ver = value;
     }
 
+    /**
+     * Gets the value of the extensionParams property.
+     *
+     * @return
+     *     possible object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public ExtensionParams getExtensionParams() {
+        return extensionParams;
+    }
+
+    /**
+     * Sets the value of the extensionParams property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public void setExtensionParams(ExtensionParams value) {
+        this.extensionParams = value;
+    }
 }

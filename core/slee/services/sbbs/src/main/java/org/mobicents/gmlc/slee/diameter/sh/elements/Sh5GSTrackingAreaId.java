@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.diameter.sh.elements;
 
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.primitives.TrackingAreaId5GS;
 import org.mobicents.gmlc.slee.primitives.TrackingAreaId5GSImpl;
 
@@ -9,6 +10,8 @@ import java.util.Base64;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class Sh5GSTrackingAreaId {
+
+    private static final Logger logger = Logger.getLogger(Sh5GSTrackingAreaId.class.getName());
 
     private static final String MCC = "mcc";
     private static final String MNC = "mnc";
@@ -80,7 +83,7 @@ public class Sh5GSTrackingAreaId {
                 sb.append(this.trackingAreaId5GS.get5GSTAC());
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
 

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;restriction base="{<a href="http://www.w3.org/2001/XMLSchema">...</a>}anyType">
  *       &lt;choice>
  *         &lt;sequence>
  *           &lt;element ref="{}req_id"/>
@@ -53,11 +54,11 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "pos",
     "reqId",
     "lcsRef",
     "result",
-    "addInfo"
+    "addInfo",
+    "extensionParams"
 })
 @XmlRootElement(name = "tlra")
 public class Tlra {
@@ -71,8 +72,8 @@ public class Tlra {
     protected String addInfo;
     @XmlAttribute(name = "ver")
     protected String ver;
-    // the following parameter is a customization for MAP PSL and Diameter SLg PLR
-    protected List<Pos> pos;
+    @XmlElementRef(name = "extension_params", type = ExtensionParams.class, required = false)
+    protected ExtensionParams extensionParams;
 
     /**
      * Gets the value of the reqId property.
@@ -199,32 +200,26 @@ public class Tlra {
     }
 
     /**
-     * Gets the value of the pos property.
+     * Gets the value of the extensionParams property.
      *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the pos property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getPos().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Pos }
-     *
+     * @return
+     *     possible object is
+     *     {@link ExtensionParams }
      *
      */
-    public List<Pos> getPos() {
-        if (pos == null) {
-            pos = new ArrayList<Pos>();
-        }
-        return this.pos;
+    public ExtensionParams getExtensionParams() {
+        return extensionParams;
     }
 
+    /**
+     * Sets the value of the extensionParams property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link ExtensionParams }
+     *
+     */
+    public void setExtensionParams(ExtensionParams value) {
+        this.extensionParams = value;
+    }
 }

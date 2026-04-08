@@ -4,8 +4,11 @@ import com.cloudhopper.smpp.SmppBindType;
 import com.cloudhopper.smpp.SmppSession;
 import com.cloudhopper.smpp.SmppSessionConfiguration;
 import com.cloudhopper.smpp.impl.DefaultSmppClient;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.mobicents.gmlc.GmlcPropertiesManagement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -16,10 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SmppSessionManager {
 
     private static final GmlcPropertiesManagement gmlcPropertiesManagement = GmlcPropertiesManagement.getInstance();
-    private static String SMPP_HOST = gmlcPropertiesManagement.getSmppHost() != null ? gmlcPropertiesManagement.getSmppHost() : "localhost";
-    private static int SMPP_PORT = gmlcPropertiesManagement.getSmppPort() != null ? gmlcPropertiesManagement.getSmppPort() : 2776;
-    private static String SMPP_SID = gmlcPropertiesManagement.getSmppSid() != null ? gmlcPropertiesManagement.getSmppSid() : "gmlc_ulp_smpp";
-    private static String SMPP_PWD = gmlcPropertiesManagement.getSmppPwd() != null ? gmlcPropertiesManagement.getSmppPwd() : "gmlc_ulp_smpp";
+    private static final Logger logger = LoggerFactory.getLogger(SmppSessionManager.class);
+
+    private static final String SMPP_HOST = gmlcPropertiesManagement.getSmppHost() != null ? gmlcPropertiesManagement.getSmppHost() : "localhost";
+    private static final int SMPP_PORT = gmlcPropertiesManagement.getSmppPort() != null ? gmlcPropertiesManagement.getSmppPort() : 2776;
+    private static final String SMPP_SID = gmlcPropertiesManagement.getSmppSid() != null ? gmlcPropertiesManagement.getSmppSid() : "gmlc_ulp_smpp";
+    private static final String SMPP_PWD = gmlcPropertiesManagement.getSmppPwd() != null ? gmlcPropertiesManagement.getSmppPwd() : "gmlc_ulp_smpp";
 
     private static SmppSession smppSession;
     private static DefaultSmppClient clientBootstrap;
@@ -45,12 +50,11 @@ public class SmppSessionManager {
         if (smppSession != null && !smppSession.isBound()) {
             destroySession();
         }
-        Integer bindType = 0;
         monitorExecutor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1, new ThreadFactory() {
-            private AtomicInteger sequence = new AtomicInteger(0);
+            private final AtomicInteger sequence = new AtomicInteger(0);
 
             @Override
-            public Thread newThread(Runnable r) {
+            public Thread newThread(@NonNull Runnable r) {
                 Thread t = new Thread(r);
                 t.setName("SmppClientSessionWindowMonitorPool-" + sequence.getAndIncrement());
                 return t;
@@ -62,7 +66,7 @@ public class SmppSessionManager {
             SmppSessionConfiguration config0 = new SmppSessionConfiguration();
             config0.setWindowSize(1);
             config0.setName("client-smpp");
-            config0.setType(bindType.equals(0) ? SmppBindType.TRANSCEIVER : bindType.equals(1) ? SmppBindType.TRANSMITTER : SmppBindType.RECEIVER);
+            config0.setType(SmppBindType.TRANSCEIVER);
             config0.setHost(SMPP_HOST);
             config0.setPort(SMPP_PORT);
             config0.setConnectTimeout(10000);
@@ -77,9 +81,9 @@ public class SmppSessionManager {
             smppSession = clientBootstrap.bind(config0, sessionHandler);
             sessionHandler.setSession(smppSession);
             return smppSession;
-        } catch (Exception ex) {
-            log.error("An exception has occurred while attempting to bind an SMPP Session " + ex.getMessage());
-            return null;
+        } catch (Exception e) {
+          logger.error("An exception has occurred while attempting to bind an SMPP Session {}", e.getMessage());
+          return null;
         }
     }
 
@@ -94,8 +98,8 @@ public class SmppSessionManager {
             smppSession.destroy();
             clientBootstrap.destroy();
             monitorExecutor.shutdownNow();
-        } catch (Exception ex) {
-            log.error("An exception has occurred while attempting to stop current SMPP Session " + ex.getMessage());
+        } catch (Exception e) {
+          logger.error("An exception has occurred while attempting to stop current SMPP Session {}", e.getMessage());
         }
     }
 }

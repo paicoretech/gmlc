@@ -35,6 +35,7 @@ import static org.mobicents.gmlc.slee.http.JsonWriter.writeENBId;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeEUtranCellId;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeEUtranEci;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeImei;
+import static org.mobicents.gmlc.slee.http.JsonWriter.writeImsi;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeInternalNetworkNumberIndicator;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeLac;
 import static org.mobicents.gmlc.slee.http.JsonWriter.writeLastRatType;
@@ -92,7 +93,7 @@ public class AtiResponseJsonBuilder {
      *
      * @param atiResponseParams values gathered from MAP ATI response event
      */
-    public static String buildJsonResponseForAti(AtiResponseParams atiResponseParams, String atiMsisdnDigits, String dialogResultMessage) throws MAPException {
+    public static String buildJsonResponseForAti(AtiResponseParams atiResponseParams, String atiMsisdnDigits, String atiImsi, String dialogResultMessage) throws MAPException {
 
         int csMcc, csMnc, csLac, csCiOrSac, psMcc, psMnc, psLac, psCiOrSac, ecgiMcc, ecgiMnc, ecgiCi, taiMcc, taiMnc, tac, raiMcc, raiMnc, raiLac, rac,
                 nrCgiMcc, nrCgiMnc, nrTaiMcc, nrTaiMnc, nrTaiTac, vPlmnIdMcc, vPlmnIdMnc, ageOfLocationInfo, natureOfAddressIndicator, internalNetworkNumberIndicator, numberingPlanIndicator, addressPresentationRestrictedIndicator,
@@ -733,6 +734,10 @@ public class AtiResponseJsonBuilder {
         // Write ATI values
         if (atiMsisdnDigits != null)
             writeMsisdn(atiMsisdnDigits, atiResponseJsonObject);
+
+        if (atiImsi != null)
+            writeImsi(atiImsi, atiResponseJsonObject);
+
         if (imei != null)
             writeImei(imei, atiResponseJsonObject);
 

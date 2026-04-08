@@ -193,7 +193,7 @@ public class HttpReport {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             logger.warn("Perform { httpMethod: " + httpMethod.toString() + ", lcsReferenceNumber: " + (ss7 ? ss7LcsReferenceNumber : lcsReferenceNumber) +
                 ", transactionReportParameters: { " + (transactionReportParameters == null ? "" : transactionReportParameters.toString()) +
                 " }, reportCommandParameterString: " + reportCommandParameterString + ", callbackUrl: " + callbackUrl +
@@ -217,7 +217,7 @@ public class HttpReport {
                 httpOutputStream.write(reportParameters.toJsonString(false).getBytes());
             }
 
-            if (reportCommandParameterString != null && reportCommandParameterString.length() > 0) {
+            if (reportCommandParameterString != null && !reportCommandParameterString.isEmpty()) {
                 if (reportParameters != null)
                     httpOutputStream.write(", ".getBytes());
                 httpOutputStream.write(reportCommandParameterString.replaceAll("^\\{|}$", "").getBytes());
@@ -260,30 +260,41 @@ public class HttpReport {
                 mlpResponseParams.mlpOffsetAngle = mapLsmHelper.getOffsetAngle();
                 mlpResponseParams.mlpIncludedAngle = mapLsmHelper.getIncludedAngle();
                 mlpResponseParams.mlpAltitude = mapLsmHelper.getAltitude();
+                mlpResponseParams.mlpUncertaintyAltitude = mapLsmHelper.getUncertaintyAltitude();
                 mlpResponseParams.mlpPolygon = mapLsmHelper.getPolygon();
                 mlpResponseParams.mlpNumberOfPoints = mapLsmHelper.getNumberOfPoints();
+                mlpResponseParams.mlpPositioningMethod = mapLsmHelper.getPositioningMethod();
+                mlpResponseParams.mlpTargetHorizontalSpeed = mapLsmHelper.getHorizontalSpeed();
+                mlpResponseParams.mlpBearing = mapLsmHelper.getBearing();
+                mlpResponseParams.mlpTargetVerticalSpeed = mapLsmHelper.getVerticalSpeed();
+                mlpResponseParams.mlpUncertaintyHorizontalSpeed = mapLsmHelper.getUncertaintyHorizontalSpeed();
+                mlpResponseParams.mlpUncertaintyVerticalSpeed = mapLsmHelper.getUncertaintyVerticalSpeed();
+                mlpResponseParams.mlpVelocityType = mapLsmHelper.getVelocityType();
                 mlpResponseParams.mlpMcc = mapLsmHelper.getMcc();
                 mlpResponseParams.mlpMnc = mapLsmHelper.getMnc();
                 mlpResponseParams.mlpLac = mapLsmHelper.getLac();
                 mlpResponseParams.mlpCi = mapLsmHelper.getCi();
                 mlpResponseParams.mlpSac = mapLsmHelper.getSac();
                 mlpResponseParams.mlpEci = null;
+                mlpResponseParams.mlpEnbId = null;
                 mlpResponseParams.mlpTac = null;
                 mlpResponseParams.mlpNci = null;
                 mlpResponseParams.mlpNrTac = null;
                 mlpResponseParams.mlpMmeName = mapLsmHelper.getMmeName();
+                mlpResponseParams.mlpMmeRealm = null;
                 mlpResponseParams.mlpSgsnName = mapLsmHelper.getSgsnName();
+                mlpResponseParams.mlpSgsnRealm = null;
+                mlpResponseParams.mlpSgsnNumber = mapLsmHelper.getSgsnNumber();
+                mlpResponseParams.mlpAmfAddress = null;
                 mlpResponseParams.mlpMscNo = mapLsmHelper.getMscNumber();
                 mlpResponseParams.mlpVlrNo = mapLsmHelper.getVlrNumber();
                 mlpResponseParams.mlpImei = mapLsmHelper.getImei();
                 mlpResponseParams.mlpLmsi = mapLsmHelper.getLmsi();
                 mlpResponseParams.mlpAge = mapLsmHelper.getAgeOfLocationEstimate();
-                mlpResponseParams.mlpTargetHorizontalSpeed = mapLsmHelper.getHorizontalSpeed();
-                mlpResponseParams.mlpTargetVerticalSpeed = mapLsmHelper.getVerticalSpeed();
-                mlpResponseParams.mlpVelocityType = mapLsmHelper.getVelocityType();
                 mlpResponseParams.mlpTransId = clientReferenceNumber;
                 mlpResponseParams.mlpLcsRefNumber = lcsReferenceNumber;
                 mlpResponseParams.mlpRatType = null;
+                mlpResponseParams.mlpCivicAddress = mapLsmHelper.getCivicAddress();
             } else if (lrr != null) {
                 operation = "LRR";
                 DiameterLcsResponseHelperForMLP diameterLcsHelper = new DiameterLcsResponseHelperForMLP();
@@ -300,31 +311,42 @@ public class HttpReport {
                 mlpResponseParams.mlpOffsetAngle = diameterLcsHelper.getOffsetAngle();
                 mlpResponseParams.mlpIncludedAngle = diameterLcsHelper.getIncludedAngle();
                 mlpResponseParams.mlpAltitude = diameterLcsHelper.getAltitude();
+                mlpResponseParams.mlpUncertaintyAltitude = diameterLcsHelper.getUncertaintyAltitude();
                 mlpResponseParams.mlpPolygon = diameterLcsHelper.getPolygon();
                 mlpResponseParams.mlpNumberOfPoints = diameterLcsHelper.getNumberOfPoints();
+                mlpResponseParams.mlpPositioningMethod = diameterLcsHelper.getPositioningMethod();
+                mlpResponseParams.mlpTargetHorizontalSpeed = diameterLcsHelper.getHorizontalSpeed();
+                mlpResponseParams.mlpBearing = diameterLcsHelper.getBearing();
+                mlpResponseParams.mlpTargetVerticalSpeed = diameterLcsHelper.getVerticalSpeed();
+                mlpResponseParams.mlpUncertaintyHorizontalSpeed = diameterLcsHelper.getUncertaintyHorizontalSpeed();
+                mlpResponseParams.mlpUncertaintyVerticalSpeed = diameterLcsHelper.getUncertaintyVerticalSpeed();
+                mlpResponseParams.mlpVelocityType = diameterLcsHelper.getVelocityType();
                 mlpResponseParams.mlpMcc = diameterLcsHelper.getMcc();
                 mlpResponseParams.mlpMnc = diameterLcsHelper.getMnc();
                 mlpResponseParams.mlpLac = diameterLcsHelper.getLac();
                 mlpResponseParams.mlpCi = diameterLcsHelper.getCi();
                 mlpResponseParams.mlpSac = diameterLcsHelper.getSac();
                 mlpResponseParams.mlpEci = diameterLcsHelper.getEci();
+                mlpResponseParams.mlpEnbId = diameterLcsHelper.getENBId();
                 mlpResponseParams.mlpRac = null;
                 mlpResponseParams.mlpTac = null;
                 mlpResponseParams.mlpNci = null;
                 mlpResponseParams.mlpNrTac = null;
                 mlpResponseParams.mlpMmeName = diameterLcsHelper.getMmeName();
+                mlpResponseParams.mlpMmeRealm = diameterLcsHelper.getMmeRealm();
                 mlpResponseParams.mlpSgsnName = diameterLcsHelper.getSgsnName();
+                mlpResponseParams.mlpSgsnRealm = diameterLcsHelper.getSgsnRealm();
+                mlpResponseParams.mlpSgsnNumber = diameterLcsHelper.getSgsnNumber();
+                mlpResponseParams.mlpAmfAddress = null;
                 mlpResponseParams.mlpMscNo = diameterLcsHelper.getMscNumber();
                 mlpResponseParams.mlpVlrNo = diameterLcsHelper.getVlrNumber();
                 mlpResponseParams.mlpImei = diameterLcsHelper.getImei();
                 mlpResponseParams.mlpLmsi = diameterLcsHelper.getLmsi();
                 mlpResponseParams.mlpAge = (int) (long) diameterLcsHelper.getAgeOfLocationEstimate();
-                mlpResponseParams.mlpTargetHorizontalSpeed = diameterLcsHelper.getHorizontalSpeed();
-                mlpResponseParams.mlpTargetVerticalSpeed = diameterLcsHelper.getVerticalSpeed();
-                mlpResponseParams.mlpVelocityType = diameterLcsHelper.getVelocityType();
                 mlpResponseParams.mlpTransId = clientReferenceNumber;
                 mlpResponseParams.mlpLcsRefNumber = lcsReferenceNumber;
                 mlpResponseParams.mlpRatType = null;
+                mlpResponseParams.mlpCivicAddress = diameterLcsHelper.getCivicAddress();
             } else {
                 operation = "SUPL";
                 mlpResponseParams.mlpMsisdn = suplResponseHelperForMLP.getMsisdn();
@@ -340,20 +362,35 @@ public class HttpReport {
                 mlpResponseParams.mlpOffsetAngle = suplResponseHelperForMLP.getOffsetAngle();
                 mlpResponseParams.mlpIncludedAngle = suplResponseHelperForMLP.getIncludedAngle();
                 mlpResponseParams.mlpAltitude = suplResponseHelperForMLP.getAltitude();
+                mlpResponseParams.mlpUncertaintyAltitude = suplResponseHelperForMLP.getUncertaintyAltitude();
                 mlpResponseParams.mlpPolygon = null;  // FIXME
                 mlpResponseParams.mlpNumberOfPoints = null; // FIXME
+                if (suplResponseHelperForMLP.getPosMethod().getAsn1TypeName() != null)
+                    mlpResponseParams.mlpPositioningMethod = suplResponseHelperForMLP.getPosMethod().getAsn1TypeName();
+                mlpResponseParams.mlpTargetHorizontalSpeed = suplResponseHelperForMLP.getHorizontalSpeed();
+                mlpResponseParams.mlpBearing = suplResponseHelperForMLP.getBearing();
+                mlpResponseParams.mlpTargetVerticalSpeed = suplResponseHelperForMLP.getVerticalSpeed();
+                mlpResponseParams.mlpUncertaintyHorizontalSpeed = suplResponseHelperForMLP.getUncertaintyHorizontalSpeed();
+                mlpResponseParams.mlpUncertaintyVerticalSpeed = suplResponseHelperForMLP.getUncertaintyVerticalSpeed();
+                mlpResponseParams.mlpVelocityType = suplResponseHelperForMLP.getVelocityType();
                 mlpResponseParams.mlpMcc = suplResponseHelperForMLP.getMcc();
                 mlpResponseParams.mlpMnc = suplResponseHelperForMLP.getMnc();
                 mlpResponseParams.mlpLac = suplResponseHelperForMLP.getLac();
                 mlpResponseParams.mlpCi = suplResponseHelperForMLP.getCi();
                 mlpResponseParams.mlpSac = suplResponseHelperForMLP.getSac();
+                mlpResponseParams.mlpUci = suplResponseHelperForMLP.getUci();
                 mlpResponseParams.mlpEci = suplResponseHelperForMLP.getEci();
+                mlpResponseParams.mlpEnbId  = suplResponseHelperForMLP.getEnbId();
                 mlpResponseParams.mlpRac = suplResponseHelperForMLP.getRac();
                 mlpResponseParams.mlpTac = suplResponseHelperForMLP.getTac();
                 mlpResponseParams.mlpNci = suplResponseHelperForMLP.getNrCi();
                 mlpResponseParams.mlpNrTac = null;
                 mlpResponseParams.mlpMmeName = null;
+                mlpResponseParams.mlpMmeRealm = null;
                 mlpResponseParams.mlpSgsnName = null;
+                mlpResponseParams.mlpSgsnRealm = null;
+                mlpResponseParams.mlpSgsnNumber = null;
+                mlpResponseParams.mlpAmfAddress = null;
                 mlpResponseParams.mlpMscNo = null;
                 mlpResponseParams.mlpVlrNo = null;
                 mlpResponseParams.mlpImei = null;
@@ -365,17 +402,25 @@ public class HttpReport {
                 mlpResponseParams.mlpTransId = clientReferenceNumber;
                 mlpResponseParams.mlpLcsRefNumber = lcsReferenceNumber;
                 mlpResponseParams.mlpRatType = null;
+                mlpResponseParams.mlpCivicAddress = null;
             }
 
             svcResultXml = mlpResponse.getCoreNetworkSinglePositionXML(operation, mlpResponseParams.mlpTypeOfShape,
                 mlpResponseParams.x, mlpResponseParams.y, mlpResponseParams.radius, mlpResponseParams.mlpUncertaintySemiMajorAxis,
                 mlpResponseParams.mlpUncertaintySemiMinorAxis, mlpResponseParams.mlpAngleOfMajorAxis, mlpResponseParams.mlpOffsetAngle,
-                mlpResponseParams.mlpIncludedAngle, mlpResponseParams.mlpAltitude, mlpResponseParams.mlpPolygon, mlpResponseParams.mlpNumberOfPoints,
+                mlpResponseParams.mlpIncludedAngle, mlpResponseParams.mlpAltitude, mlpResponseParams.mlpUncertaintyAltitude,
+                mlpResponseParams.mlpPolygon, mlpResponseParams.mlpNumberOfPoints,
+                mlpResponseParams.mlpPositioningMethod,
+                mlpResponseParams.mlpTargetHorizontalSpeed, mlpResponseParams.mlpBearing, mlpResponseParams.mlpTargetVerticalSpeed,
+                mlpResponseParams.mlpUncertaintyHorizontalSpeed, mlpResponseParams.mlpUncertaintyVerticalSpeed, mlpResponseParams.mlpVelocityType,
                 mlpResponseParams.mlpMcc, mlpResponseParams.mlpMnc, mlpResponseParams.mlpLac, mlpResponseParams.mlpCi, mlpResponseParams.mlpSac,
-                mlpResponseParams.mlpEci, mlpResponseParams.mlpRac, mlpResponseParams.mlpTac, mlpResponseParams.mlpNci, mlpResponseParams.mlpNrTac,
-                mlpResponseParams.mlpMmeName, mlpResponseParams.mlpSgsnName, mlpResponseParams.mlpMscNo, mlpResponseParams.mlpVlrNo,
+                mlpResponseParams.mlpUci, mlpResponseParams.mlpEci, mlpResponseParams.mlpEnbId, mlpResponseParams.mlpRac, mlpResponseParams.mlpTac,
+                mlpResponseParams.mlpNci, mlpResponseParams.mlpNrTac,
+                mlpResponseParams.mlpMmeName, mlpResponseParams.mlpMmeRealm, mlpResponseParams.mlpSgsnName, mlpResponseParams.mlpSgsnRealm,
+                mlpResponseParams.mlpSgsnNumber, mlpResponseParams.mlpAmfAddress, mlpResponseParams.mlpMscNo, mlpResponseParams.mlpVlrNo,
                 mlpResponseParams.mlpMsisdn, mlpResponseParams.mlpImei, mlpResponseParams.mlpImsi, mlpResponseParams.mlpAge,
-                mlpResponseParams.mlpLmsi, mlpResponseParams.mlpTransId, mlpResponseParams.mlpLcsRefNumber, mlpResponseParams.mlpRatType,
+                mlpResponseParams.mlpLmsi, mlpResponseParams.mlpTransId, mlpResponseParams.mlpLcsRefNumber,
+                mlpResponseParams.mlpRatType, mlpResponseParams.mlpCivicAddress,
                 mlpResultType, lcsReferenceNumber != null, true);
 
         } else {
@@ -400,9 +445,8 @@ public class HttpReport {
 
             // obtain HTTP response for log
             httpUrlConnection.getResponseCode();
-        } catch (IOException ioe) {
-            logger.warn(String.format("Cannot perform report callback to provided URL, stack trace is '%s'",
-                    (Object) ioe.getStackTrace()));
+        } catch (IOException e) {
+            logger.warn(String.format("Cannot perform report callback to provided URL, stack trace is '%s'", e.getMessage()));
         }
     }
 
@@ -424,8 +468,8 @@ public class HttpReport {
         /*******************/
         String mlpMsisdn;
         Integer mlpMcc, mlpMnc, mlpLac, mlpCi, mlpSac, mlpTac, mlpRac, mlpNrTac;
-        Long mlpEci, mlpNci;
-        String mlpVlrNo, mlpMscNo, mlpMmeName, mlpSgsnName;
+        Long mlpUci, mlpEci, mlpEnbId, mlpNci;
+        String mlpVlrNo, mlpMscNo, mlpMmeName, mlpMmeRealm, mlpSgsnName, mlpSgsnRealm, mlpSgsnNumber, mlpAmfAddress;
         String mlpState;
         Integer mlpAge;
         Double x;
@@ -434,11 +478,12 @@ public class HttpReport {
         Double radius;
         Polygon mlpPolygon;
         Integer mlpNumberOfPoints;
+        String mlpPositioningMethod;
         Double mlpUncertainty, mlpUncertaintySemiMajorAxis, mlpUncertaintySemiMinorAxis, mlpAngleOfMajorAxis,
             mlpUncertaintyAltitude, mlpUncertaintyInnerRadius, mlpOffsetAngle, mlpIncludedAngle;
         Integer mlpConfidence, mlpAltitude, mlpInnerRadius, numberOfPoints;
         Integer mlpAgeOfLocationEstimate, mlpAccuracyFulfilmentIndicator;
-        Integer mlpTargetHorizontalSpeed, mlpTargetVerticalSpeed;
+        Integer mlpTargetHorizontalSpeed, mlpBearing, mlpTargetVerticalSpeed, mlpUncertaintyHorizontalSpeed, mlpUncertaintyVerticalSpeed;
         String mlpVelocityType;
         String mlpImei, mlpImsi, mlpLmsi;
         String mlpCivicAddress;

@@ -1,13 +1,40 @@
 package org.mobicents.gmlc.slee;
 
-import net.java.slee.resource.diameter.slg.events.avp.*;
+import net.java.slee.resource.diameter.slg.events.avp.AdditionalAreaAvp;
+import net.java.slee.resource.diameter.slg.events.avp.AreaAvp;
+import net.java.slee.resource.diameter.slg.events.avp.AreaDefinitionAvp;
+import net.java.slee.resource.diameter.slg.events.avp.AreaEventInfoAvp;
+import net.java.slee.resource.diameter.slg.events.avp.LCSQoSAvp;
+import net.java.slee.resource.diameter.slg.events.avp.MotionEventInfoAvp;
+import net.java.slee.resource.diameter.slg.events.avp.PeriodicLDRInfoAvp;
+import net.java.slee.resource.diameter.slg.events.avp.VerticalRequested;
 import org.jdiameter.api.Avp;
-import org.mobicents.slee.resource.diameter.slg.events.avp.*;
-import org.restcomm.protocols.ss7.map.api.service.lsm.*;
+import org.mobicents.slee.resource.diameter.slg.events.avp.AdditionalAreaAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.AreaAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.AreaDefinitionAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.AreaEventInfoAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.LCSQoSAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.MotionEventInfoAvpImpl;
+import org.mobicents.slee.resource.diameter.slg.events.avp.PeriodicLDRInfoAvpImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPriority;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSClass;
 import org.restcomm.protocols.ss7.map.api.service.lsm.OccurrenceInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
-import org.restcomm.protocols.ss7.map.service.lsm.*;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
+import org.restcomm.protocols.ss7.map.service.lsm.AreaDefinitionImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.AreaEventInfoImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.AreaIdentificationImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.AreaImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.LCSQoSImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.PeriodicLDRInfoImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.ResponseTimeImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,6 +117,7 @@ public class HttpRequest implements Serializable {
         locationInfo5GS = sh5GSLocationInfo;
         ratType = ratTypeRequested;
         tt = translationType;
+        velocityRequest = false;
 
         try {
             if (operation != null) {
@@ -117,7 +145,8 @@ public class HttpRequest implements Serializable {
                         }
                         responseTime = new ResponseTimeImpl(responseTimeCategory);
                     }
-                    velocityRequest = velocityRequested;
+                    if (velocityRequested != null)
+                        velocityRequest = velocityRequested;
                     LCSQoSClass qosClass = null;
                     if (lcsQosClass != null) {
                         qosClass = LCSQoSClass.valueOf(String.valueOf(lcsQosClass.intValue()));
@@ -268,7 +297,7 @@ public class HttpRequest implements Serializable {
             httpResponseType = httpRespType;
 
         } catch (Exception e) {
-            logger.severe("Exception on Http Request class after evaluating parameters received from curl request");
+            logger.severe("Exception on HttpRequest class after evaluating parameters received from curl request:\n" + e.getMessage());
         }
     }
 

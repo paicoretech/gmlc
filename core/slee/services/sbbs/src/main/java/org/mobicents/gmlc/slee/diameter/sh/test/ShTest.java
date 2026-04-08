@@ -1,6 +1,7 @@
 package org.mobicents.gmlc.slee.diameter.sh.test;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.diameter.sh.CSLocationInformation;
 import org.mobicents.gmlc.slee.diameter.sh.CSLocationInformationExtension;
 import org.mobicents.gmlc.slee.diameter.sh.CSLocationInformationExtension2;
@@ -37,6 +38,8 @@ import java.io.IOException;
 
 public class ShTest {
 
+  private static final Logger logger = Logger.getLogger(ShTest.class.getName());
+
   public static void main(String[] args) {
 
     try {
@@ -53,8 +56,8 @@ public class ShTest {
       shUdaAvpValues.setMsisdn(msisdn);
       String imsPublicIdentity = shPublicIds.getImsPublicIdentity();
       shUdaAvpValues.setImsPublicIdentity(imsPublicIdentity);
-      System.out.println("MSISDN: "+shUdaAvpValues.getMsisdn());
-      System.out.println("IMSPublicIdentity: "+shUdaAvpValues.getImsPublicIdentity());
+      logger.info("MSISDN: "+shUdaAvpValues.getMsisdn());
+      logger.info("IMSPublicIdentity: "+shUdaAvpValues.getImsPublicIdentity());
 
       CSLocationInformation shDataCsLocation = shDataReader.getShCSLocationInfo();
       shUdaAvpValues.setCsLocationInformation(shDataCsLocation);
@@ -113,22 +116,22 @@ public class ShTest {
       shUdaAvpValues.setTrackingAreaId(shCsTrackingAreaId);
       shUdaAvpValues.setCsLocalTimeZone(csLocalTimeZone);
 
-      System.out.println("**************************\n");
-      System.out.println("CSLocationInformation: \n");
-      System.out.println(shUdaAvpValues.getCsCellGlobalId().toString());
-      System.out.println(shUdaAvpValues.getCsServiceAreaId().toString());
-      System.out.println(shUdaAvpValues.getCsLocationAreaId().toString());
-      System.out.println(shUdaAvpValues.getLocationNumber().toString());
-      System.out.println(shUdaAvpValues.getCsGeographicalInformation().toString());
-      System.out.println(shUdaAvpValues.getCsGeodeticInformation().toString());
-      System.out.println("MSC Number [address = "+shUdaAvpValues.getMscNumber().getAddress()+"]");
-      System.out.println("VLR Number [address = "+shUdaAvpValues.getVlrNumber().getAddress()+"]");
-      System.out.println("CurrentLocationRetrieved = "+shUdaAvpValues.getCsCurrentLocationInfoRetrieved());
-      System.out.println("AgeOfLocationInformation = "+shUdaAvpValues.getCsAgeOfLocationInfo());
-      System.out.println("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
-      System.out.println(shUdaAvpValues.getEutrancgi().toString());
-      System.out.println(shUdaAvpValues.getTrackingAreaId().toString());
-      System.out.println("Local Time Zone = "+shUdaAvpValues.getCsLocalTimeZone());
+      logger.info("**************************\n");
+      logger.info("CSLocationInformation: \n");
+      logger.info(shUdaAvpValues.getCsCellGlobalId().toString());
+      logger.info(shUdaAvpValues.getCsServiceAreaId().toString());
+      logger.info(shUdaAvpValues.getCsLocationAreaId().toString());
+      logger.info(shUdaAvpValues.getLocationNumber().toString());
+      logger.info(shUdaAvpValues.getCsGeographicalInformation().toString());
+      logger.info(shUdaAvpValues.getCsGeodeticInformation().toString());
+      logger.info("MSC Number [address = "+shUdaAvpValues.getMscNumber().getAddress()+"]");
+      logger.info("VLR Number [address = "+shUdaAvpValues.getVlrNumber().getAddress()+"]");
+      logger.info("CurrentLocationRetrieved = "+shUdaAvpValues.getCsCurrentLocationInfoRetrieved());
+      logger.info("AgeOfLocationInformation = "+shUdaAvpValues.getCsAgeOfLocationInfo());
+      logger.info("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
+      logger.info(shUdaAvpValues.getEutrancgi().toString());
+      logger.info(shUdaAvpValues.getTrackingAreaId().toString());
+      logger.info("Local Time Zone = "+shUdaAvpValues.getCsLocalTimeZone());
 
       PSLocationInformation shDataPsLocation = shDataReader.getShPSLocationInfo();
       String cellGlobalIdPs = shDataPsLocation.getCellGlobalId();
@@ -184,20 +187,20 @@ public class ShTest {
       if (psRatType != null)
         shUdaAvpValues.setPsRatType(Integer.valueOf(psRatType));
 
-      System.out.println("\n**************************\n");
-      System.out.println("PSLocationInformation: \n");
-      System.out.println(shUdaAvpValues.getPsCellGlobalId().toString());
-      System.out.println(shUdaAvpValues.getPsServiceAreaId().toString());
-      System.out.println(shUdaAvpValues.getRoutingAreaId().toString());
-      System.out.println(shUdaAvpValues.getPsGeographicalInformation().toString());
-      System.out.println(shUdaAvpValues.getPsGeodeticInformation().toString());
-      System.out.println(shUdaAvpValues.getSgsnNumber().toString());
-      System.out.println("CurrentLocationRetrieved = "+shUdaAvpValues.getPsCurrentLocationInfoRetrieved());
-      System.out.println("AgeOfLocationInformation = "+shUdaAvpValues.getPsAgeOfLocationInfo().toString());
-      System.out.println("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
-      System.out.println("VisitedPLMNID = "+shUdaAvpValues.getPsVisitedPLMNId().toString());
-      System.out.println("Local Time Zone = "+shUdaAvpValues.getPsLocalTimeZone());
-      System.out.println("RAT Type = "+shUdaAvpValues.getPsRatType());
+      logger.info("\n**************************\n");
+      logger.info("PSLocationInformation: \n");
+      logger.info(shUdaAvpValues.getPsCellGlobalId().toString());
+      logger.info(shUdaAvpValues.getPsServiceAreaId().toString());
+      logger.info(shUdaAvpValues.getRoutingAreaId().toString());
+      logger.info(shUdaAvpValues.getPsGeographicalInformation().toString());
+      logger.info(shUdaAvpValues.getPsGeodeticInformation().toString());
+      logger.info(shUdaAvpValues.getSgsnNumber().toString());
+      logger.info("CurrentLocationRetrieved = "+shUdaAvpValues.getPsCurrentLocationInfoRetrieved());
+      logger.info("AgeOfLocationInformation = "+shUdaAvpValues.getPsAgeOfLocationInfo().toString());
+      logger.info("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
+      logger.info("VisitedPLMNID = "+shUdaAvpValues.getPsVisitedPLMNId().toString());
+      logger.info("Local Time Zone = "+shUdaAvpValues.getPsLocalTimeZone());
+      logger.info("RAT Type = "+shUdaAvpValues.getPsRatType());
 
       Extension shDataEpsLocation = shDataReader.getShEPSLocationInfo();
       EPSLocationInformation epsLocationInformation = shDataEpsLocation.getExtension().getExtension().getExtension().getEpsLocationInformation();
@@ -245,19 +248,19 @@ public class ShTest {
       if (epsRatType != null)
         shUdaAvpValues.setEpsRatType(Integer.valueOf(epsRatType));
 
-      System.out.println("\n**************************\n");
-      System.out.println("EPSLocationInformation: \n");
-      System.out.println(shUdaAvpValues.getEutrancgi().toString());
-      System.out.println(shUdaAvpValues.getTrackingAreaId().toString());
-      System.out.println(shUdaAvpValues.getEpsGeographicalInformation().toString());
-      System.out.println(shUdaAvpValues.getEpsGeodeticInformation().toString());
-      System.out.println("MME name = "+shUdaAvpValues.getMmeName());
-      System.out.println("CurrentLocationRetrieved = "+shUdaAvpValues.getEpsCurrentLocationInfoRetrieved());
-      System.out.println("AgeOfLocationInformation = "+shUdaAvpValues.getEpsAgeOfLocationInfo());
-      System.out.println("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
-      System.out.println("VisitedPLMNID = "+shUdaAvpValues.getEpsVisitedPLMNId().toString());
-      System.out.println("Local Time Zone = "+shUdaAvpValues.getEpsLocalTimeZone());
-      System.out.println("RAT Type = "+shUdaAvpValues.getEpsRatType());
+      logger.info("\n**************************\n");
+      logger.info("EPSLocationInformation: \n");
+      logger.info(shUdaAvpValues.getEutrancgi().toString());
+      logger.info(shUdaAvpValues.getTrackingAreaId().toString());
+      logger.info(shUdaAvpValues.getEpsGeographicalInformation().toString());
+      logger.info(shUdaAvpValues.getEpsGeodeticInformation().toString());
+      logger.info("MME name = "+shUdaAvpValues.getMmeName());
+      logger.info("CurrentLocationRetrieved = "+shUdaAvpValues.getEpsCurrentLocationInfoRetrieved());
+      logger.info("AgeOfLocationInformation = "+shUdaAvpValues.getEpsAgeOfLocationInfo());
+      logger.info("UserCSGInformation [ "+shUdaAvpValues.getUserCSGInformation().toString()+"]");
+      logger.info("VisitedPLMNID = "+shUdaAvpValues.getEpsVisitedPLMNId().toString());
+      logger.info("Local Time Zone = "+shUdaAvpValues.getEpsLocalTimeZone());
+      logger.info("RAT Type = "+shUdaAvpValues.getEpsRatType());
 
       Extension shData5GSLocation = shDataReader.getSh5GSLocationInfo();
       Sh5GSLocationInformation sh5GSLocationInfo = shData5GSLocation.getExtension().getExtension().getExtension().getExtension().getExtension().getExtension().getSh5GSLocationInformation();
@@ -293,21 +296,21 @@ public class ShTest {
       shUdaAvpValues.setSh5gsLocalTimeZone(sh5GSlocalTimeZone);
       shUdaAvpValues.setSh5gsRatType(Integer.valueOf(ratType));
 
-      System.out.println("\n**************************\n");
-      System.out.println("5GSLocationInformation: \n");
-      System.out.println(shUdaAvpValues.getShNRCellGlobalId().toString());
-      System.out.println(shUdaAvpValues.getTrackingAreaId().toString());
-      System.out.println(shUdaAvpValues.getSh5GSGeographicalInformation().toString());
-      System.out.println("AMF address = "+shUdaAvpValues.getAmfAddress());
-      System.out.println("SMSF address = "+shUdaAvpValues.getSmsfAddress());
-      System.out.println("CurrentLocationRetrieved = "+shUdaAvpValues.getSh5GSCurrentLocationInfoRetrieved());
-      System.out.println("AgeOfLocationInformation = "+shUdaAvpValues.getSh5GSAgeOfLocationInfo());
-      System.out.println("VisitedPLMNID = "+shUdaAvpValues.getSh5gsVisitedPLMNId().toString());
-      System.out.println("Local Time Zone = "+shUdaAvpValues.getSh5gsLocalTimeZone());
-      System.out.println("RAT Type = "+shUdaAvpValues.getSh5gsRatType());
+      logger.info("\n**************************\n");
+      logger.info("5GSLocationInformation: \n");
+      logger.info(shUdaAvpValues.getShNRCellGlobalId().toString());
+      logger.info(shUdaAvpValues.getTrackingAreaId().toString());
+      logger.info(shUdaAvpValues.getSh5GSGeographicalInformation().toString());
+      logger.info("AMF address = "+shUdaAvpValues.getAmfAddress());
+      logger.info("SMSF address = "+shUdaAvpValues.getSmsfAddress());
+      logger.info("CurrentLocationRetrieved = "+shUdaAvpValues.getSh5GSCurrentLocationInfoRetrieved());
+      logger.info("AgeOfLocationInformation = "+shUdaAvpValues.getSh5GSAgeOfLocationInfo());
+      logger.info("VisitedPLMNID = "+shUdaAvpValues.getSh5gsVisitedPLMNId().toString());
+      logger.info("Local Time Zone = "+shUdaAvpValues.getSh5gsLocalTimeZone());
+      logger.info("RAT Type = "+shUdaAvpValues.getSh5gsRatType());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 

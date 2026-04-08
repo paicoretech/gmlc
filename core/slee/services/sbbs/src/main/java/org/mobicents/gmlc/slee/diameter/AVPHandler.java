@@ -2,6 +2,7 @@ package org.mobicents.gmlc.slee.diameter;
 
 import net.java.slee.resource.diameter.base.events.avp.Address;
 import net.java.slee.resource.diameter.slg.events.avp.*;
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.diameter.sh.ShUdaAvpValues;
 import org.mobicents.gmlc.slee.diameter.sh.elements.*;
 import org.mobicents.gmlc.slee.primitives.*;
@@ -34,6 +35,8 @@ import static org.mobicents.gmlc.slee.utils.TBCDUtil.toTBCDString;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class AVPHandler {
+
+    private static final Logger logger = Logger.getLogger(AVPHandler.class.getName());
 
     public AVPHandler() {
     }
@@ -367,7 +370,7 @@ public class AVPHandler {
                 try {
                     locationNumberMap = new LocationNumberMapImpl(locationNumber);
                 } catch (MAPException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
             // CS CellGlobalId

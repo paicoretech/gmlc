@@ -1,5 +1,6 @@
 package org.mobicents.gmlc.slee.supl;
 
+import org.apache.log4j.Logger;
 import org.mobicents.gmlc.slee.primitives.EUTRANCGI;
 import org.mobicents.gmlc.slee.primitives.NRCellGlobalId;
 import org.mobicents.gmlc.slee.supl.SUPL_TRIGGERED_START.TriggerParams;
@@ -9,7 +10,6 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
@@ -17,6 +17,8 @@ import java.text.DecimalFormat;
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  */
 public class SuplResponseHelperForMLP implements Serializable {
+
+    private static final Logger logger = Logger.getLogger(SuplResponseHelperForMLP.class.getName());
 
     protected static final DecimalFormat coordinatesFormat = new DecimalFormat("#0.000000");
     protected static final DecimalFormat radiusFormat = new DecimalFormat("#0.00");
@@ -33,6 +35,8 @@ public class SuplResponseHelperForMLP implements Serializable {
     private Double uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis, orientationMajorAxis,
         uncertaintyAltitude, uncertaintyInnerRadius, offsetAngle, includedAngle, radius;
     private Integer confidence, innerRadius;
+    Integer horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing;
+    String velocityType;
     private Integer transactionId;
     private CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI;
     private EUTRANCGI lteCGI;
@@ -278,6 +282,54 @@ public class SuplResponseHelperForMLP implements Serializable {
         this.radius = radius;
     }
 
+    public Integer getHorizontalSpeed() {
+        return horizontalSpeed;
+    }
+
+    public void setHorizontalSpeed(Integer horizontalSpeed) {
+        this.horizontalSpeed = horizontalSpeed;
+    }
+
+    public Integer getVerticalSpeed() {
+        return verticalSpeed;
+    }
+
+    public void setVerticalSpeed(Integer verticalSpeed) {
+        this.verticalSpeed = verticalSpeed;
+    }
+
+    public Integer getUncertaintyHorizontalSpeed() {
+        return uncertaintyHorizontalSpeed;
+    }
+
+    public void setUncertaintyHorizontalSpeed(Integer uncertaintyHorizontalSpeed) {
+        this.uncertaintyHorizontalSpeed = uncertaintyHorizontalSpeed;
+    }
+
+    public Integer getUncertaintyVerticalSpeed() {
+        return uncertaintyVerticalSpeed;
+    }
+
+    public void setUncertaintyVerticalSpeed(Integer uncertaintyVerticalSpeed) {
+        this.uncertaintyVerticalSpeed = uncertaintyVerticalSpeed;
+    }
+
+    public Integer getBearing() {
+        return bearing;
+    }
+
+    public void setBearing(Integer bearing) {
+        this.bearing = bearing;
+    }
+
+    public String getVelocityType() {
+        return velocityType;
+    }
+
+    public void setVelocityType(String velocityType) {
+        this.velocityType = velocityType;
+    }
+
     public Integer getConfidence() {
         return confidence;
     }
@@ -314,7 +366,7 @@ public class SuplResponseHelperForMLP implements Serializable {
             this.eci = lteCGI.getEci();
             this.enbId = lteCGI.getENodeBId();
         } catch (MAPException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -329,7 +381,7 @@ public class SuplResponseHelperForMLP implements Serializable {
             this.mnc = nrCellGlobalId.getMNC();
             this.nrCi = nrCellGlobalId.getNCI();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

@@ -1,10 +1,6 @@
 package org.mobicents.gmlc.slee.map;
 
 import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.NetworkNodeDiameterAddress;
 import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidance;
 import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
 
@@ -74,22 +70,6 @@ public class SriSmResponseParams {
 
     private IMSI imsi;
     private LocationInfoWithLMSI locationInfoWithLMSI;
-    private ISDNAddressString networkNodeNumber;
-    private LMSI lmsi;
-    private boolean gprsNodeIndicator;
-    private AdditionalNumber additionalNumber;
-    private NetworkNodeDiameterAddress networkNodeDiameterAddress;
-    private NetworkNodeDiameterAddress additionalNetworkNodeDiameterAddress;
-    private AdditionalNumber thirdNumber;
-    private NetworkNodeDiameterAddress thirdNetworkNodeDiameterAddress;
-    private boolean imsNodeIndicator;
-    private ISDNAddressString smsf3gppNumber;
-    private NetworkNodeDiameterAddress smsf3gppDiameterAddress;
-    private ISDNAddressString smsfNon3gppNumber;
-    private NetworkNodeDiameterAddress smsfNon3gppDiameterAddress;
-    private boolean smsf3gppAddressIndicator;
-    private boolean smsfNon3gppAddressIndicator;
-
     private IpSmGwGuidance ipSmGwGuidance;
 
     public SriSmResponseParams() {
@@ -117,126 +97,6 @@ public class SriSmResponseParams {
 
     public void setIpSmGwGuidance(IpSmGwGuidance ipSmGwGuidance) {
         this.ipSmGwGuidance = ipSmGwGuidance;
-    }
-
-    public ISDNAddressString getNetworkNodeNumber() {
-        return networkNodeNumber;
-    }
-
-    public void setNetworkNodeNumber(ISDNAddressString networkNodeNumber) {
-        this.networkNodeNumber = networkNodeNumber;
-    }
-
-    public LMSI getLmsi() {
-        return lmsi;
-    }
-
-    public void setLmsi(LMSI lmsi) {
-        this.lmsi = lmsi;
-    }
-
-    public boolean isGprsNodeIndicator() {
-        return gprsNodeIndicator;
-    }
-
-    public void setGprsNodeIndicator(boolean gprsNodeIndicator) {
-        this.gprsNodeIndicator = gprsNodeIndicator;
-    }
-
-    public AdditionalNumber getAdditionalNumber() {
-        return additionalNumber;
-    }
-
-    public void setAdditionalNumber(AdditionalNumber additionalNumber) {
-        this.additionalNumber = additionalNumber;
-    }
-
-    public NetworkNodeDiameterAddress getNetworkNodeDiameterAddress() {
-        return networkNodeDiameterAddress;
-    }
-
-    public void setNetworkNodeDiameterAddress(NetworkNodeDiameterAddress networkNodeDiameterAddress) {
-        this.networkNodeDiameterAddress = networkNodeDiameterAddress;
-    }
-
-    public NetworkNodeDiameterAddress getAdditionalNetworkNodeDiameterAddress() {
-        return additionalNetworkNodeDiameterAddress;
-    }
-
-    public void setAdditionalNetworkNodeDiameterAddress(NetworkNodeDiameterAddress additionalNetworkNodeDiameterAddress) {
-        this.additionalNetworkNodeDiameterAddress = additionalNetworkNodeDiameterAddress;
-    }
-
-    public AdditionalNumber getThirdNumber() {
-        return thirdNumber;
-    }
-
-    public void setThirdNumber(AdditionalNumber thirdNumber) {
-        this.thirdNumber = thirdNumber;
-    }
-
-    public NetworkNodeDiameterAddress getThirdNetworkNodeDiameterAddress() {
-        return thirdNetworkNodeDiameterAddress;
-    }
-
-    public void setThirdNetworkNodeDiameterAddress(NetworkNodeDiameterAddress thirdNetworkNodeDiameterAddress) {
-        this.thirdNetworkNodeDiameterAddress = thirdNetworkNodeDiameterAddress;
-    }
-
-    public boolean isImsNodeIndicator() {
-        return imsNodeIndicator;
-    }
-
-    public void setImsNodeIndicator(boolean imsNodeIndicator) {
-        this.imsNodeIndicator = imsNodeIndicator;
-    }
-
-    public ISDNAddressString getSmsf3gppNumber() {
-        return smsf3gppNumber;
-    }
-
-    public void setSmsf3gppNumber(ISDNAddressString smsf3gppNumber) {
-        this.smsf3gppNumber = smsf3gppNumber;
-    }
-
-    public NetworkNodeDiameterAddress getSmsf3gppDiameterAddress() {
-        return smsf3gppDiameterAddress;
-    }
-
-    public void setSmsf3gppDiameterAddress(NetworkNodeDiameterAddress smsf3gppDiameterAddress) {
-        this.smsf3gppDiameterAddress = smsf3gppDiameterAddress;
-    }
-
-    public ISDNAddressString getSmsfNon3gppNumber() {
-        return smsfNon3gppNumber;
-    }
-
-    public void setSmsfNon3gppNumber(ISDNAddressString smsfNon3gppNumber) {
-        this.smsfNon3gppNumber = smsfNon3gppNumber;
-    }
-
-    public NetworkNodeDiameterAddress getSmsfNon3gppDiameterAddress() {
-        return smsfNon3gppDiameterAddress;
-    }
-
-    public void setSmsfNon3gppDiameterAddress(NetworkNodeDiameterAddress smsfNon3gppDiameterAddress) {
-        this.smsfNon3gppDiameterAddress = smsfNon3gppDiameterAddress;
-    }
-
-    public boolean isSmsf3gppAddressIndicator() {
-        return smsf3gppAddressIndicator;
-    }
-
-    public void setSmsf3gppAddressIndicator(boolean smsf3gppAddressIndicator) {
-        this.smsf3gppAddressIndicator = smsf3gppAddressIndicator;
-    }
-
-    public boolean isSmsfNon3gppAddressIndicator() {
-        return smsfNon3gppAddressIndicator;
-    }
-
-    public void setSmsfNon3gppAddressIndicator(boolean smsfNon3gppAddressIndicator) {
-        this.smsfNon3gppAddressIndicator = smsfNon3gppAddressIndicator;
     }
 
     @Override

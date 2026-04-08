@@ -12,7 +12,7 @@ public class CDRCreateException extends RuntimeException {
   }
 
   /**
-   * @param message
+   * @param message   String containing the exception message
    */
   public CDRCreateException(String message) {
     super(message);
@@ -20,7 +20,7 @@ public class CDRCreateException extends RuntimeException {
   }
 
   /**
-   * @param cause
+   * @param cause   Throable containing the exception cause
    */
   public CDRCreateException(Throwable cause) {
     super(cause);
@@ -28,8 +28,8 @@ public class CDRCreateException extends RuntimeException {
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message   String containing the exception message
+   * @param cause     String containing the exception caus
    */
   public CDRCreateException(String message, Throwable cause) {
     super(message, cause);
@@ -37,10 +37,10 @@ public class CDRCreateException extends RuntimeException {
   }
 
   /**
-   * @param message
-   * @param cause
-   * @param enableSuppression
-   * @param writableStackTrace
+   * @param message             String containing the exception message
+   * @param cause               Throable containing the exception cause
+   * @param enableSuppression   True if suppression shall be enabled
+   * @param writableStackTrace  True if writable stack trace shall be present
    */
   public CDRCreateException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);

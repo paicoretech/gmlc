@@ -10,7 +10,7 @@
 
 	<artifactId>restcomm-gmlc-parent</artifactId>
 	<groupId>org.mobicents.gmlc</groupId>
-	<version>6.0.1-SNAPSHOT</version>
+	<version>6.1.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -23,13 +23,15 @@
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+		<build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
+		<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
 		<testng.version>6.8</testng.version>
 		<javolution.version>5.5.1</javolution.version>
 		<compiler.plugin.version>3.13.0</compiler.plugin.version>
 		<compile.source>11</compile.source>
 		<!-- Restcomm properties -->
-		<jss7.restcomm.version>9.0.0-318</jss7.restcomm.version>
-		<restcomm.resources.map.version>9.0.0-215</restcomm.resources.map.version>
+		<jss7.restcomm.version>9.0.0-328</jss7.restcomm.version>
+		<restcomm.resources.map.version>9.0.0-217</restcomm.resources.map.version>
 		<dialogic.version>6.7.1</dialogic.version>
 		<jslee.ext.version>7.1.83</jslee.ext.version>
 		<restcomm.resources.sip.version>2.9.94</restcomm.resources.sip.version>
@@ -39,7 +41,7 @@
 		<jodatime.version>2.9.6</jodatime.version>
 		<netty.version>4.1.66.Final</netty.version>
 		<!-- Restcomm jdiameter and jain-slee.diameter for LTE location services -->
-		<restcomm.jdiameter.version>2.0.0-302</restcomm.jdiameter.version>
+		<restcomm.jdiameter.version>2.0.0-303</restcomm.jdiameter.version>
 		<restcomm.slee.diameter.version>7.3.0-102</restcomm.slee.diameter.version>
 		<!-- Restcomm but not strictly jss7 or jdiameter -->
 		<asn.version>2.2.0-143</asn.version>
@@ -59,7 +61,7 @@
 		<commons-codec.version>1.13</commons-codec.version>
 		<commons-lang3.version>3.14.0</commons-lang3.version>
 		<mail.version>1.4</mail.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.16.1</commons-io.version>
 		<jakarta-xml-bind-api.version>2.3.3</jakarta-xml-bind-api.version>
 		<org-apache-httpcomponents-httpclient.version>4.5.13</org-apache-httpcomponents-httpclient.version>
 		<mongo-java-driver.version>2.10.1</mongo-java-driver.version>
@@ -155,8 +157,8 @@
 			<id>FerUy</id>
 			<name>Fernando Mendioroz</name>
 			<email>fernando.mendioroz@gmail.com</email>
-			<organization>PAICore Technologies</organization>
-			<organizationUrl>https://paicore.tech/</organizationUrl>
+			<organization>PAiCore Technology</organization>
+			<organizationUrl>https://paicore.tech</organizationUrl>
 			<roles>
 				<role>Active Developer</role>
 			</roles>

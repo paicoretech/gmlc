@@ -1,11 +1,14 @@
 package org.mobicents.gmlc.slee.primitives;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 
 public class CivicAddressReaderTester {
+
+    private static final Logger logger = Logger.getLogger(CivicAddressReaderTester.class.getName());
 
     public static void main(String[] args) {
 
@@ -16,8 +19,8 @@ public class CivicAddressReaderTester {
             civicAddressXmlReader.civicAddressXMLReader(xmlFileToStr);
             CivicAddressElements civicAddressElements = civicAddressXmlReader.getCivicAddressElements();
             String addressElements = getAddressElements(civicAddressElements);
-            System.out.println("Test importing XML file taken from IETF RFC 5139 §5");
-            System.out.println(addressElements);
+            logger.info("Test importing XML file taken from IETF RFC 5139 §5");
+            logger.info(addressElements);
 
             String civicAddressString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<civicAddress>\n" +
@@ -33,8 +36,8 @@ public class CivicAddressReaderTester {
             civicAddressXmlReader.civicAddressXMLReader(civicAddressString);
             civicAddressElements = civicAddressXmlReader.getCivicAddressElements();
             addressElements = getAddressElements(civicAddressElements);
-            System.out.println("\nTest from String with no properties such as lang or namespace");
-            System.out.println(addressElements);
+            logger.info("\nTest from String with no properties such as lang or namespace");
+            logger.info(addressElements);
 
 
             String caRfc5139Example = "<civicAddress xml:lang=\"en-AU\"\n" +
@@ -58,8 +61,8 @@ public class CivicAddressReaderTester {
             civicAddressXmlReader.civicAddressXMLReader(caRfc5139Example);
             civicAddressElements = civicAddressXmlReader.getCivicAddressElements();
             addressElements = getAddressElements(civicAddressElements);
-            System.out.println("\nTest from String taken from IETF RFC 5139 §5 Example");
-            System.out.println(addressElements);
+            logger.info("\nTest from String taken from IETF RFC 5139 §5 Example");
+            logger.info(addressElements);
 
             String caRfc6848_5_6_Fig7 = "<civicAddress xml:lang=\"en-US\"\n" +
                     "        xmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n" +
@@ -75,8 +78,8 @@ public class CivicAddressReaderTester {
             civicAddressXmlReader.civicAddressXMLReader(caRfc6848_5_6_Fig7);
             civicAddressElements = civicAddressXmlReader.getCivicAddressElements();
             addressElements = getAddressElements(civicAddressElements);
-            System.out.println("\nTest from IETF RFC 6848 §5.6 Figure 7");
-            System.out.println(addressElements);
+            logger.info("\nTest from IETF RFC 6848 §5.6 Figure 7");
+            logger.info(addressElements);
 
             String caRfc6848_5_6_Fig8 = "<civicAddress xml:lang=\"en-US\"\n" +
                     "        xmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n" +
@@ -93,8 +96,8 @@ public class CivicAddressReaderTester {
             civicAddressXmlReader.civicAddressXMLReader(caRfc6848_5_6_Fig8);
             civicAddressElements = civicAddressXmlReader.getCivicAddressElements();
             addressElements = getAddressElements(civicAddressElements);
-            System.out.println("\nTest from IETF RFC 6848 §5.6 Figure 8");
-            System.out.println(addressElements);
+            logger.info("\nTest from IETF RFC 6848 §5.6 Figure 8");
+            logger.info(addressElements);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -104,7 +107,7 @@ public class CivicAddressReaderTester {
 
     private static String getAddressElements(CivicAddressElements civicAddressElements) {
         StringBuilder sb = new StringBuilder();
-        sb.append("utranCivicAddress: ");
+        sb.append("civicAddress: ");
         if (civicAddressElements != null) {
             if (civicAddressElements.getCountry() != null)
                 sb.append("country=").append(civicAddressElements.getCountry());

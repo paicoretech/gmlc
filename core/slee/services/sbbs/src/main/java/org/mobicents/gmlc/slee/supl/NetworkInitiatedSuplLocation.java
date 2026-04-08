@@ -2,15 +2,12 @@ package org.mobicents.gmlc.slee.supl;
 
 import com.cloudhopper.smpp.SmppSession;
 import com.objsys.asn1j.runtime.Asn1Boolean;
-import com.objsys.asn1j.runtime.Asn1Integer;
 import com.objsys.asn1j.runtime.Asn1OctetString;
-import com.objsys.asn1j.runtime.Asn1PerEncodeBuffer;
 import org.mobicents.gmlc.GmlcPropertiesManagement;
 import org.mobicents.gmlc.slee.concurrent.SuplTransaction;
 import org.mobicents.gmlc.slee.smpp.SmppSender;
 import org.mobicents.gmlc.slee.smpp.SmppSessionManager;
 import org.mobicents.gmlc.slee.supl.SUPL_INIT.SLPMode;
-import org.mobicents.gmlc.slee.supl.SUPL_INIT.SUPLINIT;
 import org.mobicents.gmlc.slee.supl.SUPL_TRIGGERED_START.TriggerParams;
 import org.mobicents.gmlc.slee.supl.SUPL_TRIGGERED_START.TriggerType;
 import org.mobicents.gmlc.slee.supl.ULP.ULP_PDU;
@@ -40,8 +37,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -78,12 +73,12 @@ public class NetworkInitiatedSuplLocation implements Runnable {
     public void loadSSLCert() {
         try {
             URL pathToCert = NetworkInitiatedSuplLocation.class.getClassLoader().getResource(cert_file_name);
+            assert pathToCert != null;
             String absolutePath = pathToCert.getPath();
             System.setProperty("javax.net.ssl.keyStore", absolutePath);
             System.setProperty("javax.net.ssl.keyStorePassword", cert_password);
         } catch (Exception ex) {
             logger.severe("SSL Certificate could not be loaded: " + ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
@@ -95,8 +90,7 @@ public class NetworkInitiatedSuplLocation implements Runnable {
             loadSSLCert();
 
             ServerSocketFactory ssf = SSLServerSocketFactory.getDefault();
-            SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(SSLServerPort);
-            return ss;
+            return ssf.createServerSocket(SSLServerPort);
         } else {
             logger.info(String.format("Create Non-SSL Server on port %s", NonSSLServerPort));
             return new ServerSocket(NonSSLServerPort);
@@ -206,7 +200,6 @@ public class NetworkInitiatedSuplLocation implements Runnable {
                 targets.add(suplChannel);
             } catch (IOException e) {
                 logger.severe("Error accepting connection: " + e.getMessage());
-                e.printStackTrace();
             }
         }
     }

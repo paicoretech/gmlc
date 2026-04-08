@@ -28,6 +28,7 @@ import net.java.slee.resource.diameter.slg.events.avp.ResponseTime;
 import net.java.slee.resource.diameter.slg.events.avp.SLgLocationType;
 import net.java.slee.resource.diameter.slg.events.avp.VelocityRequested;
 import net.java.slee.resource.diameter.slg.events.avp.VerticalRequested;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 
@@ -39,6 +40,8 @@ public class SLgPlrAvpValues implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private static final int DIAMETER_SLg_VENDOR_ID = 10415;
+
+  private static final Logger logger = Logger.getLogger(SLgPlrAvpValues.class.getName());
 
   /*
     3GPP TS 29.172 v18.1.0
@@ -914,7 +917,7 @@ public class SLgPlrAvpValues implements Serializable {
       motionEventInfoAvp.setReportingLocationRequirements(getMeReportingLocationRequirements());
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 
